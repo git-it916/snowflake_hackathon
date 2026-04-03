@@ -121,7 +121,6 @@ def _build_sankey(stage_drop_df, cat_filter, title_suffix):
         df = df[df["MAIN_CATEGORY_NAME"].isin(_MAJOR_CATS)]
     if df.empty:
         return None
-    # CONSULT_REQUEST 제외 (직접 가입 경로 때문에 비정상)
     df = df[df["STAGE_NAME"] != "CONSULT_REQUEST"]
     if df.empty:
         return None
@@ -140,40 +139,56 @@ def _build_sankey(stage_drop_df, cat_filter, title_suffix):
         labels = [_STAGE_LABELS.get(s, s) for s in agg["STAGE_NAME"].tolist()]
     if len(counts) < 2:
         return None
-    sources = list(range(len(labels) - 1))
-    targets = list(range(1, len(labels)))
-    values = counts[:-1]
+
     n = len(labels)
+    sources = list(range(n - 1))
+    targets = list(range(1, n))
+    values = counts[:-1]
+
     drop_labels, drop_sources, drop_targets, drop_values = [], [], [], []
-    for i in range(len(counts) - 1):
+    for i in range(n - 1):
         drop = max(0, counts[i] - counts[i + 1])
         if drop > 0:
-            drop_labels.append(f"이탈 ({labels[i]}->{labels[i+1]})")
+            drop_labels.append(f"이탈 ({labels[i]}→{labels[i+1]})")
             drop_sources.append(i)
             drop_targets.append(n + len(drop_labels) - 1)
             drop_values.append(drop)
-    all_labels = labels + drop_labels
-    all_colors = _STAGE_COLORS[:len(labels)] + ["#4b5563"] * len(drop_labels)
-    # 노드 라벨에 건수 추가
-    node_labels = []
-    for i, lbl in enumerate(labels):
-        node_labels.append(f"{lbl}\n{counts[i]:,}건")
-    for lbl in drop_labels:
-        node_labels.append(lbl)
 
-    # 진행 링크: 시안 그라데이션, 이탈 링크: 붉은 회색
+    # 노드 라벨: 단계명 + 건수 (한 줄, 겹침 방지)
+    node_labels = [f"{lbl}  {counts[i]:,}건" for i, lbl in enumerate(labels)]
+    node_labels += drop_labels
+
+    # 노드 색상: 진행은 시안 계열, 이탈은 어두운 회색
+    all_colors = _STAGE_COLORS[:n] + ["rgba(75,85,99,0.6)"] * len(drop_labels)
+
+    # 링크 색상: 진행은 시안→파랑 그라데이션, 이탈은 붉은 톤
+    progress_colors = [
+        "rgba(6,182,212,0.4)", "rgba(14,165,233,0.35)",
+        "rgba(59,130,246,0.3)", "rgba(37,99,235,0.25)",
+    ]
     link_colors = (
-        ["rgba(0,229,255,0.35)"] * len(sources)
-        + ["rgba(239,68,68,0.2)"] * len(drop_sources)
+        [progress_colors[i % len(progress_colors)] for i in range(len(sources))]
+        + ["rgba(239,68,68,0.15)"] * len(drop_sources)
     )
 
+    # 노드 위치: 진행 노드를 상단에, 이탈 노드를 하단에 명확히 분리
+    node_x = [0.01 + i * (0.98 / max(n - 1, 1)) for i in range(n)]
+    node_y = [0.3] * n  # 진행 노드는 상단 30%
+    for i in range(len(drop_labels)):
+        src_idx = drop_sources[i]
+        node_x.append(node_x[src_idx] + 0.05)
+        node_y.append(0.9)  # 이탈 노드는 하단 90%
+
     fig = go.Figure(go.Sankey(
+        arrangement="snap",
         node=dict(
-            pad=30,
-            thickness=20,
+            pad=40,
+            thickness=28,
             label=node_labels,
             color=all_colors,
-            line=dict(color="rgba(255,255,255,0.1)", width=1),
+            line=dict(color="rgba(255,255,255,0.15)", width=0.5),
+            x=node_x,
+            y=node_y,
         ),
         link=dict(
             source=sources + drop_sources,
@@ -181,13 +196,14 @@ def _build_sankey(stage_drop_df, cat_filter, title_suffix):
             value=values + drop_values,
             color=link_colors,
         ),
-        textfont=dict(size=11, color="#e0e0e0"),
+        textfont=dict(size=12, color="#ffffff", family="Pretendard, sans-serif"),
     ))
     month_str = str(latest_month)[:7] if latest_month else ""
     fig.update_layout(
         **_DARK_LAYOUT,
         title=dict(text=f"퍼널 흐름 ({month_str})", font=dict(size=14)),
-        height=480,
+        height=520,
+        margin=dict(l=20, r=20, t=50, b=20),
     )
     return fig
 
@@ -214,38 +230,49 @@ def _build_channel_bubble(channel_df, ch_col):
     agg = agg[(agg["CONTRACT_COUNT"] >= _MIN_BUBBLE_CONTRACTS) & (agg["PAYEND_CVR"] > 0)].copy()
     if agg.empty:
         return None
-    agg["AVG_NET_SALES"] = agg["AVG_NET_SALES"].clip(lower=0)  # 음수 매출(환불) 제거
+    agg["AVG_NET_SALES"] = agg["AVG_NET_SALES"].clip(lower=0)
     max_sales = agg["AVG_NET_SALES"].max()
-    agg["_size"] = np.clip(agg["AVG_NET_SALES"] / max(max_sales, 1) * 50, 10, 60)
-    # 상위 채널에만 라벨 표시 (상위 5개)
+    agg["_size"] = np.clip(agg["AVG_NET_SALES"] / max(max_sales, 1) * 55, 12, 65)
     top_channels = agg.nlargest(5, "CONTRACT_COUNT")[ch_col].tolist()
+
+    # 텍스트 위치: 상위 채널별로 겹침 방지를 위해 번갈아 배치
+    _TEXT_POSITIONS = ["top center", "bottom center", "top right", "bottom left", "top left"]
 
     fig = go.Figure()
     for trend, color in _TREND_COLOR_MAP.items():
         subset = agg[agg["TREND_FLAG"] == trend]
         if subset.empty:
             continue
-        # 상위 채널만 텍스트 표시
         text_labels = [
             name if name in top_channels else ""
             for name in subset[ch_col]
         ]
+        text_positions = []
+        label_idx = 0
+        for name in subset[ch_col]:
+            if name in top_channels:
+                text_positions.append(_TEXT_POSITIONS[label_idx % len(_TEXT_POSITIONS)])
+                label_idx += 1
+            else:
+                text_positions.append("top center")
+
         fig.add_trace(go.Scatter(
             x=subset["CONTRACT_COUNT"],
             y=subset["PAYEND_CVR"],
             mode="markers+text",
             text=text_labels,
-            textposition="top center",
-            textfont=dict(size=10, color="rgba(255,255,255,0.7)"),
+            textposition=text_positions,
+            textfont=dict(size=11, color="#ffffff", family="Pretendard, sans-serif"),
             name=_TREND_LABEL_MAP.get(trend, trend),
             marker=dict(
                 size=subset["_size"],
                 color=color,
-                opacity=0.75,
-                line=dict(width=1.5, color="rgba(255,255,255,0.3)"),
+                opacity=0.7,
+                line=dict(width=1, color="rgba(255,255,255,0.2)"),
             ),
+            customdata=subset[ch_col].tolist(),
             hovertemplate=(
-                "<b>%{text}</b><br>"
+                "<b>%{customdata}</b><br>"
                 "계약: %{x:,.0f}건<br>"
                 "전환율: %{y:.1f}%<br>"
                 "<extra></extra>"
@@ -257,8 +284,17 @@ def _build_channel_bubble(channel_df, ch_col):
         title=dict(text="채널 효율 (계약 × 전환율)", font=dict(size=14)),
         xaxis_title="계약 건수",
         yaxis_title="전환율 (%)",
-        height=480,
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, font=dict(size=11)),
+        height=520,
+        margin=dict(l=50, r=20, t=70, b=50),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.05,
+            xanchor="center",
+            x=0.5,
+            font=dict(size=11),
+            bgcolor="rgba(0,0,0,0)",
+        ),
     )
     return fig
 
@@ -272,6 +308,8 @@ def _build_cvr_trend(funnel_ts_df, anomaly_df, cat_filter):
     df = _ensure_datetime(funnel_ts_df, "YEAR_MONTH")
     if cat_filter:
         ts = df[df["MAIN_CATEGORY_NAME"] == cat_filter].copy()
+        if "OVERALL_CVR" not in ts.columns and "TOTAL_COUNT" in ts.columns and "PAYEND_COUNT" in ts.columns:
+            ts["OVERALL_CVR"] = (ts["PAYEND_COUNT"] / ts["TOTAL_COUNT"].replace(0, 1) * 100).round(2)
         trend_title = cat_filter
     else:
         major = df[df["MAIN_CATEGORY_NAME"].isin(_MAJOR_CATS)].copy()
@@ -418,20 +456,28 @@ col_sankey, col_bubble = st.columns(2)
 
 with col_sankey:
     st.subheader("┃퍼널 병목 분석")
-    st.caption("진행 / 이탈")
+    st.caption(
+        "상담요청부터 납입완료까지 각 단계의 진행·이탈 건수를 보여줍니다. "
+        "띠가 얇아지는 구간이 고객이 가장 많이 이탈하는 병목입니다. "
+        "이 병목 단계의 프로세스를 개선하면 전체 전환율이 올라갑니다."
+    )
     title_suffix = cat_filter or "주요 카테고리 합산"
     fig_sankey = _build_sankey(stage_drop_df, cat_filter, title_suffix)
     if fig_sankey is not None:
-        st.plotly_chart(fig_sankey, width="stretch")
+        st.plotly_chart(fig_sankey, use_container_width=True)
     else:
         st.info("Sankey 데이터가 부족합니다. 카테고리/기간을 확인하세요.")
 
 with col_bubble:
     st.subheader("┃채널별 효율 매트릭스")
-    st.caption("성장 / 쇠퇴 / 안정")
+    st.caption(
+        "X축: 계약 건수(볼륨), Y축: 납입 전환율(효율), 버블 크기: 매출. "
+        "오른쪽 위에 있을수록 '볼륨도 크고 전환율도 높은' 우수 채널입니다. "
+        "초록=성장 중, 빨강=쇠퇴 중, 파랑=안정. 쇠퇴 채널은 원인 분석이 필요합니다."
+    )
     fig_bubble = _build_channel_bubble(channel_df, ch_col)
     if fig_bubble is not None:
-        st.plotly_chart(fig_bubble, width="stretch")
+        st.plotly_chart(fig_bubble, use_container_width=True)
     else:
         st.info("채널 데이터가 부족합니다 (최소 30건 이상 채널만 표시).")
 
@@ -440,11 +486,15 @@ with col_bubble:
 # ---------------------------------------------------------------------------
 st.divider()
 st.subheader("┃전환율 추이")
-st.caption("실선: 전체 전환율 | 점선: 6개월 이동평균 | ✕: 이상치")
+st.caption(
+    "월별 전체 전환율 추이입니다. 실선은 당월 실적, 점선은 6개월 이동평균(노이즈 제거)입니다. "
+    "✕ 표시는 Cortex ANOMALY가 탐지한 이상치 — 갑작스러운 전환율 변동이 발생한 시점입니다. "
+    "이동평균선이 하락 추세면 구조적 문제가 있으며, 이상치 시점의 원인 분석이 필요합니다."
+)
 
 fig_trend = _build_cvr_trend(funnel_ts_df, anomaly_df, cat_filter)
 if fig_trend is not None:
-    st.plotly_chart(fig_trend, width="stretch")
+    st.plotly_chart(fig_trend, use_container_width=True)
 else:
     st.info("퍼널 시계열 데이터가 없습니다.")
 
@@ -461,7 +511,12 @@ try:
     # --- Markov Chain ---
     with mc_col:
         st.subheader("┃마르코프 체인 전이 분석")
-        st.caption('퍼널 각 단계의 전이 확률을 수학적으로 모델링. "어떤 전이를 개선하면 전환율이 가장 많이 오르는가?"')
+        st.caption(
+            "흡수 마르코프 체인으로 퍼널을 수학적으로 모델링합니다. "
+            "Steady State(장기 최종 전환율)는 현재 퍼널 구조가 유지될 때 도달하는 이론적 전환율입니다. "
+            "민감도 분석은 '어떤 단계를 5%p 개선하면 최종 전환율이 얼마나 오르고, 월 몇 건이 추가 전환되는가'를 정량 계산합니다. "
+            "가장 DELTA가 큰 전이가 ROI 1순위 개선 대상입니다."
+        )
 
         markov = FunnelMarkovChain()
         tm = markov.compute_transition_matrix(stage_drop_df, category=cat_filter)
@@ -498,7 +553,12 @@ try:
     # --- STL Decomposition ---
     with stl_col:
         st.subheader("┃시계열 계절성 분해 (STL)")
-        st.caption("전환율의 추세(Trend) + 계절성(Seasonal) + 잔차(Residual)를 분리하여 마케팅 타이밍 최적화")
+        st.caption(
+            "전환율 시계열을 추세(Trend) + 계절성(Seasonal) + 잔차(Residual)로 분해합니다. "
+            "추세가 '하락'이면 구조적으로 전환율이 떨어지고 있다는 뜻이고, "
+            "계절성 강도가 높으면 특정 월에 마케팅을 집중해야 효율적입니다. "
+            "아래 바차트에서 양수(초록) 월이 전환율이 높은 '공격 시즌'이고, 음수(빨강) 월이 '수비 시즌'입니다."
+        )
 
         decomposer = TimeSeriesDecomposer()
         target_cat = cat_filter or "인터넷"
@@ -540,7 +600,7 @@ try:
                         yaxis=dict(gridcolor="rgba(255,255,255,0.03)", title="CVR 변동"),
                         showlegend=False,
                     )
-                    st.plotly_chart(fig_season, width="stretch")
+                    st.plotly_chart(fig_season, use_container_width=True)
 
             st.info(pattern_text)
         else:
@@ -554,6 +614,13 @@ except Exception as e:
 # Section 4: Insight cards (3 columns)
 # ---------------------------------------------------------------------------
 st.divider()
+
+st.subheader("┃AI 인사이트 요약")
+st.caption(
+    "위의 모든 분석 결과를 종합한 핵심 발견 3가지입니다. "
+    "병목 구간은 즉시 개선이 필요한 영역, 채널 추천은 예산 재배분 방향, "
+    "시즌 패턴은 마케팅 타이밍 최적화를 위한 참고 정보입니다."
+)
 
 worst_s = funnel_insight.get("metrics", {}).get("worst_stage", "개통")
 worst_d = funnel_insight.get("metrics", {}).get("worst_drop_pct", 27)

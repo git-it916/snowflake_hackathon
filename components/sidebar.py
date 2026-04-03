@@ -27,11 +27,21 @@ _TECH_STACK = [
 ]
 
 
+@st.cache_resource
+def _sidebar_client():
+    """사이드바 전용 SnowflakeClient 싱글턴."""
+    try:
+        from data.snowflake_client import SnowflakeClient
+        return SnowflakeClient()
+    except Exception:
+        return None
+
+
 def render_sidebar() -> dict:
     """사이드바를 렌더링하고 필터 값을 반환.
 
     Returns:
-        {"category": str | None, "start_ym": str, "end_ym": str}
+        {"category": str | None}
     """
     with st.sidebar:
         # --- 연결 상태 ---
@@ -76,8 +86,10 @@ def render_sidebar() -> dict:
 def _show_connection_status() -> None:
     """Snowflake 연결 상태 표시."""
     try:
-        from data.snowflake_client import SnowflakeClient
-        client = SnowflakeClient()
+        client = _sidebar_client()
+        if client is None:
+            st.error("Snowflake 미연결", icon="🔴")
+            return
         result = client._query("SELECT CURRENT_ACCOUNT() AS ACCT, CURRENT_WAREHOUSE() AS WH")
         if not result.empty:
             acct = result["ACCT"].iloc[0]
@@ -94,8 +106,7 @@ def _show_connection_status() -> None:
 def _show_data_quality() -> None:
     """데이터 품질 요약 표시."""
     try:
-        from data.snowflake_client import SnowflakeClient
-        client = SnowflakeClient()
+        client = _sidebar_client()
         dq_df = client.load_data_quality()
         if not dq_df.empty:
             status_col = "QUALITY_STATUS" if "QUALITY_STATUS" in dq_df.columns else None
@@ -129,8 +140,7 @@ def _show_data_quality() -> None:
 def _show_lineage() -> None:
     """파이프라인 리니지 요약 표시."""
     try:
-        from data.snowflake_client import SnowflakeClient
-        client = SnowflakeClient()
+        client = _sidebar_client()
         ln_df = client.load_lineage_summary()
         if not ln_df.empty:
             for _, row in ln_df.iterrows():

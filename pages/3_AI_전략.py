@@ -248,6 +248,11 @@ st.markdown(
 """
 )
 
+st.markdown(
+    "**분석 순서**: ① 왼쪽 사이드바에서 카테고리 선택 → ② 리스크 허용도 설정 → "
+    "③ '전체 분석 실행' 클릭 → ④ 3개 탭에서 결과 확인 → ⑤ 오른쪽 Q&A로 후속 질문"
+)
+
 # --- Cross-page context bar ---
 p1 = st.session_state.get("page1_insights", {})
 p2 = st.session_state.get("page2_insights", {})
@@ -304,10 +309,17 @@ st.caption(f"카테고리: {category_filter}  |  리스크: {current_risk}")
 st.divider()
 
 # --- Analysis run button ---
+st.caption(
+    "클릭하면 3단계 AI 에이전트가 순차 실행됩니다: "
+    "Phase 1 — 분석가 Agent가 퍼널·채널·지역 데이터를 조회하고 핵심 발견을 추출합니다. "
+    "Phase 2 — 전략가 Agent가 채널 배분과 실행 전략을 수립합니다. "
+    "Phase 3 — 종합 Agent가 경영진 수준의 요약 보고서를 생성합니다. "
+    "Snowflake Cortex COMPLETE(llama3.1-405b)가 각 에이전트를 구동합니다."
+)
 run_analysis = st.button(
     "전체 분석 실행",
     type="primary",
-    width="stretch",
+    use_container_width=True,
 )
 
 if run_analysis:
@@ -371,6 +383,11 @@ with col_analysis:
                     st.markdown(finding)
         else:
             # Markov chain insights as smart defaults when no analysis has run
+            st.caption(
+                "AI 분석을 실행하기 전에도, 흡수 마르코프 체인 결과를 즉시 제공합니다. "
+                "Steady State는 현재 퍼널 구조의 이론적 장기 전환율이며, "
+                "민감도 분석의 TOP 3는 투자 대비 효과가 가장 큰 개선 포인트입니다."
+            )
             _markov_shown = False
             if _MARKOV_OK and client is not None:
                 try:
@@ -454,6 +471,12 @@ with col_analysis:
         st.markdown(f"**전략가 Agent 추천 믹스**{conf_suffix}")
 
         # --- Real channel performance from Snowflake ---
+        st.caption(
+            "Snowflake에서 실시간으로 로드한 채널별 실적 데이터입니다. "
+            "계약건수가 높아도 전환율이 낮으면 효율이 떨어지는 채널이고, "
+            "전환율이 높지만 건수가 적으면 확장 잠재력이 있는 채널입니다. "
+            "두 지표의 균형이 좋은 채널에 예산을 우선 배분하는 것이 최적 전략입니다."
+        )
         _channel_shown = False
         if client is not None:
             try:
@@ -491,7 +514,7 @@ with col_analysis:
                             )
 
                         st.markdown("**채널별 실적 (실 데이터)**")
-                        st.dataframe(top_channels, width="stretch", hide_index=True)
+                        st.dataframe(top_channels, use_container_width=True, hide_index=True)
                         _channel_shown = True
             except Exception:
                 logger.debug("Channel data load failed", exc_info=True)
@@ -526,6 +549,11 @@ with col_analysis:
     # Tab 3: Executive Summary (Orchestrator)
     # -------------------------------------------------------------------
     with tab_exec:
+        st.caption(
+            "분석가 + 전략가 에이전트의 결과를 종합한 경영진용 보고서입니다. "
+            "신뢰도 게이지는 데이터 충분성과 분석 일관성을 기반으로 산출됩니다. "
+            "우선순위 액션은 즉시 실행 가능한 항목을 효과가 큰 순서로 정렬한 것입니다."
+        )
         if analysis_result is not None:
             exec_summary = analysis_result.get("executive_summary", "")
             recommended_actions = analysis_result.get("recommended_actions", [])
@@ -600,11 +628,16 @@ with col_analysis:
 # =========================================================================
 with col_chat:
     _section_header("🤖", "AI 에이전트 Q&A", color="#00E5FF")
+    st.caption(
+        "분석 결과에 대한 후속 질문이나 추가 분석을 요청할 수 있습니다. "
+        "Snowflake Cortex COMPLETE(llama3.1-405b)가 실시간으로 응답하며, "
+        "퍼널 데이터에 기반한 답변을 제공합니다."
+    )
     st.success("Online", icon="🟢")
 
     # Initialize chat history
-    if "messages" not in st.session_state:
-        st.session_state["messages"] = [
+    if "ai_chat_messages" not in st.session_state:
+        st.session_state["ai_chat_messages"] = [
             {
                 "role": "assistant",
                 "content": (
@@ -615,7 +648,7 @@ with col_chat:
         ]
 
     # Display chat messages
-    for msg in st.session_state["messages"]:
+    for msg in st.session_state["ai_chat_messages"]:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
@@ -649,7 +682,7 @@ with col_chat:
     question = quick_q or user_input
 
     if question:
-        st.session_state["messages"].append({"role": "user", "content": question})
+        st.session_state["ai_chat_messages"].append({"role": "user", "content": question})
         with st.chat_message("user"):
             st.markdown(question)
 
@@ -659,4 +692,4 @@ with col_chat:
                     orchestrator, client, question, category_filter,
                 )
             st.markdown(answer)
-        st.session_state["messages"].append({"role": "assistant", "content": answer})
+        st.session_state["ai_chat_messages"].append({"role": "assistant", "content": answer})

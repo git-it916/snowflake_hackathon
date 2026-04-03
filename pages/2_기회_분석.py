@@ -10,8 +10,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
-
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
@@ -96,7 +94,7 @@ def _get_client() -> "SnowflakeClient | None":
 
 
 @st.cache_data(ttl=300)
-def _load_markov_baseline(_client_id: int, category: str | None = None):
+def _load_markov_baseline(category: str | None = None):
     """마르코프 체인 기준 데이터를 캐싱하여 로드."""
     cl = _get_client()
     if cl is None or not MARKOV_AVAILABLE:
@@ -316,8 +314,8 @@ def _build_forecast_chart(
             ci_x = fc_x
 
         # +1 시그마 (진한 음영)
-        mid_upper = [(u + f) / 2 for u, f in zip(upper_pts, [last_actual_y] + fc_y if last_actual_y else fc_y)]
-        mid_lower = [(l + f) / 2 for l, f in zip(lower_pts, [last_actual_y] + fc_y if last_actual_y else fc_y)]
+        mid_upper = [(u + f) / 2 for u, f in zip(upper_pts, [last_actual_y] + fc_y if last_actual_y is not None else fc_y)]
+        mid_lower = [(l + f) / 2 for l, f in zip(lower_pts, [last_actual_y] + fc_y if last_actual_y is not None else fc_y)]
 
         fig.add_trace(
             go.Scatter(
@@ -506,6 +504,12 @@ if not heatmap_df.empty and "INSTALL_STATE" in heatmap_df.columns:
 
     st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
 
+    st.caption(
+        "**읽는 법**: 수요 점수는 계약 건수·전환율·매출의 Z-score 합산입니다. "
+        "0 이상이면 전국 평균 초과, 높을수록 해당 지역의 수요가 강합니다. "
+        "성장률은 3개월 전 대비 계약 증가율이며, 높은 지역이 신규 마케팅 투자의 우선 후보입니다."
+    )
+
 # -- State filter --
 _state_options = (
     ["전체"] + sorted(heatmap_df["INSTALL_STATE"].unique().tolist())
@@ -535,16 +539,24 @@ if not heatmap_df.empty and "INSTALL_STATE" in heatmap_df.columns:
 
     with col_left:
         st.subheader("┃지역별 수요 점수")
-        st.caption("0 초과 = 전국 평균 이상. 높은 점수 지역에 마케팅 예산을 집중하세요. (기준: 최근 3개월 평균)")
+        st.caption(
+            "각 시도의 수요 점수를 수평 바차트로 비교합니다. "
+            "0 기준선 우측이 전국 평균 이상이며, 시안(파랑) 바가 길수록 수요가 강합니다. "
+            "상위 지역에 마케팅 예산을 집중하면 ROI가 높습니다."
+        )
         fig_demand = _build_state_demand_bar(state_agg)
-        st.plotly_chart(fig_demand, width="stretch")
+        st.plotly_chart(fig_demand, use_container_width=True)
 
     with col_right:
         st.subheader("┃성장률 상위 도시")
-        st.caption("최근 3개월 계약 성장률이 높은 도시. 선점 기회입니다.")
+        st.caption(
+            "최근 3개월 계약 건수가 가장 빠르게 증가하고 있는 도시 TOP 10입니다. "
+            "소규모 기저효과를 제거하기 위해 최소 200건 이상인 도시만 포함합니다. "
+            "이 도시들은 아직 경쟁이 낮은 '선점 기회' 시장입니다."
+        )
         fig_growth = _build_growth_cities_bar(heatmap_df)
         if fig_growth.data:
-            st.plotly_chart(fig_growth, width="stretch")
+            st.plotly_chart(fig_growth, use_container_width=True)
         else:
             st.info("성장 도시 데이터가 없습니다.")
 else:
@@ -557,7 +569,11 @@ else:
 st.divider()
 
 st.subheader("┃Cortex FORECAST 예측")
-st.caption("실적 (파랑 실선) | 예측 (시안 점선) | 95% 신뢰구간 (음영)")
+st.caption(
+    "Snowflake Cortex FORECAST로 시도별 계약 건수를 3개월 예측합니다. "
+    "파란 실선은 과거 실적, 시안 점선은 예측값, 음영은 95% 신뢰구간입니다. "
+    "신뢰구간이 좁을수록 예측의 확실성이 높으며, 넓으면 변동성이 크다는 의미입니다."
+)
 
 if not forecast_df.empty:
     display_state = selected_state if selected_state != "전체" else None
@@ -581,7 +597,7 @@ if not forecast_df.empty:
         if forecast_state:
             fig_fc = _build_forecast_chart(forecast_df, demand_df, forecast_state)
             if fig_fc is not None:
-                st.plotly_chart(fig_fc, width="stretch")
+                st.plotly_chart(fig_fc, use_container_width=True)
             else:
                 st.info(f"{forecast_state}의 예측 데이터가 없습니다.")
         else:
@@ -598,7 +614,11 @@ else:
 st.divider()
 
 st.subheader("┃이상 탐지")
-st.caption("CONTRACT_COUNT 급변 시도 자동 탐지 -- 95% 신뢰구간 이탈 = 이상")
+st.caption(
+    "Cortex ANOMALY가 시도별 계약 건수에서 95% 신뢰구간을 벗어난 급변 시점을 자동 탐지합니다. "
+    "실측이 기대보다 크면 긍정적 이상(특수 프로모션 효과 등), 작으면 부정적 이상(서비스 장애 등)입니다. "
+    "이상 여부가 True인 행은 원인 분석이 필요합니다."
+)
 
 try:
     anomaly_df = client.load_anomalies()
@@ -653,7 +673,7 @@ if not anomaly_df.empty:
         return [""] * len(row)
 
     styled = _anom_view.style.apply(_highlight_anomaly, axis=1)
-    st.dataframe(styled, width="stretch", hide_index=True)
+    st.dataframe(styled, use_container_width=True, hide_index=True)
 else:
     st.info("이상 탐지 결과가 없습니다. Cortex ANOMALY 파이프라인을 실행하세요.")
 
@@ -664,9 +684,14 @@ else:
 st.divider()
 
 st.subheader("┃퍼널 전이 확률 시뮬레이션")
-st.caption("마르코프 체인 전이 행렬의 각 단계 전환율을 조절하여 최종 전환율 변화를 수학적으로 계산합니다. 채널 예산이 아닌 퍼널 구조 자체를 시뮬레이션하므로 인과관계가 명확합니다.")
+st.caption(
+    "퍼널 각 단계의 전이 확률(예: 접수→개통 84%)을 슬라이더로 조절하면, "
+    "마르코프 체인이 변경된 전이 행렬로 새로운 최종 전환율을 수학적으로 재계산합니다. "
+    "XGBoost 같은 ML 모델이 아닌 확률론적 모델이라 인과관계가 명확합니다. "
+    "예: '접수→개통을 10%p 개선하면 최종 전환율이 +X%p 오르고, 월 +Y건 추가 전환'"
+)
 
-_markov_obj, _baseline_tm = _load_markov_baseline(id(_get_client()))
+_markov_obj, _baseline_tm = _load_markov_baseline()
 
 if _markov_obj is not None and _baseline_tm is not None:
     _baseline_ss = _markov_obj.compute_steady_state(_baseline_tm)
@@ -677,7 +702,7 @@ if _markov_obj is not None and _baseline_tm is not None:
     preset_cols = st.columns(len(_PRESET_SCENARIOS))
     for idx, (sc_name, sc_adj) in enumerate(_PRESET_SCENARIOS.items()):
         with preset_cols[idx]:
-            if st.button(sc_name, key=f"mk_preset_{idx}", width="stretch"):
+            if st.button(sc_name, key=f"mk_preset_{idx}", use_container_width=True):
                 st.session_state["mk_scenario"] = sc_name
                 st.session_state["mk_adjustments"] = dict(sc_adj)
 
@@ -705,7 +730,7 @@ if _markov_obj is not None and _baseline_tm is not None:
                 format="%+d%%p",
             )
 
-        if st.button("시뮬레이션 실행", key="mk_run", type="primary", width="stretch"):
+        if st.button("시뮬레이션 실행", key="mk_run", type="primary", use_container_width=True):
             st.session_state["mk_scenario"] = "커스텀"
             st.session_state["mk_adjustments"] = {
                 k: v for k, v in mk_slider_values.items() if v != 0
@@ -765,6 +790,13 @@ if _markov_obj is not None and _baseline_tm is not None:
 </div>
 ''', unsafe_allow_html=True)
 
+            st.caption(
+                "현재 전환율은 기존 전이 확률 기반 Steady State이고, "
+                "시뮬레이션은 슬라이더로 조절된 전이 확률 기반입니다. "
+                "변화량이 양수면 해당 개선이 효과적이라는 의미이며, "
+                "추가 전환/월은 월 10,000명 진입 기준 추가 납입완료 고객 수입니다."
+            )
+
             # Stage-by-stage comparison bar chart
             import numpy as np
             from config.constants import FUNNEL_STAGES
@@ -792,7 +824,7 @@ if _markov_obj is not None and _baseline_tm is not None:
                 yaxis_title="도달 확률 (%)",
                 legend=dict(orientation="h", yanchor="bottom", y=1.02),
             )
-            st.plotly_chart(fig_compare, width="stretch")
+            st.plotly_chart(fig_compare, use_container_width=True)
         else:
             st.info("프리셋 시나리오를 선택하거나 슬라이더를 조절 후 시뮬레이션을 실행하세요.")
 
@@ -800,7 +832,11 @@ if _markov_obj is not None and _baseline_tm is not None:
     st.divider()
 
     st.subheader("┃몬테카를로 시뮬레이션")
-    st.caption("전이 확률에 +/-3%p 랜덤 변동을 500회 부여하여 최종 전환율의 불확실성 범위를 추정합니다.")
+    st.caption(
+        "각 전이 확률에 ±3%p의 랜덤 변동을 500회 부여하여 최종 전환율의 불확실성을 추정합니다. "
+        "히스토그램은 500회 시뮬레이션의 전환율 분포이며, 보라색 점선이 평균, 음영이 95% 신뢰구간입니다. "
+        "변동성(σ)이 낮으면 퍼널이 안정적이고, 높으면 외부 요인에 취약합니다."
+    )
 
     _MC_N = 500
     if st.button(f"Monte Carlo {_MC_N}회 실행", key="mc_run", type="primary"):
@@ -815,8 +851,9 @@ if _markov_obj is not None and _baseline_tm is not None:
                     noise = float(rng.normal(0, 0.03))
                     old = float(perturbed.loc[fs, ts])
                     new_val = min(max(old + noise, 0.01), 0.99)
+                    delta = new_val - old
                     perturbed.loc[fs, ts] = new_val
-                    perturbed.loc[fs, "DROP"] = max(1.0 - new_val, 0.0)
+                    perturbed.loc[fs, "DROP"] = max(float(perturbed.loc[fs, "DROP"]) - delta, 0.0)
 
                 ss = _markov_obj.compute_steady_state(perturbed)
                 mc_rates.append(ss.get("PAYEND", 0.0))
@@ -867,7 +904,7 @@ if _markov_obj is not None and _baseline_tm is not None:
                 title=f"최종 전환율 분포 ({_MC_N}회)",
                 xaxis_title="전환율 (%)", yaxis_title="빈도",
             )
-            st.plotly_chart(fig_mc, width="stretch")
+            st.plotly_chart(fig_mc, use_container_width=True)
 
         with mc_right:
             fig_box = go.Figure(go.Box(
@@ -880,7 +917,7 @@ if _markov_obj is not None and _baseline_tm is not None:
                 **_DARK_LAYOUT, height=300, showlegend=False,
                 title="전환율 분포 (Box Plot)", yaxis_title="전환율 (%)",
             )
-            st.plotly_chart(fig_box, width="stretch")
+            st.plotly_chart(fig_box, use_container_width=True)
 
         risk_level = "낮음" if std_v < 1.5 else "보통" if std_v < 3.0 else "높음"
         risk_color = "#4DFF91" if risk_level == "낮음" else "#FFB84D" if risk_level == "보통" else "#FF4D4D"

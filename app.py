@@ -202,6 +202,11 @@ elif severity == "warning":
 else:
     st.success(f"**STABLE** — {alert_headline}", icon="✅")
 
+st.caption(
+    "이 경고는 퍼널 5단계 중 이탈률이 가장 높은 구간을 자동으로 감지한 결과입니다. "
+    "해당 단계의 프로세스를 집중 개선하면 전체 전환율 향상에 가장 큰 효과를 기대할 수 있습니다."
+)
+
 _safe_pl("pages/1_진단.py", label="진단 리포트 보기 →", icon="🔍")
 
 st.divider()
@@ -233,6 +238,12 @@ with c3:
         delta_color="off",
     )
     _safe_pl("pages/2_기회_분석.py", label="기회 시장 분석 →")
+
+st.caption(
+    "**읽는 법**: 퍼널 전환율은 상담요청 대비 최종 납입완료 비율입니다. "
+    "평균 대비 마이너스(-)면 최근 전환율이 하락 중이라는 의미입니다. "
+    "최고 볼륨 채널은 가장 많은 계약을 발생시키는 채널이며, 점유율이 50% 이상이면 특정 채널에 과도하게 의존하고 있어 리스크가 있습니다."
+)
 
 # ---------------------------------------------------------------------------
 # AI CTA Section
@@ -277,6 +288,12 @@ with dq_col:
                     st.warning(f"{warn_count}건의 주의 항목이 있습니다.")
                 else:
                     st.success("모든 품질 검사를 통과했습니다.")
+
+                st.caption(
+                    "파이프라인이 Snowflake에서 데이터를 가져올 때 NULL 비율, CVR 범위(0~100%), "
+                    "미래 날짜 레코드, 테이블 행 수 등 12가지 항목을 자동 검증합니다. "
+                    "CRITICAL이 있으면 분석 결과의 신뢰성에 문제가 있으므로 데이터 소스를 확인하세요."
+                )
             else:
                 st.info("DMF 결과가 없습니다. 파이프라인 실행 후 확인하세요.")
         except Exception:
@@ -295,6 +312,11 @@ with ln_col:
                     down = row.get("DOWNSTREAM_LAYER", "?")
                     cnt = row.get("DEPENDENCY_COUNT", 0)
                     st.caption(f"**{up}** → **{down}**  ({cnt}개 의존성)")
+                st.caption(
+                    "Snowflake의 OBJECT_DEPENDENCIES를 활용해 테이블 간 의존성을 자동 추적합니다. "
+                    "Marketplace 원본 → Staging(정제) → Analytics(분석) → Mart(대시보드) 순서로 데이터가 흐릅니다. "
+                    "어떤 테이블이 변경되면 하류 테이블에 어떤 영향이 있는지 파악할 수 있습니다."
+                )
             else:
                 st.info("리니지 데이터가 없습니다. 08_lineage.sql을 실행하세요.")
         except Exception:

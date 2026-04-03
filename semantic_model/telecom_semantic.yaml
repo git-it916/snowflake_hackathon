@@ -35,8 +35,10 @@ tables:
         data_type: VARCHAR
         sample_values:
           - 인터넷
-          - IPTV
-          - 결합상품
+          - 렌탈
+          - 모바일
+          - 알뜰 요금제
+          - 유심만
 
       - name: category
         synonyms:
@@ -58,10 +60,10 @@ tables:
           - 기간
           - 시기
         description: >
-          데이터 기준 년월 (YYYY-MM 형식).
+          데이터 기준 년월.
           퍼널 지표의 시간 축입니다.
         expr: YEAR_MONTH
-        data_type: VARCHAR
+        data_type: DATE
 
     measures:
       - name: total_count
@@ -264,14 +266,16 @@ tables:
           - 유입채널
           - 판매채널
         description: >
-          유입 채널명 (예: 홈페이지, 대리점, 콜센터 등).
+          유입 채널명 (예: 인바운드, 플랫폼, 카톡 등).
           마케팅 및 판매 채널을 구분합니다.
         expr: CHANNEL
         data_type: VARCHAR
         sample_values:
-          - 홈페이지
-          - 대리점
-          - 콜센터
+          - 인바운드
+          - 플랫폼
+          - 카톡
+          - 아정당랜딩
+          - 아정당매장
 
       - name: inflow_path_name
         synonyms:
@@ -290,9 +294,9 @@ tables:
           - 월
           - 년월
           - 기간
-        description: 데이터 기준 년월 (YYYY-MM 형식).
+        description: 데이터 기준 년월.
         expr: YEAR_MONTH
-        data_type: VARCHAR
+        data_type: DATE
 
     measures:
       - name: contract_count
@@ -449,9 +453,9 @@ tables:
           - 월
           - 년월
           - 기간
-        description: 데이터 기준 년월 (YYYY-MM 형식).
+        description: 데이터 기준 년월.
         expr: YEAR_MONTH
-        data_type: VARCHAR
+        data_type: DATE
 
     measures:
       - name: contract_count
