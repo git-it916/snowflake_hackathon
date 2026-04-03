@@ -1,0 +1,725 @@
+# Snowflake Cortex Analyst Semantic Model
+# 텔레콤 가입 퍼널 분석 시맨틱 모델
+# Database: TELECOM_DB
+
+name: telecom_funnel_analytics
+description: >
+  한국 통신사 가입 퍼널 분석 시맨틱 모델.
+  상담 요청부터 납입 완료까지의 전환 퍼널, 채널별 성과, 지역별 수요를
+  자연어로 질의할 수 있습니다.
+
+tables:
+  # ==========================================================================
+  # 1. STG_FUNNEL: 가입 퍼널 전환 데이터
+  # ==========================================================================
+  - name: STG_FUNNEL
+    base_table:
+      database: TELECOM_DB
+      schema: STAGING
+      table: STG_FUNNEL
+    description: >
+      통신 상품별 월별 가입 퍼널 전환 데이터.
+      총 유입 → 상담 요청 → 가입 신청 → 접수 → 개통 → 납입 완료까지
+      각 단계의 건수와 전환율(CVR)을 포함합니다.
+
+    dimensions:
+      - name: main_category_name
+        synonyms:
+          - 대분류
+          - 상품군
+          - 메인카테고리
+        description: >
+          통신 상품 대분류명 (예: 인터넷, IPTV, 결합상품 등).
+          퍼널 분석의 최상위 분류 기준입니다.
+        expr: MAIN_CATEGORY_NAME
+        data_type: VARCHAR
+        sample_values:
+          - 인터넷
+          - IPTV
+          - 결합상품
+
+      - name: category
+        synonyms:
+          - 카테고리
+          - 상품분류
+          - 세부카테고리
+          - 소분류
+        description: >
+          통신 상품 세부 분류명.
+          대분류 아래의 구체적인 상품 유형입니다.
+        expr: CATEGORY
+        data_type: VARCHAR
+
+    time_dimensions:
+      - name: month
+        synonyms:
+          - 월
+          - 년월
+          - 기간
+          - 시기
+        description: >
+          데이터 기준 년월 (YYYY-MM 형식).
+          퍼널 지표의 시간 축입니다.
+        expr: YEAR_MONTH
+        data_type: VARCHAR
+
+    measures:
+      - name: total_count
+        synonyms:
+          - 총건수
+          - 총유입
+          - 전체건수
+          - 유입수
+        description: >
+          해당 월/카테고리의 총 유입 건수.
+          퍼널의 시작점으로, 전체 잠재 고객 수를 의미합니다.
+        expr: TOTAL_COUNT
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: consult_request_count
+        synonyms:
+          - 상담요청수
+          - 상담요청건수
+          - 상담건수
+        description: >
+          상담 요청 건수.
+          퍼널 1단계: 고객이 상담을 요청한 건수입니다.
+        expr: CONSULT_REQUEST_COUNT
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: subscription_count
+        synonyms:
+          - 가입신청수
+          - 가입신청건수
+          - 신청건수
+        description: >
+          가입 신청 건수.
+          퍼널 2단계: 상담 후 가입을 신청한 건수입니다.
+        expr: SUBSCRIPTION_COUNT
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: registend_count
+        synonyms:
+          - 접수건수
+          - 접수완료수
+          - 등록건수
+        description: >
+          접수 완료 건수.
+          퍼널 3단계: 가입 신청이 시스템에 접수된 건수입니다.
+        expr: REGISTEND_COUNT
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: open_count
+        synonyms:
+          - 개통수
+          - 개통건수
+          - 개통완료수
+        description: >
+          개통 완료 건수.
+          퍼널 4단계: 서비스가 실제로 개통된 건수입니다.
+        expr: OPEN_COUNT
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: payend_count
+        synonyms:
+          - 납입완료수
+          - 납입건수
+          - 완납건수
+          - 결제완료수
+        description: >
+          납입 완료 건수.
+          퍼널 최종 단계: 첫 결제가 완료된 건수입니다.
+        expr: PAYEND_COUNT
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: cvr_consult_request
+        synonyms:
+          - 상담요청전환율
+          - 상담전환율
+        description: >
+          상담 요청 전환율 (%).
+          총유입 대비 상담 요청 비율입니다.
+        expr: CVR_CONSULT_REQUEST
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: cvr_subscription
+        synonyms:
+          - 가입신청전환율
+          - 신청전환율
+        description: >
+          가입 신청 전환율 (%).
+          상담 요청 대비 가입 신청 비율입니다.
+        expr: CVR_SUBSCRIPTION
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: cvr_registend
+        synonyms:
+          - 접수전환율
+          - 등록전환율
+        description: >
+          접수 전환율 (%).
+          가입 신청 대비 접수 완료 비율입니다.
+        expr: CVR_REGISTEND
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: cvr_open
+        synonyms:
+          - 개통전환율
+          - 개통율
+        description: >
+          개통 전환율 (%).
+          접수 대비 개통 완료 비율입니다.
+        expr: CVR_OPEN
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: cvr_payend
+        synonyms:
+          - 납입전환율
+          - 결제전환율
+          - 완납율
+        description: >
+          납입 완료 전환율 (%).
+          개통 대비 납입 완료 비율입니다.
+        expr: CVR_PAYEND
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: overall_cvr
+        synonyms:
+          - 전체전환율
+          - 종합전환율
+          - 엔드투엔드전환율
+        description: >
+          전체 전환율 (%).
+          총유입 대비 납입 완료까지의 종합 전환율입니다.
+        expr: OVERALL_CVR
+        data_type: NUMBER
+        default_aggregation: avg
+
+    filters:
+      - name: category_filter
+        synonyms:
+          - 카테고리필터
+          - 상품필터
+        description: 특정 상품 카테고리로 필터링합니다.
+        expr: MAIN_CATEGORY_NAME
+
+  # ==========================================================================
+  # 2. STG_CHANNEL: 채널별 성과 데이터
+  # ==========================================================================
+  - name: STG_CHANNEL
+    base_table:
+      database: TELECOM_DB
+      schema: STAGING
+      table: STG_CHANNEL
+    description: >
+      유입 채널(온라인/오프라인)별 계약, 개통, 납입 성과 데이터.
+      채널 효율성과 매출 기여도를 분석할 수 있습니다.
+
+    dimensions:
+      - name: main_category_name
+        synonyms:
+          - 대분류
+          - 상품군
+          - 메인카테고리
+        description: >
+          통신 상품 대분류명.
+          채널 성과를 상품별로 비교할 때 사용합니다.
+        expr: MAIN_CATEGORY_NAME
+        data_type: VARCHAR
+
+      - name: category
+        synonyms:
+          - 카테고리
+          - 상품분류
+          - 세부카테고리
+        description: 통신 상품 세부 분류명.
+        expr: CATEGORY
+        data_type: VARCHAR
+
+      - name: receive_path_name
+        synonyms:
+          - 접수경로
+          - 수신경로
+          - 접수채널
+        description: >
+          접수 경로명 (예: 온라인, 오프라인, 텔레마케팅 등).
+          고객이 최초 접수한 경로입니다.
+        expr: RECEIVE_PATH_NAME
+        data_type: VARCHAR
+
+      - name: channel
+        synonyms:
+          - 채널
+          - 유입채널
+          - 판매채널
+        description: >
+          유입 채널명 (예: 홈페이지, 대리점, 콜센터 등).
+          마케팅 및 판매 채널을 구분합니다.
+        expr: CHANNEL
+        data_type: VARCHAR
+        sample_values:
+          - 홈페이지
+          - 대리점
+          - 콜센터
+
+      - name: inflow_path_name
+        synonyms:
+          - 유입경로
+          - 인입경로
+          - 유입경로명
+        description: >
+          세부 유입 경로명.
+          채널 내 구체적인 유입 경로를 나타냅니다.
+        expr: INFLOW_PATH_NAME
+        data_type: VARCHAR
+
+    time_dimensions:
+      - name: month
+        synonyms:
+          - 월
+          - 년월
+          - 기간
+        description: 데이터 기준 년월 (YYYY-MM 형식).
+        expr: YEAR_MONTH
+        data_type: VARCHAR
+
+    measures:
+      - name: contract_count
+        synonyms:
+          - 계약건수
+          - 계약수
+          - 가입건수
+        description: >
+          계약 건수.
+          해당 채널을 통해 체결된 계약 수입니다.
+        expr: CONTRACT_COUNT
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: registend_count
+        synonyms:
+          - 접수건수
+          - 접수완료수
+        description: 접수 완료 건수.
+        expr: REGISTEND_COUNT
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: open_count
+        synonyms:
+          - 개통건수
+          - 개통수
+        description: 개통 완료 건수.
+        expr: OPEN_COUNT
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: payend_count
+        synonyms:
+          - 납입완료건수
+          - 완납건수
+        description: 납입 완료 건수.
+        expr: PAYEND_COUNT
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: open_cvr
+        synonyms:
+          - 개통전환율
+          - 개통율
+        description: >
+          개통 전환율 (%).
+          접수 대비 개통 비율입니다.
+        expr: OPEN_CVR
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: payend_cvr
+        synonyms:
+          - 납입전환율
+          - 완납율
+        description: >
+          납입 전환율 (%).
+          개통 대비 납입 완료 비율입니다.
+        expr: PAYEND_CVR
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: avg_net_sales
+        synonyms:
+          - 평균순매출
+          - 평균매출
+          - 건당매출
+        description: >
+          건당 평균 순매출액 (원).
+          채널별 수익성을 비교하는 핵심 지표입니다.
+        expr: AVG_NET_SALES
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: total_net_sales
+        synonyms:
+          - 총순매출
+          - 총매출
+          - 매출합계
+        description: >
+          총 순매출액 (원).
+          채널의 전체 매출 기여도를 나타냅니다.
+        expr: TOTAL_NET_SALES
+        data_type: NUMBER
+        default_aggregation: sum
+
+    filters:
+      - name: channel_filter
+        synonyms:
+          - 채널필터
+        description: 특정 채널로 필터링합니다.
+        expr: CHANNEL
+
+      - name: category_filter
+        synonyms:
+          - 카테고리필터
+        description: 특정 상품 카테고리로 필터링합니다.
+        expr: MAIN_CATEGORY_NAME
+
+  # ==========================================================================
+  # 3. STG_REGIONAL: 지역별 수요 데이터
+  # ==========================================================================
+  - name: STG_REGIONAL
+    base_table:
+      database: TELECOM_DB
+      schema: STAGING
+      table: STG_REGIONAL
+    description: >
+      시/도, 시/군/구 단위 지역별 계약, 납입, 매출, 번들 데이터.
+      지역별 수요 패턴과 상품 구성(번들/단독)을 분석할 수 있습니다.
+
+    dimensions:
+      - name: install_state
+        synonyms:
+          - 시도
+          - 설치시도
+          - 지역
+          - 광역
+        description: >
+          설치 지역 시/도 (예: 서울, 경기, 부산 등).
+          지역별 수요 분석의 1차 분류 기준입니다.
+        expr: INSTALL_STATE
+        data_type: VARCHAR
+        sample_values:
+          - 서울
+          - 경기
+          - 부산
+
+      - name: install_city
+        synonyms:
+          - 시군구
+          - 설치시군구
+          - 도시
+          - 구
+        description: >
+          설치 지역 시/군/구 (예: 강남구, 수원시 등).
+          세부 지역 단위 분석에 사용합니다.
+        expr: INSTALL_CITY
+        data_type: VARCHAR
+
+      - name: main_category_name
+        synonyms:
+          - 대분류
+          - 상품군
+          - 메인카테고리
+        description: 통신 상품 대분류명.
+        expr: MAIN_CATEGORY_NAME
+        data_type: VARCHAR
+
+    time_dimensions:
+      - name: month
+        synonyms:
+          - 월
+          - 년월
+          - 기간
+        description: 데이터 기준 년월 (YYYY-MM 형식).
+        expr: YEAR_MONTH
+        data_type: VARCHAR
+
+    measures:
+      - name: contract_count
+        synonyms:
+          - 계약건수
+          - 계약수
+          - 가입건수
+        description: >
+          계약 건수.
+          해당 지역에서 체결된 총 계약 수입니다.
+        expr: CONTRACT_COUNT
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: payend_count
+        synonyms:
+          - 납입완료건수
+          - 완납건수
+        description: 납입 완료 건수.
+        expr: PAYEND_COUNT
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: payend_cvr
+        synonyms:
+          - 납입전환율
+          - 완납율
+        description: >
+          납입 전환율 (%).
+          계약 대비 납입 완료 비율입니다.
+        expr: PAYEND_CVR
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: avg_net_sales
+        synonyms:
+          - 평균순매출
+          - 평균매출
+          - 건당매출
+        description: >
+          건당 평균 순매출액 (원).
+          지역별 수익성을 비교하는 지표입니다.
+        expr: AVG_NET_SALES
+        data_type: NUMBER
+        default_aggregation: avg
+
+      - name: bundle_count
+        synonyms:
+          - 번들건수
+          - 결합건수
+          - 결합상품수
+        description: >
+          번들(결합) 상품 계약 건수.
+          2개 이상 서비스를 결합한 계약 수입니다.
+        expr: BUNDLE_COUNT
+        data_type: NUMBER
+        default_aggregation: sum
+
+      - name: standalone_count
+        synonyms:
+          - 단독건수
+          - 단독가입수
+          - 단독상품수
+        description: >
+          단독 상품 계약 건수.
+          단일 서비스만 가입한 계약 수입니다.
+        expr: STANDALONE_COUNT
+        data_type: NUMBER
+        default_aggregation: sum
+
+    filters:
+      - name: state_filter
+        synonyms:
+          - 지역필터
+          - 시도필터
+        description: 특정 시/도로 필터링합니다.
+        expr: INSTALL_STATE
+
+      - name: category_filter
+        synonyms:
+          - 카테고리필터
+        description: 특정 상품 카테고리로 필터링합니다.
+        expr: MAIN_CATEGORY_NAME
+
+# ============================================================================
+# 테이블 간 관계 (Relationships)
+# ============================================================================
+relationships:
+  - name: funnel_to_channel
+    left_table: STG_FUNNEL
+    right_table: STG_CHANNEL
+    relationship_columns:
+      - left_column: YEAR_MONTH
+        right_column: YEAR_MONTH
+      - left_column: MAIN_CATEGORY_NAME
+        right_column: MAIN_CATEGORY_NAME
+    join_type: inner
+    description: >
+      퍼널 데이터와 채널 데이터를 년월+대분류로 조인합니다.
+      퍼널 전환율과 채널별 성과를 함께 분석할 수 있습니다.
+
+  - name: funnel_to_regional
+    left_table: STG_FUNNEL
+    right_table: STG_REGIONAL
+    relationship_columns:
+      - left_column: YEAR_MONTH
+        right_column: YEAR_MONTH
+      - left_column: MAIN_CATEGORY_NAME
+        right_column: MAIN_CATEGORY_NAME
+    join_type: inner
+    description: >
+      퍼널 데이터와 지역 데이터를 년월+대분류로 조인합니다.
+      전국 퍼널 트렌드와 지역별 수요를 비교 분석할 수 있습니다.
+
+  - name: channel_to_regional
+    left_table: STG_CHANNEL
+    right_table: STG_REGIONAL
+    relationship_columns:
+      - left_column: YEAR_MONTH
+        right_column: YEAR_MONTH
+      - left_column: MAIN_CATEGORY_NAME
+        right_column: MAIN_CATEGORY_NAME
+    join_type: inner
+    description: >
+      채널 데이터와 지역 데이터를 년월+대분류로 조인합니다.
+      채널별 성과와 지역별 수요의 상관관계를 분석할 수 있습니다.
+
+# ============================================================================
+# 샘플 질문 (Verified Queries)
+# ============================================================================
+verified_queries:
+  - name: monthly_funnel_trend
+    question: 월별 전체 전환율 추이를 보여줘
+    sql: >
+      SELECT YEAR_MONTH, MAIN_CATEGORY_NAME,
+             AVG(OVERALL_CVR) AS avg_overall_cvr
+      FROM TELECOM_DB.STAGING.STG_FUNNEL
+      GROUP BY YEAR_MONTH, MAIN_CATEGORY_NAME
+      ORDER BY YEAR_MONTH
+    verified_at: "2026-04-02"
+    verified_by: data_team
+
+  - name: category_funnel_comparison
+    question: 상품별 퍼널 전환율을 비교해줘
+    sql: >
+      SELECT MAIN_CATEGORY_NAME,
+             AVG(CVR_CONSULT_REQUEST) AS avg_consult_cvr,
+             AVG(CVR_SUBSCRIPTION) AS avg_subscription_cvr,
+             AVG(CVR_REGISTEND) AS avg_registend_cvr,
+             AVG(CVR_OPEN) AS avg_open_cvr,
+             AVG(CVR_PAYEND) AS avg_payend_cvr,
+             AVG(OVERALL_CVR) AS avg_overall_cvr
+      FROM TELECOM_DB.STAGING.STG_FUNNEL
+      GROUP BY MAIN_CATEGORY_NAME
+      ORDER BY avg_overall_cvr DESC
+    verified_at: "2026-04-02"
+    verified_by: data_team
+
+  - name: top_channels_by_sales
+    question: 매출이 가장 높은 채널 상위 10개를 알려줘
+    sql: >
+      SELECT CHANNEL,
+             SUM(TOTAL_NET_SALES) AS total_sales,
+             SUM(CONTRACT_COUNT) AS total_contracts,
+             AVG(AVG_NET_SALES) AS avg_sales_per_contract
+      FROM TELECOM_DB.STAGING.STG_CHANNEL
+      GROUP BY CHANNEL
+      ORDER BY total_sales DESC
+      LIMIT 10
+    verified_at: "2026-04-02"
+    verified_by: data_team
+
+  - name: channel_conversion_rate
+    question: 채널별 개통 전환율과 납입 전환율을 비교해줘
+    sql: >
+      SELECT CHANNEL,
+             AVG(OPEN_CVR) AS avg_open_cvr,
+             AVG(PAYEND_CVR) AS avg_payend_cvr,
+             SUM(CONTRACT_COUNT) AS total_contracts
+      FROM TELECOM_DB.STAGING.STG_CHANNEL
+      GROUP BY CHANNEL
+      ORDER BY avg_open_cvr DESC
+    verified_at: "2026-04-02"
+    verified_by: data_team
+
+  - name: regional_demand_ranking
+    question: 지역별 계약 건수 순위를 보여줘
+    sql: >
+      SELECT INSTALL_STATE,
+             SUM(CONTRACT_COUNT) AS total_contracts,
+             SUM(PAYEND_COUNT) AS total_payend,
+             AVG(PAYEND_CVR) AS avg_payend_cvr,
+             AVG(AVG_NET_SALES) AS avg_sales
+      FROM TELECOM_DB.STAGING.STG_REGIONAL
+      GROUP BY INSTALL_STATE
+      ORDER BY total_contracts DESC
+    verified_at: "2026-04-02"
+    verified_by: data_team
+
+  - name: bundle_vs_standalone
+    question: 지역별 번들과 단독 상품 비율을 알려줘
+    sql: >
+      SELECT INSTALL_STATE,
+             SUM(BUNDLE_COUNT) AS total_bundle,
+             SUM(STANDALONE_COUNT) AS total_standalone,
+             ROUND(SUM(BUNDLE_COUNT) * 100.0 /
+                   NULLIF(SUM(BUNDLE_COUNT) + SUM(STANDALONE_COUNT), 0), 2
+             ) AS bundle_ratio_pct
+      FROM TELECOM_DB.STAGING.STG_REGIONAL
+      GROUP BY INSTALL_STATE
+      ORDER BY bundle_ratio_pct DESC
+    verified_at: "2026-04-02"
+    verified_by: data_team
+
+  - name: bottleneck_stage
+    question: 퍼널에서 가장 이탈이 많은 단계는 어디야?
+    sql: >
+      SELECT MAIN_CATEGORY_NAME,
+             AVG(CVR_CONSULT_REQUEST) AS step1_consult,
+             AVG(CVR_SUBSCRIPTION) AS step2_subscription,
+             AVG(CVR_REGISTEND) AS step3_registend,
+             AVG(CVR_OPEN) AS step4_open,
+             AVG(CVR_PAYEND) AS step5_payend,
+             LEAST(AVG(CVR_CONSULT_REQUEST), AVG(CVR_SUBSCRIPTION),
+                   AVG(CVR_REGISTEND), AVG(CVR_OPEN), AVG(CVR_PAYEND)
+             ) AS min_cvr_stage
+      FROM TELECOM_DB.STAGING.STG_FUNNEL
+      GROUP BY MAIN_CATEGORY_NAME
+      ORDER BY min_cvr_stage ASC
+    verified_at: "2026-04-02"
+    verified_by: data_team
+
+  - name: city_level_analysis
+    question: 서울에서 계약이 가장 많은 시군구를 알려줘
+    sql: >
+      SELECT INSTALL_CITY,
+             SUM(CONTRACT_COUNT) AS total_contracts,
+             AVG(AVG_NET_SALES) AS avg_sales,
+             SUM(BUNDLE_COUNT) AS bundles,
+             SUM(STANDALONE_COUNT) AS standalone
+      FROM TELECOM_DB.STAGING.STG_REGIONAL
+      WHERE INSTALL_STATE = '서울'
+      GROUP BY INSTALL_CITY
+      ORDER BY total_contracts DESC
+      LIMIT 20
+    verified_at: "2026-04-02"
+    verified_by: data_team
+
+  - name: monthly_channel_trend
+    question: 월별 채널별 매출 추이를 보여줘
+    sql: >
+      SELECT YEAR_MONTH, CHANNEL,
+             SUM(TOTAL_NET_SALES) AS monthly_sales,
+             SUM(CONTRACT_COUNT) AS monthly_contracts
+      FROM TELECOM_DB.STAGING.STG_CHANNEL
+      GROUP BY YEAR_MONTH, CHANNEL
+      ORDER BY YEAR_MONTH, monthly_sales DESC
+    verified_at: "2026-04-02"
+    verified_by: data_team
+
+  - name: regional_product_mix
+    question: 지역별로 어떤 상품이 인기있어?
+    sql: >
+      SELECT INSTALL_STATE, MAIN_CATEGORY_NAME,
+             SUM(CONTRACT_COUNT) AS total_contracts,
+             AVG(AVG_NET_SALES) AS avg_sales
+      FROM TELECOM_DB.STAGING.STG_REGIONAL
+      GROUP BY INSTALL_STATE, MAIN_CATEGORY_NAME
+      ORDER BY INSTALL_STATE, total_contracts DESC
+    verified_at: "2026-04-02"
+    verified_by: data_team

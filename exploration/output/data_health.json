@@ -1,0 +1,119 @@
+{
+  "feature_store_cols": [
+    "YEAR_MONTH",
+    "MAIN_CATEGORY_NAME",
+    "CATEGORY",
+    "RECEIVE_PATH_NAME",
+    "CHANNEL",
+    "INFLOW_PATH_NAME",
+    "CONTRACT_COUNT",
+    "REGISTEND_COUNT",
+    "OPEN_COUNT",
+    "PAYEND_COUNT",
+    "OPEN_CVR",
+    "PAYEND_CVR",
+    "AVG_NET_SALES",
+    "TOTAL_NET_SALES",
+    "PAYEND_CVR_LAG1",
+    "PAYEND_CVR_LAG2",
+    "PAYEND_CVR_LAG3",
+    "CONTRACT_COUNT_LAG1",
+    "CONTRACT_COUNT_LAG2",
+    "AVG_NET_SALES_LAG1",
+    "OPEN_CVR_LAG1",
+    "PAYEND_CVR_MA3",
+    "PAYEND_CVR_MA6",
+    "PAYEND_CVR_STD3",
+    "CHANNEL_HISTORICAL_CVR",
+    "CATEGORY_AVG_CVR",
+    "MONTH_OF_YEAR",
+    "QUARTER",
+    "CATEGORY_ENCODED",
+    "CHANNEL_ENCODED",
+    "TARGET_CLASS"
+  ],
+  "feature_store_rows": 7534,
+  "target_dist": [
+    {
+      "TARGET_CLASS": "MEDIUM",
+      "CNT": 2605
+    },
+    {
+      "TARGET_CLASS": "LOW",
+      "CNT": 2443
+    },
+    {
+      "TARGET_CLASS": "HIGH",
+      "CNT": 2486
+    }
+  ],
+  "split": [
+    {
+      "S": "TRAIN",
+      "C": 6251
+    },
+    {
+      "S": "TEST",
+      "C": 1283
+    }
+  ],
+  "nulls": [
+    {
+      "T": 7534,
+      "PAYEND_CVR_LAG1_NULL": 0,
+      "PAYEND_CVR_LAG3_NULL": 0,
+      "CHANNEL_HISTORICAL_CVR_NULL": 1,
+      "TARGET_CLASS_NULL": 0,
+      "CONTRACT_COUNT_LAG1_NULL": 0
+    }
+  ],
+  "ranges": [
+    {
+      "MN_CVR": 0.0,
+      "MX_CVR": 100.0,
+      "MN_CT": 5,
+      "MX_CT": 60827,
+      "MN_L1": 0.0,
+      "MX_L1": 100.0
+    }
+  ],
+  "recent": [
+    {
+      "YEAR_MONTH": "2026-04-01",
+      "C": 120,
+      "AVG_CVR": 1.76
+    },
+    {
+      "YEAR_MONTH": "2026-03-01",
+      "C": 385,
+      "AVG_CVR": 28.14
+    },
+    {
+      "YEAR_MONTH": "2026-02-01",
+      "C": 377,
+      "AVG_CVR": 33.12
+    },
+    {
+      "YEAR_MONTH": "2026-01-01",
+      "C": 401,
+      "AVG_CVR": 33.38
+    },
+    {
+      "YEAR_MONTH": "2025-12-01",
+      "C": 366,
+      "AVG_CVR": 35.54
+    }
+  ],
+  "STG_FUNNEL": 250,
+  "STG_CHANNEL": 7878,
+  "STG_REGIONAL": 23506,
+  "STG_MARKETING": 8601,
+  "predictions": 120,
+  "channel_eff": [
+    {
+      "C": 7878,
+      "MN": "2021-08-01",
+      "MX": "2026-04-01"
+    }
+  ]
+}

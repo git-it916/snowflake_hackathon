@@ -1,0 +1,107 @@
+{
+  "stage_drop": [
+    {
+      "STAGE_ORDER": 1,
+      "STAGE_NAME": "CONSULT_REQUEST",
+      "PREV_STAGE_COUNT": NaN,
+      "CURR_STAGE_COUNT": 139866,
+      "DROP_RATE": NaN,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "STAGE_ORDER": 2,
+      "STAGE_NAME": "SUBSCRIPTION",
+      "PREV_STAGE_COUNT": 139866.0,
+      "CURR_STAGE_COUNT": 113145,
+      "DROP_RATE": 0.191,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "STAGE_ORDER": 3,
+      "STAGE_NAME": "REGISTEND",
+      "PREV_STAGE_COUNT": 113145.0,
+      "CURR_STAGE_COUNT": 95921,
+      "DROP_RATE": 0.1522,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "STAGE_ORDER": 4,
+      "STAGE_NAME": "OPEN",
+      "PREV_STAGE_COUNT": 95921.0,
+      "CURR_STAGE_COUNT": 69586,
+      "DROP_RATE": 0.2745,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "STAGE_ORDER": 5,
+      "STAGE_NAME": "PAYEND",
+      "PREV_STAGE_COUNT": 69586.0,
+      "CURR_STAGE_COUNT": 68373,
+      "DROP_RATE": 0.0174,
+      "BOTTLENECK_FLAG": false
+    }
+  ],
+  "raw_funnel": [
+    {
+      "YEAR_MONTH": "2026-04-01",
+      "TOTAL_COUNT": 4301,
+      "CONSULT_REQUEST_COUNT": 3074,
+      "SUBSCRIPTION_COUNT": 1889,
+      "REGISTEND_COUNT": 214,
+      "OPEN_COUNT": 21,
+      "PAYEND_COUNT": 20
+    },
+    {
+      "YEAR_MONTH": "2026-03-01",
+      "TOTAL_COUNT": 275068,
+      "CONSULT_REQUEST_COUNT": 139866,
+      "SUBSCRIPTION_COUNT": 113145,
+      "REGISTEND_COUNT": 95921,
+      "OPEN_COUNT": 69586,
+      "PAYEND_COUNT": 68373
+    },
+    {
+      "YEAR_MONTH": "2026-02-01",
+      "TOTAL_COUNT": 230280,
+      "CONSULT_REQUEST_COUNT": 111481,
+      "SUBSCRIPTION_COUNT": 95265,
+      "REGISTEND_COUNT": 82836,
+      "OPEN_COUNT": 71733,
+      "PAYEND_COUNT": 70903
+    }
+  ],
+  "hhi_by_cat": [
+    {
+      "MAIN_CATEGORY_NAME": "상조",
+      "HHI": 0.9326
+    },
+    {
+      "MAIN_CATEGORY_NAME": "다이렉트자보",
+      "HHI": 0.6044
+    },
+    {
+      "MAIN_CATEGORY_NAME": "유심만",
+      "HHI": 0.2242
+    },
+    {
+      "MAIN_CATEGORY_NAME": "알뜰 요금제",
+      "HHI": 0.1822
+    },
+    {
+      "MAIN_CATEGORY_NAME": "모바일",
+      "HHI": 0.1688
+    },
+    {
+      "MAIN_CATEGORY_NAME": "기업용인터넷",
+      "HHI": 0.1614
+    },
+    {
+      "MAIN_CATEGORY_NAME": "렌탈",
+      "HHI": 0.1221
+    },
+    {
+      "MAIN_CATEGORY_NAME": "인터넷",
+      "HHI": 0.1088
+    }
+  ]
+}

@@ -1,0 +1,295 @@
+{
+  "stage_drop_cols": [
+    "YEAR_MONTH",
+    "MAIN_CATEGORY_NAME",
+    "STAGE_ORDER",
+    "STAGE_NAME",
+    "PREV_STAGE_COUNT",
+    "CURR_STAGE_COUNT",
+    "DROP_RATE",
+    "BOTTLENECK_FLAG"
+  ],
+  "stage_drop_rows": 1235,
+  "stage_drop_sample": [
+    {
+      "YEAR_MONTH": "2025-10-01",
+      "MAIN_CATEGORY_NAME": "렌탈",
+      "STAGE_ORDER": 1,
+      "STAGE_NAME": "CONSULT_REQUEST",
+      "PREV_STAGE_COUNT": NaN,
+      "CURR_STAGE_COUNT": 17937,
+      "DROP_RATE": NaN,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "YEAR_MONTH": "2025-10-01",
+      "MAIN_CATEGORY_NAME": "렌탈",
+      "STAGE_ORDER": 2,
+      "STAGE_NAME": "SUBSCRIPTION",
+      "PREV_STAGE_COUNT": 17937.0,
+      "CURR_STAGE_COUNT": 24178,
+      "DROP_RATE": -0.3479,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "YEAR_MONTH": "2025-10-01",
+      "MAIN_CATEGORY_NAME": "렌탈",
+      "STAGE_ORDER": 3,
+      "STAGE_NAME": "REGISTEND",
+      "PREV_STAGE_COUNT": 24178.0,
+      "CURR_STAGE_COUNT": 22023,
+      "DROP_RATE": 0.0891,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "YEAR_MONTH": "2025-10-01",
+      "MAIN_CATEGORY_NAME": "렌탈",
+      "STAGE_ORDER": 4,
+      "STAGE_NAME": "OPEN",
+      "PREV_STAGE_COUNT": 22023.0,
+      "CURR_STAGE_COUNT": 17783,
+      "DROP_RATE": 0.1925,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "YEAR_MONTH": "2025-10-01",
+      "MAIN_CATEGORY_NAME": "렌탈",
+      "STAGE_ORDER": 5,
+      "STAGE_NAME": "PAYEND",
+      "PREV_STAGE_COUNT": 17783.0,
+      "CURR_STAGE_COUNT": 17752,
+      "DROP_RATE": 0.0017,
+      "BOTTLENECK_FLAG": false
+    }
+  ],
+  "bottleneck_cols": [
+    "MAIN_CATEGORY_NAME",
+    "WORST_BOTTLENECK_STAGE",
+    "AVG_DROP_RATE",
+    "MAX_DROP_RATE",
+    "MONTH_COUNT"
+  ],
+  "bottleneck_data": [
+    {
+      "MAIN_CATEGORY_NAME": "렌탈",
+      "WORST_BOTTLENECK_STAGE": "OPEN",
+      "AVG_DROP_RATE": 0.3238,
+      "MAX_DROP_RATE": 0.975,
+      "MONTH_COUNT": 7
+    },
+    {
+      "MAIN_CATEGORY_NAME": "기업용인터넷",
+      "WORST_BOTTLENECK_STAGE": "SUBSCRIPTION",
+      "AVG_DROP_RATE": 0.9659,
+      "MAX_DROP_RATE": 0.9955,
+      "MONTH_COUNT": 7
+    },
+    {
+      "MAIN_CATEGORY_NAME": "인터넷",
+      "WORST_BOTTLENECK_STAGE": "OPEN",
+      "AVG_DROP_RATE": 0.2692,
+      "MAX_DROP_RATE": 0.9019,
+      "MONTH_COUNT": 7
+    },
+    {
+      "MAIN_CATEGORY_NAME": "상조",
+      "WORST_BOTTLENECK_STAGE": "OPEN",
+      "AVG_DROP_RATE": 1.0,
+      "MAX_DROP_RATE": 1.0,
+      "MONTH_COUNT": 2
+    },
+    {
+      "MAIN_CATEGORY_NAME": "모바일",
+      "WORST_BOTTLENECK_STAGE": "REGISTEND",
+      "AVG_DROP_RATE": 0.1589,
+      "MAX_DROP_RATE": 0.7692,
+      "MONTH_COUNT": 7
+    },
+    {
+      "MAIN_CATEGORY_NAME": "다이렉트자보",
+      "WORST_BOTTLENECK_STAGE": "PAYEND",
+      "AVG_DROP_RATE": 1.0,
+      "MAX_DROP_RATE": 1.0,
+      "MONTH_COUNT": 6
+    },
+    {
+      "MAIN_CATEGORY_NAME": "알뜰 요금제",
+      "WORST_BOTTLENECK_STAGE": "REGISTEND",
+      "AVG_DROP_RATE": 0.234,
+      "MAX_DROP_RATE": 0.3065,
+      "MONTH_COUNT": 6
+    },
+    {
+      "MAIN_CATEGORY_NAME": "부동산",
+      "WORST_BOTTLENECK_STAGE": "REGISTEND",
+      "AVG_DROP_RATE": 1.0,
+      "MAX_DROP_RATE": 1.0,
+      "MONTH_COUNT": 1
+    },
+    {
+      "MAIN_CATEGORY_NAME": "유심만",
+      "WORST_BOTTLENECK_STAGE": "REGISTEND",
+      "AVG_DROP_RATE": 0.2456,
+      "MAX_DROP_RATE": 0.9619,
+      "MONTH_COUNT": 7
+    }
+  ],
+  "categories": [
+    "부동산",
+    "상조",
+    "유심만",
+    "인터넷",
+    "알뜰 요금제",
+    "기업용인터넷",
+    "이사",
+    "렌탈",
+    "모바일",
+    "다이렉트자보"
+  ],
+  "internet_ts": [
+    {
+      "YEAR_MONTH": "2025-01-01",
+      "TOTAL_COUNT": 174749,
+      "PAYEND_COUNT": 50562,
+      "OVERALL_CVR": 28.93,
+      "CVR_CONSULT_REQUEST": 48.12,
+      "CVR_OPEN": 83.99,
+      "CVR_PAYEND": 99.81
+    },
+    {
+      "YEAR_MONTH": "2025-02-01",
+      "TOTAL_COUNT": 190211,
+      "PAYEND_COUNT": 55591,
+      "OVERALL_CVR": 29.23,
+      "CVR_CONSULT_REQUEST": 48.51,
+      "CVR_OPEN": 83.17,
+      "CVR_PAYEND": 99.75
+    },
+    {
+      "YEAR_MONTH": "2025-03-01",
+      "TOTAL_COUNT": 203326,
+      "PAYEND_COUNT": 59158,
+      "OVERALL_CVR": 29.1,
+      "CVR_CONSULT_REQUEST": 45.97,
+      "CVR_OPEN": 82.52,
+      "CVR_PAYEND": 99.7
+    },
+    {
+      "YEAR_MONTH": "2025-04-01",
+      "TOTAL_COUNT": 207784,
+      "PAYEND_COUNT": 61959,
+      "OVERALL_CVR": 29.82,
+      "CVR_CONSULT_REQUEST": 42.29,
+      "CVR_OPEN": 83.98,
+      "CVR_PAYEND": 99.8
+    },
+    {
+      "YEAR_MONTH": "2025-05-01",
+      "TOTAL_COUNT": 220658,
+      "PAYEND_COUNT": 66051,
+      "OVERALL_CVR": 29.93,
+      "CVR_CONSULT_REQUEST": 45.09,
+      "CVR_OPEN": 85.0,
+      "CVR_PAYEND": 99.83
+    },
+    {
+      "YEAR_MONTH": "2025-06-01",
+      "TOTAL_COUNT": 220162,
+      "PAYEND_COUNT": 63810,
+      "OVERALL_CVR": 28.98,
+      "CVR_CONSULT_REQUEST": 42.43,
+      "CVR_OPEN": 84.9,
+      "CVR_PAYEND": 99.61
+    },
+    {
+      "YEAR_MONTH": "2025-07-01",
+      "TOTAL_COUNT": 274408,
+      "PAYEND_COUNT": 73874,
+      "OVERALL_CVR": 26.92,
+      "CVR_CONSULT_REQUEST": 37.03,
+      "CVR_OPEN": 85.22,
+      "CVR_PAYEND": 99.45
+    },
+    {
+      "YEAR_MONTH": "2025-08-01",
+      "TOTAL_COUNT": 234916,
+      "PAYEND_COUNT": 64632,
+      "OVERALL_CVR": 27.51,
+      "CVR_CONSULT_REQUEST": 34.25,
+      "CVR_OPEN": 84.76,
+      "CVR_PAYEND": 99.21
+    },
+    {
+      "YEAR_MONTH": "2025-09-01",
+      "TOTAL_COUNT": 224488,
+      "PAYEND_COUNT": 67657,
+      "OVERALL_CVR": 30.14,
+      "CVR_CONSULT_REQUEST": 32.17,
+      "CVR_OPEN": 84.9,
+      "CVR_PAYEND": 99.08
+    },
+    {
+      "YEAR_MONTH": "2025-10-01",
+      "TOTAL_COUNT": 187839,
+      "PAYEND_COUNT": 62174,
+      "OVERALL_CVR": 33.1,
+      "CVR_CONSULT_REQUEST": 27.22,
+      "CVR_OPEN": 84.84,
+      "CVR_PAYEND": 99.14
+    },
+    {
+      "YEAR_MONTH": "2025-11-01",
+      "TOTAL_COUNT": 196675,
+      "PAYEND_COUNT": 64454,
+      "OVERALL_CVR": 32.77,
+      "CVR_CONSULT_REQUEST": 28.75,
+      "CVR_OPEN": 85.37,
+      "CVR_PAYEND": 98.92
+    },
+    {
+      "YEAR_MONTH": "2025-12-01",
+      "TOTAL_COUNT": 213083,
+      "PAYEND_COUNT": 73392,
+      "OVERALL_CVR": 34.44,
+      "CVR_CONSULT_REQUEST": 28.33,
+      "CVR_OPEN": 85.72,
+      "CVR_PAYEND": 98.93
+    },
+    {
+      "YEAR_MONTH": "2026-01-01",
+      "TOTAL_COUNT": 258159,
+      "PAYEND_COUNT": 81216,
+      "OVERALL_CVR": 31.46,
+      "CVR_CONSULT_REQUEST": 42.04,
+      "CVR_OPEN": 86.7,
+      "CVR_PAYEND": 98.99
+    },
+    {
+      "YEAR_MONTH": "2026-02-01",
+      "TOTAL_COUNT": 230280,
+      "PAYEND_COUNT": 70903,
+      "OVERALL_CVR": 30.79,
+      "CVR_CONSULT_REQUEST": 48.41,
+      "CVR_OPEN": 86.6,
+      "CVR_PAYEND": 98.84
+    },
+    {
+      "YEAR_MONTH": "2026-03-01",
+      "TOTAL_COUNT": 275068,
+      "PAYEND_COUNT": 68373,
+      "OVERALL_CVR": 24.86,
+      "CVR_CONSULT_REQUEST": 50.85,
+      "CVR_OPEN": 72.55,
+      "CVR_PAYEND": 98.26
+    },
+    {
+      "YEAR_MONTH": "2026-04-01",
+      "TOTAL_COUNT": 4301,
+      "PAYEND_COUNT": 20,
+      "OVERALL_CVR": 0.47,
+      "CVR_CONSULT_REQUEST": 71.47,
+      "CVR_OPEN": 9.81,
+      "CVR_PAYEND": 95.24
+    }
+  ]
+}

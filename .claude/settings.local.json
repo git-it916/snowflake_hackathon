@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import py_compile; py_compile.compile\\('ml/__init__.py', doraise=True\\); print\\('ml/__init__.py: OK'\\)\")",
+      "Bash(python -c \"import ast; [ast.parse\\(open\\(f\\).read\\(\\)\\) for f in ['agents/tools.py', 'agents/analyst_agent.py', 'agents/strategy_agent.py', 'agents/orchestrator.py']]; print\\('All files parse OK'\\)\")",
+      "Bash(python -c \"import ast; [ast.parse\\(open\\(f, encoding='utf-8'\\).read\\(\\)\\) for f in ['agents/tools.py', 'agents/analyst_agent.py', 'agents/strategy_agent.py', 'agents/orchestrator.py']]; print\\('All files parse OK'\\)\")"
+    ]
+  }
+}

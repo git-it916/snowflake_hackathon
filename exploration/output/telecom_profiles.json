@@ -1,0 +1,8107 @@
+{
+  "V01_MONTHLY_REGIONAL_CONTRACT_STATS": {
+    "view_name": "V01_MONTHLY_REGIONAL_CONTRACT_STATS",
+    "fqn": "SOUTH_KOREA_TELECOM_SUBSCRIPTION_ANALYTICS__CONTRACTS_MARKETING_AND_CALL_CENTER_INSIGHTS_BY_REGION.TELECOM_INSIGHTS.V01_MONTHLY_REGIONAL_CONTRACT_STATS",
+    "columns": [
+      {
+        "name": "YEAR_MONTH",
+        "type": "DATE",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "집계 기준 연월 (월 첫째 날 기준)"
+      },
+      {
+        "name": "INSTALL_STATE",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "설치 주소 시도 (예: 서울특별시, 경기도)"
+      },
+      {
+        "name": "INSTALL_CITY",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "설치 주소 시군구 (예: 강남구, 수원시)"
+      },
+      {
+        "name": "MAIN_CATEGORY_NAME",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "주 상품 유형 (인터넷, 렌탈, 모바일, 알뜰 요금제 등)"
+      },
+      {
+        "name": "CONTRACT_COUNT",
+        "type": "NUMBER(18,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "총 계약서 생성 건수"
+      },
+      {
+        "name": "CONSULT_REQUEST_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "상담 요청으로 생성된 계약 건수"
+      },
+      {
+        "name": "REGISTEND_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "접수 완료 건수"
+      },
+      {
+        "name": "OPEN_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "개통 완료 건수"
+      },
+      {
+        "name": "PAYEND_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "지급 완료 건수"
+      },
+      {
+        "name": "REGISTEND_CVR",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "접수 완료 전환율 (%) = 접수완료 / 총계약"
+      },
+      {
+        "name": "OPEN_CVR",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "개통 완료 전환율 (%) = 개통완료 / 총계약"
+      },
+      {
+        "name": "PAYEND_CVR",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "지급 완료 전환율 (%) = 지급완료 / 총계약"
+      },
+      {
+        "name": "AVG_NET_SALES",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "0 제외 평균 순매출 (원)"
+      },
+      {
+        "name": "TOTAL_NET_SALES",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "총 순매출 (원)"
+      }
+    ],
+    "row_count": 23253,
+    "sample_rows": [
+      {
+        "YEAR_MONTH": "2025-08-01",
+        "INSTALL_STATE": "경기",
+        "INSTALL_CITY": "남양주시",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "CONTRACT_COUNT": "1396",
+        "CONSULT_REQUEST_COUNT": "316",
+        "REGISTEND_COUNT": "1201",
+        "OPEN_COUNT": "1038",
+        "PAYEND_COUNT": "1038",
+        "REGISTEND_CVR": "86.03",
+        "OPEN_CVR": "74.36",
+        "PAYEND_CVR": "74.36",
+        "AVG_NET_SALES": "484524",
+        "TOTAL_NET_SALES": "380836180"
+      },
+      {
+        "YEAR_MONTH": "2025-08-01",
+        "INSTALL_STATE": "경기",
+        "INSTALL_CITY": "화성시",
+        "MAIN_CATEGORY_NAME": "렌탈",
+        "CONTRACT_COUNT": "742",
+        "CONSULT_REQUEST_COUNT": "301",
+        "REGISTEND_COUNT": "619",
+        "OPEN_COUNT": "546",
+        "PAYEND_COUNT": "546",
+        "REGISTEND_CVR": "83.42",
+        "OPEN_CVR": "73.58",
+        "PAYEND_CVR": "73.58",
+        "AVG_NET_SALES": "348063",
+        "TOTAL_NET_SALES": "200484127"
+      },
+      {
+        "YEAR_MONTH": "2026-01-01",
+        "INSTALL_STATE": "충북",
+        "INSTALL_CITY": "청주시",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "CONTRACT_COUNT": "1797",
+        "CONSULT_REQUEST_COUNT": "503",
+        "REGISTEND_COUNT": "1542",
+        "OPEN_COUNT": "1339",
+        "PAYEND_COUNT": "1334",
+        "REGISTEND_CVR": "85.81",
+        "OPEN_CVR": "74.51",
+        "PAYEND_CVR": "74.23",
+        "AVG_NET_SALES": "502338",
+        "TOTAL_NET_SALES": "521929417"
+      },
+      {
+        "YEAR_MONTH": "2026-02-01",
+        "INSTALL_STATE": "경기",
+        "INSTALL_CITY": "수원시",
+        "MAIN_CATEGORY_NAME": "렌탈",
+        "CONTRACT_COUNT": "670",
+        "CONSULT_REQUEST_COUNT": "311",
+        "REGISTEND_COUNT": "584",
+        "OPEN_COUNT": "511",
+        "PAYEND_COUNT": "511",
+        "REGISTEND_CVR": "87.16",
+        "OPEN_CVR": "76.27",
+        "PAYEND_CVR": "76.27",
+        "AVG_NET_SALES": "313768",
+        "TOTAL_NET_SALES": "144019609"
+      },
+      {
+        "YEAR_MONTH": "2025-03-01",
+        "INSTALL_STATE": "경기",
+        "INSTALL_CITY": "성남시",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "CONTRACT_COUNT": "1778",
+        "CONSULT_REQUEST_COUNT": "451",
+        "REGISTEND_COUNT": "1612",
+        "OPEN_COUNT": "1337",
+        "PAYEND_COUNT": "1329",
+        "REGISTEND_CVR": "90.66",
+        "OPEN_CVR": "75.20",
+        "PAYEND_CVR": "74.75",
+        "AVG_NET_SALES": "505227",
+        "TOTAL_NET_SALES": "657805367"
+      }
+    ],
+    "null_info": {
+      "YEAR_MONTH": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "INSTALL_STATE": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "INSTALL_CITY": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "MAIN_CATEGORY_NAME": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CONTRACT_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CONSULT_REQUEST_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "REGISTEND_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "OPEN_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "PAYEND_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "REGISTEND_CVR": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "OPEN_CVR": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "PAYEND_CVR": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "AVG_NET_SALES": {
+        "null_count": 318,
+        "null_pct": 1.37
+      },
+      "TOTAL_NET_SALES": {
+        "null_count": 0,
+        "null_pct": 0.0
+      }
+    },
+    "column_stats": {
+      "YEAR_MONTH": {
+        "min": "2023-02-01",
+        "max": "2027-06-01",
+        "distinct_count": 46,
+        "all_values": [
+          "2023-02-01",
+          "2023-03-01",
+          "2023-04-01",
+          "2023-05-01",
+          "2023-06-01",
+          "2023-07-01",
+          "2023-08-01",
+          "2023-09-01",
+          "2023-10-01",
+          "2023-11-01",
+          "2023-12-01",
+          "2024-01-01",
+          "2024-02-01",
+          "2024-03-01",
+          "2024-04-01",
+          "2024-05-01",
+          "2024-06-01",
+          "2024-07-01",
+          "2024-08-01",
+          "2024-09-01",
+          "2024-10-01",
+          "2024-11-01",
+          "2024-12-01",
+          "2025-01-01",
+          "2025-02-01",
+          "2025-03-01",
+          "2025-04-01",
+          "2025-05-01",
+          "2025-06-01",
+          "2025-07-01",
+          "2025-08-01",
+          "2025-09-01",
+          "2025-10-01",
+          "2025-11-01",
+          "2025-12-01",
+          "2026-01-01",
+          "2026-02-01",
+          "2026-03-01",
+          "2026-04-01",
+          "2026-05-01",
+          "2026-06-01",
+          "2026-07-01",
+          "2026-08-01",
+          "2026-09-01",
+          "2026-12-01",
+          "2027-06-01"
+        ]
+      },
+      "INSTALL_STATE": {
+        "distinct_count": 19,
+        "value_distribution": [
+          {
+            "value": "경기",
+            "count": 3931
+          },
+          {
+            "value": "서울",
+            "count": 3266
+          },
+          {
+            "value": "부산",
+            "count": 1832
+          },
+          {
+            "value": "경북",
+            "count": 1527
+          },
+          {
+            "value": "경남",
+            "count": 1434
+          },
+          {
+            "value": "세종특별자치시",
+            "count": 1395
+          },
+          {
+            "value": "전남",
+            "count": 1392
+          },
+          {
+            "value": "강원특별자치도",
+            "count": 1357
+          },
+          {
+            "value": "충남",
+            "count": 1275
+          },
+          {
+            "value": "인천",
+            "count": 1142
+          },
+          {
+            "value": "대구",
+            "count": 909
+          },
+          {
+            "value": "충북",
+            "count": 895
+          },
+          {
+            "value": "전북특별자치도",
+            "count": 877
+          },
+          {
+            "value": "대전",
+            "count": 583
+          },
+          {
+            "value": "광주",
+            "count": 554
+          },
+          {
+            "value": "울산",
+            "count": 545
+          },
+          {
+            "value": "제주특별자치도",
+            "count": 231
+          },
+          {
+            "value": "전북",
+            "count": 105
+          },
+          {
+            "value": "",
+            "count": 3
+          }
+        ]
+      },
+      "INSTALL_CITY": {
+        "distinct_count": 290,
+        "value_distribution": [
+          {
+            "value": "중구",
+            "count": 609
+          },
+          {
+            "value": "동구",
+            "count": 601
+          },
+          {
+            "value": "서구",
+            "count": 597
+          },
+          {
+            "value": "북구",
+            "count": 477
+          },
+          {
+            "value": "남구",
+            "count": 443
+          },
+          {
+            "value": "강서구",
+            "count": 259
+          },
+          {
+            "value": "고양시",
+            "count": 165
+          },
+          {
+            "value": "화성시",
+            "count": 160
+          },
+          {
+            "value": "용인시",
+            "count": 160
+          },
+          {
+            "value": "수원시",
+            "count": 158
+          },
+          {
+            "value": "강남구",
+            "count": 157
+          },
+          {
+            "value": "성남시",
+            "count": 156
+          },
+          {
+            "value": "청주시",
+            "count": 153
+          },
+          {
+            "value": "김포시",
+            "count": 150
+          },
+          {
+            "value": "시흥시",
+            "count": 149
+          },
+          {
+            "value": "부천시",
+            "count": 148
+          },
+          {
+            "value": "남양주시",
+            "count": 148
+          },
+          {
+            "value": "창원시",
+            "count": 148
+          },
+          {
+            "value": "송파구",
+            "count": 147
+          },
+          {
+            "value": "평택시",
+            "count": 146
+          },
+          {
+            "value": "안산시",
+            "count": 146
+          },
+          {
+            "value": "부평구",
+            "count": 146
+          },
+          {
+            "value": "천안시",
+            "count": 145
+          },
+          {
+            "value": "김해시",
+            "count": 143
+          },
+          {
+            "value": "남동구",
+            "count": 143
+          },
+          {
+            "value": "관악구",
+            "count": 142
+          },
+          {
+            "value": "마포구",
+            "count": 141
+          },
+          {
+            "value": "사하구",
+            "count": 141
+          },
+          {
+            "value": "전주시",
+            "count": 141
+          },
+          {
+            "value": "안양시",
+            "count": 141
+          },
+          {
+            "value": "서초구",
+            "count": 140
+          },
+          {
+            "value": "파주시",
+            "count": 139
+          },
+          {
+            "value": "영등포구",
+            "count": 138
+          },
+          {
+            "value": "미추홀구",
+            "count": 137
+          },
+          {
+            "value": "노원구",
+            "count": 137
+          },
+          {
+            "value": "은평구",
+            "count": 137
+          },
+          {
+            "value": "양산시",
+            "count": 136
+          },
+          {
+            "value": "의정부시",
+            "count": 136
+          },
+          {
+            "value": "동작구",
+            "count": 134
+          },
+          {
+            "value": "광주시",
+            "count": 133
+          },
+          {
+            "value": "강동구",
+            "count": 133
+          },
+          {
+            "value": "유성구",
+            "count": 133
+          },
+          {
+            "value": "해운대구",
+            "count": 132
+          },
+          {
+            "value": "부산진구",
+            "count": 131
+          },
+          {
+            "value": "제주시",
+            "count": 130
+          },
+          {
+            "value": "광진구",
+            "count": 130
+          },
+          {
+            "value": "연수구",
+            "count": 129
+          },
+          {
+            "value": "양주시",
+            "count": 129
+          },
+          {
+            "value": "성북구",
+            "count": 129
+          },
+          {
+            "value": "아산시",
+            "count": 129
+          },
+          {
+            "value": "동대문구",
+            "count": 129
+          },
+          {
+            "value": "금천구",
+            "count": 129
+          },
+          {
+            "value": "중랑구",
+            "count": 128
+          },
+          {
+            "value": "도봉구",
+            "count": 128
+          },
+          {
+            "value": "포항시",
+            "count": 127
+          },
+          {
+            "value": "하남시",
+            "count": 126
+          },
+          {
+            "value": "양천구",
+            "count": 125
+          },
+          {
+            "value": "서대문구",
+            "count": 125
+          },
+          {
+            "value": "구로구",
+            "count": 124
+          },
+          {
+            "value": "광명시",
+            "count": 124
+          },
+          {
+            "value": "계양구",
+            "count": 124
+          },
+          {
+            "value": "성동구",
+            "count": 124
+          },
+          {
+            "value": "군포시",
+            "count": 123
+          },
+          {
+            "value": "달서구",
+            "count": 122
+          },
+          {
+            "value": "이천시",
+            "count": 122
+          },
+          {
+            "value": "광산구",
+            "count": 121
+          },
+          {
+            "value": "구미시",
+            "count": 121
+          },
+          {
+            "value": "수영구",
+            "count": 120
+          },
+          {
+            "value": "수성구",
+            "count": 120
+          },
+          {
+            "value": "강북구",
+            "count": 119
+          },
+          {
+            "value": "동래구",
+            "count": 119
+          },
+          {
+            "value": "사상구",
+            "count": 119
+          },
+          {
+            "value": "원주시",
+            "count": 119
+          },
+          {
+            "value": "춘천시",
+            "count": 118
+          },
+          {
+            "value": "오산시",
+            "count": 116
+          },
+          {
+            "value": "연제구",
+            "count": 116
+          },
+          {
+            "value": "거제시",
+            "count": 115
+          },
+          {
+            "value": "용산구",
+            "count": 115
+          },
+          {
+            "value": "안성시",
+            "count": 114
+          },
+          {
+            "value": "경산시",
+            "count": 113
+          },
+          {
+            "value": "기장군",
+            "count": 113
+          },
+          {
+            "value": "진주시",
+            "count": 112
+          },
+          {
+            "value": "울주군",
+            "count": 110
+          },
+          {
+            "value": "익산시",
+            "count": 110
+          },
+          {
+            "value": "순천시",
+            "count": 110
+          },
+          {
+            "value": "충주시",
+            "count": 110
+          },
+          {
+            "value": "구리시",
+            "count": 110
+          },
+          {
+            "value": "군산시",
+            "count": 110
+          },
+          {
+            "value": "금정구",
+            "count": 108
+          },
+          {
+            "value": "포천시",
+            "count": 108
+          },
+          {
+            "value": "당진시",
+            "count": 108
+          },
+          {
+            "value": "달성군",
+            "count": 108
+          },
+          {
+            "value": "대덕구",
+            "count": 108
+          },
+          {
+            "value": "여수시",
+            "count": 107
+          },
+          {
+            "value": "경주시",
+            "count": 107
+          },
+          {
+            "value": "강릉시",
+            "count": 106
+          },
+          {
+            "value": "종로구",
+            "count": 106
+          },
+          {
+            "value": "서산시",
+            "count": 105
+          },
+          {
+            "value": "고성군",
+            "count": 104
+          },
+          {
+            "value": "목포시",
+            "count": 104
+          },
+          {
+            "value": "의왕시",
+            "count": 103
+          },
+          {
+            "value": "서귀포시",
+            "count": 101
+          },
+          {
+            "value": "광양시",
+            "count": 101
+          },
+          {
+            "value": "진천군",
+            "count": 99
+          },
+          {
+            "value": "속초시",
+            "count": 97
+          },
+          {
+            "value": "나주시",
+            "count": 96
+          },
+          {
+            "value": "여주시",
+            "count": 96
+          },
+          {
+            "value": "양평군",
+            "count": 96
+          },
+          {
+            "value": "제천시",
+            "count": 95
+          },
+          {
+            "value": "동해시",
+            "count": 95
+          },
+          {
+            "value": "완주군",
+            "count": 95
+          },
+          {
+            "value": "음성군",
+            "count": 93
+          },
+          {
+            "value": "사천시",
+            "count": 93
+          },
+          {
+            "value": "칠곡군",
+            "count": 93
+          },
+          {
+            "value": "영도구",
+            "count": 93
+          },
+          {
+            "value": "안동시",
+            "count": 92
+          },
+          {
+            "value": "공주시",
+            "count": 92
+          },
+          {
+            "value": "통영시",
+            "count": 92
+          },
+          {
+            "value": "과천시",
+            "count": 92
+          },
+          {
+            "value": "김천시",
+            "count": 90
+          },
+          {
+            "value": "홍성군",
+            "count": 89
+          },
+          {
+            "value": "동두천시",
+            "count": 88
+          },
+          {
+            "value": "보령시",
+            "count": 88
+          },
+          {
+            "value": "논산시",
+            "count": 87
+          },
+          {
+            "value": "정읍시",
+            "count": 86
+          },
+          {
+            "value": "밀양시",
+            "count": 85
+          },
+          {
+            "value": "무안군",
+            "count": 85
+          },
+          {
+            "value": "영주시",
+            "count": 84
+          },
+          {
+            "value": "홍천군",
+            "count": 84
+          },
+          {
+            "value": "가평군",
+            "count": 82
+          },
+          {
+            "value": "영천시",
+            "count": 81
+          },
+          {
+            "value": "계룡시",
+            "count": 81
+          },
+          {
+            "value": "예산군",
+            "count": 80
+          },
+          {
+            "value": "증평군",
+            "count": 79
+          },
+          {
+            "value": "상주시",
+            "count": 78
+          },
+          {
+            "value": "강화군",
+            "count": 76
+          },
+          {
+            "value": "김제시",
+            "count": 76
+          },
+          {
+            "value": "함안군",
+            "count": 75
+          },
+          {
+            "value": "영암군",
+            "count": 75
+          },
+          {
+            "value": "남원시",
+            "count": 74
+          },
+          {
+            "value": "철원군",
+            "count": 74
+          },
+          {
+            "value": "조치원읍",
+            "count": 74
+          },
+          {
+            "value": "삼척시",
+            "count": 72
+          },
+          {
+            "value": "태백시",
+            "count": 71
+          },
+          {
+            "value": "문경시",
+            "count": 70
+          },
+          {
+            "value": "인제군",
+            "count": 68
+          },
+          {
+            "value": "거창군",
+            "count": 68
+          },
+          {
+            "value": "화순군",
+            "count": 68
+          },
+          {
+            "value": "태안군",
+            "count": 67
+          },
+          {
+            "value": "연천군",
+            "count": 67
+          },
+          {
+            "value": "창녕군",
+            "count": 67
+          },
+          {
+            "value": "울진군",
+            "count": 66
+          },
+          {
+            "value": "평창군",
+            "count": 66
+          },
+          {
+            "value": "예천군",
+            "count": 65
+          },
+          {
+            "value": "해남군",
+            "count": 65
+          },
+          {
+            "value": "고창군",
+            "count": 64
+          },
+          {
+            "value": "남세종로",
+            "count": 63
+          },
+          {
+            "value": "영동군",
+            "count": 61
+          },
+          {
+            "value": "옥천군",
+            "count": 61
+          },
+          {
+            "value": "영광군",
+            "count": 60
+          },
+          {
+            "value": "영월군",
+            "count": 60
+          },
+          {
+            "value": "정선군",
+            "count": 59
+          },
+          {
+            "value": "고흥군",
+            "count": 59
+          },
+          {
+            "value": "횡성군",
+            "count": 57
+          },
+          {
+            "value": "부여군",
+            "count": 56
+          },
+          {
+            "value": "서천군",
+            "count": 55
+          },
+          {
+            "value": "남해군",
+            "count": 55
+          },
+          {
+            "value": "시청대로",
+            "count": 54
+          },
+          {
+            "value": "금산군",
+            "count": 54
+          },
+          {
+            "value": "괴산군",
+            "count": 54
+          },
+          {
+            "value": "부안군",
+            "count": 54
+          },
+          {
+            "value": "장흥군",
+            "count": 53
+          },
+          {
+            "value": "화천군",
+            "count": 53
+          },
+          {
+            "value": "양구군",
+            "count": 53
+          },
+          {
+            "value": "고령군",
+            "count": 53
+          },
+          {
+            "value": "양양군",
+            "count": 53
+          },
+          {
+            "value": "장성군",
+            "count": 51
+          },
+          {
+            "value": "함양군",
+            "count": 49
+          },
+          {
+            "value": "청도군",
+            "count": 48
+          },
+          {
+            "value": "강진군",
+            "count": 48
+          },
+          {
+            "value": "완도군",
+            "count": 47
+          },
+          {
+            "value": "담양군",
+            "count": 47
+          },
+          {
+            "value": "보은군",
+            "count": 46
+          },
+          {
+            "value": "달빛로",
+            "count": 46
+          },
+          {
+            "value": "의성군",
+            "count": 45
+          },
+          {
+            "value": "마음로",
+            "count": 45
+          },
+          {
+            "value": "단양군",
+            "count": 44
+          },
+          {
+            "value": "영덕군",
+            "count": 43
+          },
+          {
+            "value": "성주군",
+            "count": 42
+          },
+          {
+            "value": "한누리대로",
+            "count": 42
+          },
+          {
+            "value": "다정북로",
+            "count": 41
+          },
+          {
+            "value": "산청군",
+            "count": 41
+          },
+          {
+            "value": "새롬중앙로",
+            "count": 40
+          },
+          {
+            "value": "진도군",
+            "count": 40
+          },
+          {
+            "value": "해밀3로",
+            "count": 40
+          },
+          {
+            "value": "청양군",
+            "count": 39
+          },
+          {
+            "value": "함평군",
+            "count": 39
+          },
+          {
+            "value": "하동군",
+            "count": 39
+          },
+          {
+            "value": "도움1로",
+            "count": 38
+          },
+          {
+            "value": "봉화군",
+            "count": 38
+          },
+          {
+            "value": "옹진군",
+            "count": 38
+          },
+          {
+            "value": "다정중앙로",
+            "count": 38
+          },
+          {
+            "value": "순창군",
+            "count": 36
+          },
+          {
+            "value": "보성군",
+            "count": 36
+          },
+          {
+            "value": "장수군",
+            "count": 36
+          },
+          {
+            "value": "임실군",
+            "count": 35
+          },
+          {
+            "value": "무주군",
+            "count": 35
+          },
+          {
+            "value": "구례군",
+            "count": 35
+          },
+          {
+            "value": "마음안로",
+            "count": 35
+          },
+          {
+            "value": "청송군",
+            "count": 34
+          },
+          {
+            "value": "곡성군",
+            "count": 34
+          },
+          {
+            "value": "산울7로",
+            "count": 33
+          },
+          {
+            "value": "신안군",
+            "count": 32
+          },
+          {
+            "value": "달빛1로",
+            "count": 32
+          },
+          {
+            "value": "의령군",
+            "count": 32
+          },
+          {
+            "value": "합천군",
+            "count": 32
+          },
+          {
+            "value": "다솜1로",
+            "count": 32
+          },
+          {
+            "value": "보듬3로",
+            "count": 30
+          },
+          {
+            "value": "진안군",
+            "count": 30
+          },
+          {
+            "value": "도움3로",
+            "count": 29
+          },
+          {
+            "value": "대평로",
+            "count": 28
+          },
+          {
+            "value": "다정남로",
+            "count": 28
+          },
+          {
+            "value": "갈매로",
+            "count": 27
+          },
+          {
+            "value": "산울2로",
+            "count": 27
+          },
+          {
+            "value": "누리로",
+            "count": 26
+          },
+          {
+            "value": "연서면",
+            "count": 25
+          },
+          {
+            "value": "장군면",
+            "count": 23
+          },
+          {
+            "value": "새롬남로",
+            "count": 23
+          },
+          {
+            "value": "만남로",
+            "count": 22
+          },
+          {
+            "value": "영양군",
+            "count": 22
+          },
+          {
+            "value": "군위군",
+            "count": 21
+          },
+          {
+            "value": "금남면",
+            "count": 21
+          },
+          {
+            "value": "새롬북로",
+            "count": 20
+          },
+          {
+            "value": "보람로",
+            "count": 19
+          },
+          {
+            "value": "반곡로",
+            "count": 18
+          },
+          {
+            "value": "집현서로",
+            "count": 18
+          },
+          {
+            "value": "가름로",
+            "count": 18
+          },
+          {
+            "value": "부강면",
+            "count": 18
+          },
+          {
+            "value": "집현북로",
+            "count": 17
+          },
+          {
+            "value": "마음안1로",
+            "count": 15
+          },
+          {
+            "value": "울릉군",
+            "count": 15
+          },
+          {
+            "value": "산울3로",
+            "count": 15
+          },
+          {
+            "value": "보듬2로",
+            "count": 14
+          },
+          {
+            "value": "보듬4로",
+            "count": 14
+          },
+          {
+            "value": "연기면",
+            "count": 13
+          },
+          {
+            "value": "나성북1로",
+            "count": 12
+          },
+          {
+            "value": "중앙공원서로",
+            "count": 12
+          },
+          {
+            "value": "산울1로",
+            "count": 12
+          },
+          {
+            "value": "보람동로",
+            "count": 11
+          },
+          {
+            "value": "전의면",
+            "count": 11
+          },
+          {
+            "value": "다솜로",
+            "count": 11
+          },
+          {
+            "value": "대평1길",
+            "count": 11
+          },
+          {
+            "value": "노을3로",
+            "count": 10
+          },
+          {
+            "value": "대평3길",
+            "count": 10
+          },
+          {
+            "value": "나리1로",
+            "count": 10
+          },
+          {
+            "value": "밝은뜰로",
+            "count": 10
+          },
+          {
+            "value": "소정면",
+            "count": 9
+          },
+          {
+            "value": "나성로",
+            "count": 9
+          },
+          {
+            "value": "절재로",
+            "count": 7
+          },
+          {
+            "value": "국세청로",
+            "count": 7
+          },
+          {
+            "value": "보람1길",
+            "count": 6
+          },
+          {
+            "value": "소담3로",
+            "count": 6
+          },
+          {
+            "value": "연동면",
+            "count": 5
+          },
+          {
+            "value": "새롬로",
+            "count": 5
+          },
+          {
+            "value": "반곡2길",
+            "count": 5
+          },
+          {
+            "value": "반곡1길",
+            "count": 5
+          },
+          {
+            "value": "전동면",
+            "count": 5
+          },
+          {
+            "value": "나성북로",
+            "count": 5
+          },
+          {
+            "value": "나리로",
+            "count": 4
+          },
+          {
+            "value": "집현서2로",
+            "count": 4
+          },
+          {
+            "value": "가온로",
+            "count": 3
+          },
+          {
+            "value": "소담8로",
+            "count": 3
+          },
+          {
+            "value": "다정서로",
+            "count": 3
+          },
+          {
+            "value": "호려울로",
+            "count": 3
+          },
+          {
+            "value": "국책연구원1로",
+            "count": 3
+          },
+          {
+            "value": "노을1로",
+            "count": 2
+          },
+          {
+            "value": "정부2청사로",
+            "count": 2
+          },
+          {
+            "value": "소담로",
+            "count": 2
+          },
+          {
+            "value": "법원1로",
+            "count": 2
+          },
+          {
+            "value": "새롬중앙1로",
+            "count": 2
+          },
+          {
+            "value": "집현중앙7로",
+            "count": 1
+          },
+          {
+            "value": "(경서동)",
+            "count": 1
+          },
+          {
+            "value": "(금락리)",
+            "count": 1
+          },
+          {
+            "value": "세종로",
+            "count": 1
+          },
+          {
+            "value": "법원2로",
+            "count": 1
+          },
+          {
+            "value": "국책연구원2로",
+            "count": 1
+          },
+          {
+            "value": "해밀2로",
+            "count": 1
+          },
+          {
+            "value": "(와동동)",
+            "count": 1
+          },
+          {
+            "value": "보듬1로",
+            "count": 1
+          },
+          {
+            "value": "보듬6로",
+            "count": 1
+          }
+        ]
+      },
+      "MAIN_CATEGORY_NAME": {
+        "distinct_count": 7,
+        "value_distribution": [
+          {
+            "value": "인터넷",
+            "count": 8267
+          },
+          {
+            "value": "렌탈",
+            "count": 6444
+          },
+          {
+            "value": "유심만",
+            "count": 3940
+          },
+          {
+            "value": "모바일",
+            "count": 2791
+          },
+          {
+            "value": "알뜰 요금제",
+            "count": 1695
+          },
+          {
+            "value": "다이렉트자보",
+            "count": 68
+          },
+          {
+            "value": "기업용인터넷",
+            "count": 48
+          }
+        ]
+      },
+      "CONTRACT_COUNT": {
+        "min": "5",
+        "max": "3234",
+        "avg": "121.8385",
+        "median": "32.000",
+        "stddev": "245.8196",
+        "distinct_count": 1239,
+        "null_pct": 0.0
+      },
+      "CONSULT_REQUEST_COUNT": {
+        "min": "0",
+        "max": "1192",
+        "avg": "28.3504",
+        "median": "5.000",
+        "stddev": "64.9477",
+        "distinct_count": 470,
+        "null_pct": 0.0
+      },
+      "REGISTEND_COUNT": {
+        "min": "0",
+        "max": "2642",
+        "avg": "106.9203",
+        "median": "28.000",
+        "stddev": "214.2115",
+        "distinct_count": 1126,
+        "null_pct": 0.0
+      },
+      "OPEN_COUNT": {
+        "min": "0",
+        "max": "2197",
+        "avg": "88.3661",
+        "median": "23.000",
+        "stddev": "179.1633",
+        "distinct_count": 1003,
+        "null_pct": 0.0
+      },
+      "PAYEND_COUNT": {
+        "min": "0",
+        "max": "2197",
+        "avg": "88.7301",
+        "median": "23.000",
+        "stddev": "178.8909",
+        "distinct_count": 1005,
+        "null_pct": 0.0
+      },
+      "REGISTEND_CVR": {
+        "min": "0.00",
+        "max": "100.00",
+        "avg": "86.4970",
+        "median": "88.9700",
+        "stddev": "15.0444",
+        "distinct_count": 2302,
+        "null_pct": 0.0
+      },
+      "OPEN_CVR": {
+        "min": "0.00",
+        "max": "100.00",
+        "avg": "71.6855",
+        "median": "73.6100",
+        "stddev": "17.987",
+        "distinct_count": 2967,
+        "null_pct": 0.0
+      },
+      "PAYEND_CVR": {
+        "min": "0.00",
+        "max": "100.00",
+        "avg": "72.5300",
+        "median": "74.8100",
+        "stddev": "18.0071",
+        "distinct_count": 2950,
+        "null_pct": 0.0
+      },
+      "AVG_NET_SALES": {
+        "min": "-180000",
+        "max": "8845883",
+        "avg": "367261.4519",
+        "median": "350800.000",
+        "stddev": "135418.3145",
+        "distinct_count": 21454,
+        "null_pct": 1.37
+      },
+      "TOTAL_NET_SALES": {
+        "min": "-626840",
+        "max": "999584772",
+        "avg": "34223417.3624",
+        "median": "8177710.000",
+        "stddev": "71121257.9577",
+        "distinct_count": 21916,
+        "null_pct": 0.0
+      }
+    },
+    "date_columns": [
+      "YEAR_MONTH"
+    ]
+  },
+  "V02_SERVICE_BUNDLE_PATTERNS": {
+    "view_name": "V02_SERVICE_BUNDLE_PATTERNS",
+    "fqn": "SOUTH_KOREA_TELECOM_SUBSCRIPTION_ANALYTICS__CONTRACTS_MARKETING_AND_CALL_CENTER_INSIGHTS_BY_REGION.TELECOM_INSIGHTS.V02_SERVICE_BUNDLE_PATTERNS",
+    "columns": [
+      {
+        "name": "YEAR_MONTH",
+        "type": "DATE",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "집계 기준 연월"
+      },
+      {
+        "name": "MAIN_CATEGORY_NAME",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "상품 유형"
+      },
+      {
+        "name": "BUNDLE_COMBINATION",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "결합 할인 유형 (단독가입 또는 결합 종류명)"
+      },
+      {
+        "name": "HAS_TV",
+        "type": "VARCHAR(1)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "TV 결합 여부 (Y/N)"
+      },
+      {
+        "name": "HAS_PHONE",
+        "type": "VARCHAR(1)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "인터넷전화 결합 여부 (Y/N)"
+      },
+      {
+        "name": "HAS_WIFI",
+        "type": "VARCHAR(1)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "WiFi 결합 여부 (Y/N)"
+      },
+      {
+        "name": "CONTRACT_COUNT",
+        "type": "NUMBER(18,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "해당 결합 패턴 계약 건수"
+      },
+      {
+        "name": "PAYEND_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "지급 완료 건수"
+      },
+      {
+        "name": "AVG_NET_SALES",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "0 제외 평균 순매출 (원)"
+      },
+      {
+        "name": "AVG_POLICY_AMOUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "0 제외 평균 정책금 총액 (원)"
+      }
+    ],
+    "row_count": 2129,
+    "sample_rows": [
+      {
+        "YEAR_MONTH": "2025-09-01",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "BUNDLE_COMBINATION": "참쉬운가족결합",
+        "HAS_TV": "Y",
+        "HAS_PHONE": "N",
+        "HAS_WIFI": "Y",
+        "CONTRACT_COUNT": "6867",
+        "PAYEND_COUNT": "3092",
+        "AVG_NET_SALES": "443472",
+        "AVG_POLICY_AMOUNT": "893530"
+      },
+      {
+        "YEAR_MONTH": "2025-03-01",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "BUNDLE_COMBINATION": "참쉬운가족결합",
+        "HAS_TV": "Y",
+        "HAS_PHONE": "N",
+        "HAS_WIFI": "Y",
+        "CONTRACT_COUNT": "5455",
+        "PAYEND_COUNT": "2367",
+        "AVG_NET_SALES": "434029",
+        "AVG_POLICY_AMOUNT": "882180"
+      },
+      {
+        "YEAR_MONTH": "2025-12-01",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "BUNDLE_COMBINATION": "참쉬운가족결합",
+        "HAS_TV": "N",
+        "HAS_PHONE": "N",
+        "HAS_WIFI": "Y",
+        "CONTRACT_COUNT": "4298",
+        "PAYEND_COUNT": "2266",
+        "AVG_NET_SALES": "347730",
+        "AVG_POLICY_AMOUNT": "554403"
+      },
+      {
+        "YEAR_MONTH": "2024-12-01",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "BUNDLE_COMBINATION": "요즘가족결합",
+        "HAS_TV": "Y",
+        "HAS_PHONE": "N",
+        "HAS_WIFI": "Y",
+        "CONTRACT_COUNT": "4692",
+        "PAYEND_COUNT": "1937",
+        "AVG_NET_SALES": "517630",
+        "AVG_POLICY_AMOUNT": "871028"
+      },
+      {
+        "YEAR_MONTH": "2025-09-01",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "BUNDLE_COMBINATION": "총액 결합할인",
+        "HAS_TV": "N",
+        "HAS_PHONE": "N",
+        "HAS_WIFI": "Y",
+        "CONTRACT_COUNT": "1306",
+        "PAYEND_COUNT": "503",
+        "AVG_NET_SALES": "257686",
+        "AVG_POLICY_AMOUNT": "302422"
+      }
+    ],
+    "null_info": {
+      "YEAR_MONTH": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "MAIN_CATEGORY_NAME": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "BUNDLE_COMBINATION": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "HAS_TV": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "HAS_PHONE": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "HAS_WIFI": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CONTRACT_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "PAYEND_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "AVG_NET_SALES": {
+        "null_count": 73,
+        "null_pct": 3.43
+      },
+      "AVG_POLICY_AMOUNT": {
+        "null_count": 130,
+        "null_pct": 6.11
+      }
+    },
+    "column_stats": {
+      "YEAR_MONTH": {
+        "min": "2021-08-01",
+        "max": "2027-02-01",
+        "distinct_count": 60,
+        "all_values": [
+          "2021-08-01",
+          "2022-02-01",
+          "2022-03-01",
+          "2022-05-01",
+          "2022-07-01",
+          "2022-08-01",
+          "2022-09-01",
+          "2022-10-01",
+          "2022-11-01",
+          "2022-12-01",
+          "2023-01-01",
+          "2023-02-01",
+          "2023-03-01",
+          "2023-04-01",
+          "2023-05-01",
+          "2023-06-01",
+          "2023-07-01",
+          "2023-08-01",
+          "2023-09-01",
+          "2023-10-01",
+          "2023-11-01",
+          "2023-12-01",
+          "2024-01-01",
+          "2024-02-01",
+          "2024-03-01",
+          "2024-04-01",
+          "2024-05-01",
+          "2024-06-01",
+          "2024-07-01",
+          "2024-08-01",
+          "2024-09-01",
+          "2024-10-01",
+          "2024-11-01",
+          "2024-12-01",
+          "2025-01-01",
+          "2025-02-01",
+          "2025-03-01",
+          "2025-04-01",
+          "2025-05-01",
+          "2025-06-01",
+          "2025-07-01",
+          "2025-08-01",
+          "2025-09-01",
+          "2025-10-01",
+          "2025-11-01",
+          "2025-12-01",
+          "2026-01-01",
+          "2026-02-01",
+          "2026-03-01",
+          "2026-04-01",
+          "2026-05-01",
+          "2026-06-01",
+          "2026-07-01",
+          "2026-08-01",
+          "2026-09-01",
+          "2026-10-01",
+          "2026-11-01",
+          "2026-12-01",
+          "2027-01-01",
+          "2027-02-01"
+        ]
+      },
+      "MAIN_CATEGORY_NAME": {
+        "distinct_count": 1,
+        "value_distribution": [
+          {
+            "value": "인터넷",
+            "count": 2129
+          }
+        ]
+      },
+      "BUNDLE_COMBINATION": {
+        "distinct_count": 23,
+        "value_distribution": [
+          {
+            "value": "단독가입",
+            "count": 318
+          },
+          {
+            "value": "요즘가족결합",
+            "count": 254
+          },
+          {
+            "value": "패밀리",
+            "count": 208
+          },
+          {
+            "value": "총액 결합할인",
+            "count": 208
+          },
+          {
+            "value": "온할인",
+            "count": 197
+          },
+          {
+            "value": "참쉬운가족결합",
+            "count": 172
+          },
+          {
+            "value": "프리미엄싱글결합",
+            "count": 144
+          },
+          {
+            "value": "투게더결합",
+            "count": 94
+          },
+          {
+            "value": "프리미엄가족결합",
+            "count": 77
+          },
+          {
+            "value": "모바일 알뜰결합",
+            "count": 65
+          },
+          {
+            "value": "정액 결합할인",
+            "count": 63
+          },
+          {
+            "value": "홈결합(SKYLIFE)",
+            "count": 55
+          },
+          {
+            "value": "선납할인(pop)",
+            "count": 55
+          },
+          {
+            "value": "헬로모바일",
+            "count": 46
+          },
+          {
+            "value": "SK(온가족케이블플랜)",
+            "count": 45
+          },
+          {
+            "value": "선납할인(cable)",
+            "count": 32
+          },
+          {
+            "value": "LG(참쉬운케이블가족결합)",
+            "count": 32
+          },
+          {
+            "value": "알뜰한 결합",
+            "count": 29
+          },
+          {
+            "value": "KT(케이블총액결합)",
+            "count": 24
+          },
+          {
+            "value": "온프리",
+            "count": 5
+          },
+          {
+            "value": "헬로모바일(LTE-KT회선)",
+            "count": 3
+          },
+          {
+            "value": "결합할인",
+            "count": 2
+          },
+          {
+            "value": "기가안심홈결합",
+            "count": 1
+          }
+        ]
+      },
+      "HAS_TV": {
+        "distinct_count": 2,
+        "value_distribution": [
+          {
+            "value": "Y",
+            "count": 1192
+          },
+          {
+            "value": "N",
+            "count": 937
+          }
+        ]
+      },
+      "HAS_PHONE": {
+        "distinct_count": 2,
+        "value_distribution": [
+          {
+            "value": "N",
+            "count": 1508
+          },
+          {
+            "value": "Y",
+            "count": 621
+          }
+        ]
+      },
+      "HAS_WIFI": {
+        "distinct_count": 2,
+        "value_distribution": [
+          {
+            "value": "Y",
+            "count": 1405
+          },
+          {
+            "value": "N",
+            "count": 724
+          }
+        ]
+      },
+      "CONTRACT_COUNT": {
+        "min": "5",
+        "max": "189469",
+        "avg": "2161.3109",
+        "median": "74.000",
+        "stddev": "13365.2717",
+        "distinct_count": 850,
+        "null_pct": 0.0
+      },
+      "PAYEND_COUNT": {
+        "min": "0",
+        "max": "42473",
+        "avg": "685.4321",
+        "median": "32.000",
+        "stddev": "3328.4877",
+        "distinct_count": 682,
+        "null_pct": 0.0
+      },
+      "AVG_NET_SALES": {
+        "min": "-640000",
+        "max": "1036750",
+        "avg": "405028.8395",
+        "median": "392758.500",
+        "stddev": "137280.5645",
+        "distinct_count": 2014,
+        "null_pct": 3.43
+      },
+      "AVG_POLICY_AMOUNT": {
+        "min": "110000",
+        "max": "1106600",
+        "avg": "595485.7849",
+        "median": "540861.000",
+        "stddev": "220932.8605",
+        "distinct_count": 1850,
+        "null_pct": 6.11
+      }
+    },
+    "date_columns": [
+      "YEAR_MONTH"
+    ]
+  },
+  "V03_CONTRACT_FUNNEL_CONVERSION": {
+    "view_name": "V03_CONTRACT_FUNNEL_CONVERSION",
+    "fqn": "SOUTH_KOREA_TELECOM_SUBSCRIPTION_ANALYTICS__CONTRACTS_MARKETING_AND_CALL_CENTER_INSIGHTS_BY_REGION.TELECOM_INSIGHTS.V03_CONTRACT_FUNNEL_CONVERSION",
+    "columns": [
+      {
+        "name": "YEAR_MONTH",
+        "type": "DATE",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "집계 기준 연월"
+      },
+      {
+        "name": "MAIN_CATEGORY_NAME",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "상품 유형"
+      },
+      {
+        "name": "TOTAL_COUNT",
+        "type": "NUMBER(18,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "총 계약서 수 (퍼널 최상단)"
+      },
+      {
+        "name": "CONSULT_REQUEST_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "상담 요청 건수"
+      },
+      {
+        "name": "SUBSCRIPTION_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "청약 건수"
+      },
+      {
+        "name": "REGISTEND_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "접수 완료 건수"
+      },
+      {
+        "name": "OPEN_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "개통 완료 건수"
+      },
+      {
+        "name": "PAYEND_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "지급 완료 건수"
+      },
+      {
+        "name": "CVR_CONSULT_REQUEST",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "상담 요청 전환율 (%) = 상담요청 / 총계약"
+      },
+      {
+        "name": "CVR_SUBSCRIPTION",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "청약 전환율 (%) = 청약 / 상담요청"
+      },
+      {
+        "name": "CVR_REGISTEND",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "접수 완료 전환율 (%) = 접수완료 / 청약"
+      },
+      {
+        "name": "CVR_OPEN",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "개통 완료 전환율 (%) = 개통완료 / 접수완료"
+      },
+      {
+        "name": "CVR_PAYEND",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "지급 완료 전환율 (%) = 지급완료 / 개통완료"
+      },
+      {
+        "name": "OVERALL_CVR",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "전체 전환율 (%) = 지급완료 / 총계약"
+      }
+    ],
+    "row_count": 271,
+    "sample_rows": [
+      {
+        "YEAR_MONTH": "2025-09-01",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "TOTAL_COUNT": "224488",
+        "CONSULT_REQUEST_COUNT": "72223",
+        "SUBSCRIPTION_COUNT": "89917",
+        "REGISTEND_COUNT": "80433",
+        "OPEN_COUNT": "68287",
+        "PAYEND_COUNT": "67657",
+        "CVR_CONSULT_REQUEST": "32.17",
+        "CVR_SUBSCRIPTION": "124.50",
+        "CVR_REGISTEND": "89.45",
+        "CVR_OPEN": "84.90",
+        "CVR_PAYEND": "99.08",
+        "OVERALL_CVR": "30.14"
+      },
+      {
+        "YEAR_MONTH": "2025-11-01",
+        "MAIN_CATEGORY_NAME": "렌탈",
+        "TOTAL_COUNT": "46188",
+        "CONSULT_REQUEST_COUNT": "16729",
+        "SUBSCRIPTION_COUNT": "23300",
+        "REGISTEND_COUNT": "21018",
+        "OPEN_COUNT": "16833",
+        "PAYEND_COUNT": "16800",
+        "CVR_CONSULT_REQUEST": "36.22",
+        "CVR_SUBSCRIPTION": "139.28",
+        "CVR_REGISTEND": "90.21",
+        "CVR_OPEN": "80.09",
+        "CVR_PAYEND": "99.80",
+        "OVERALL_CVR": "36.37"
+      },
+      {
+        "YEAR_MONTH": "2025-10-01",
+        "MAIN_CATEGORY_NAME": "렌탈",
+        "TOTAL_COUNT": "47471",
+        "CONSULT_REQUEST_COUNT": "17937",
+        "SUBSCRIPTION_COUNT": "24178",
+        "REGISTEND_COUNT": "22023",
+        "OPEN_COUNT": "17783",
+        "PAYEND_COUNT": "17752",
+        "CVR_CONSULT_REQUEST": "37.79",
+        "CVR_SUBSCRIPTION": "134.79",
+        "CVR_REGISTEND": "91.09",
+        "CVR_OPEN": "80.75",
+        "CVR_PAYEND": "99.83",
+        "OVERALL_CVR": "37.40"
+      },
+      {
+        "YEAR_MONTH": "2025-12-01",
+        "MAIN_CATEGORY_NAME": "렌탈",
+        "TOTAL_COUNT": "48656",
+        "CONSULT_REQUEST_COUNT": "18357",
+        "SUBSCRIPTION_COUNT": "25377",
+        "REGISTEND_COUNT": "22564",
+        "OPEN_COUNT": "18516",
+        "PAYEND_COUNT": "18497",
+        "CVR_CONSULT_REQUEST": "37.73",
+        "CVR_SUBSCRIPTION": "138.24",
+        "CVR_REGISTEND": "88.92",
+        "CVR_OPEN": "82.06",
+        "CVR_PAYEND": "99.90",
+        "OVERALL_CVR": "38.02"
+      },
+      {
+        "YEAR_MONTH": "2024-10-01",
+        "MAIN_CATEGORY_NAME": "렌탈",
+        "TOTAL_COUNT": "28961",
+        "CONSULT_REQUEST_COUNT": "9222",
+        "SUBSCRIPTION_COUNT": "14358",
+        "REGISTEND_COUNT": "13570",
+        "OPEN_COUNT": "10992",
+        "PAYEND_COUNT": "10984",
+        "CVR_CONSULT_REQUEST": "31.84",
+        "CVR_SUBSCRIPTION": "155.69",
+        "CVR_REGISTEND": "94.51",
+        "CVR_OPEN": "81.00",
+        "CVR_PAYEND": "99.93",
+        "OVERALL_CVR": "37.93"
+      }
+    ],
+    "null_info": {
+      "YEAR_MONTH": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "MAIN_CATEGORY_NAME": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "TOTAL_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CONSULT_REQUEST_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "SUBSCRIPTION_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "REGISTEND_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "OPEN_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "PAYEND_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CVR_CONSULT_REQUEST": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CVR_SUBSCRIPTION": {
+        "null_count": 62,
+        "null_pct": 22.88
+      },
+      "CVR_REGISTEND": {
+        "null_count": 15,
+        "null_pct": 5.54
+      },
+      "CVR_OPEN": {
+        "null_count": 22,
+        "null_pct": 8.12
+      },
+      "CVR_PAYEND": {
+        "null_count": 45,
+        "null_pct": 16.61
+      },
+      "OVERALL_CVR": {
+        "null_count": 0,
+        "null_pct": 0.0
+      }
+    },
+    "column_stats": {
+      "YEAR_MONTH": {
+        "min": "2021-07-01",
+        "max": "2027-07-01",
+        "distinct_count": 69,
+        "all_values": [
+          "2021-07-01",
+          "2021-08-01",
+          "2021-10-01",
+          "2021-11-01",
+          "2022-01-01",
+          "2022-02-01",
+          "2022-03-01",
+          "2022-04-01",
+          "2022-05-01",
+          "2022-06-01",
+          "2022-07-01",
+          "2022-08-01",
+          "2022-09-01",
+          "2022-10-01",
+          "2022-11-01",
+          "2022-12-01",
+          "2023-01-01",
+          "2023-02-01",
+          "2023-03-01",
+          "2023-04-01",
+          "2023-05-01",
+          "2023-06-01",
+          "2023-07-01",
+          "2023-08-01",
+          "2023-09-01",
+          "2023-10-01",
+          "2023-11-01",
+          "2023-12-01",
+          "2024-01-01",
+          "2024-02-01",
+          "2024-03-01",
+          "2024-04-01",
+          "2024-05-01",
+          "2024-06-01",
+          "2024-07-01",
+          "2024-08-01",
+          "2024-09-01",
+          "2024-10-01",
+          "2024-11-01",
+          "2024-12-01",
+          "2025-01-01",
+          "2025-02-01",
+          "2025-03-01",
+          "2025-04-01",
+          "2025-05-01",
+          "2025-06-01",
+          "2025-07-01",
+          "2025-08-01",
+          "2025-09-01",
+          "2025-10-01",
+          "2025-11-01",
+          "2025-12-01",
+          "2026-01-01",
+          "2026-02-01",
+          "2026-03-01",
+          "2026-04-01",
+          "2026-05-01",
+          "2026-06-01",
+          "2026-07-01",
+          "2026-08-01",
+          "2026-09-01",
+          "2026-10-01",
+          "2026-11-01",
+          "2026-12-01",
+          "2027-01-01",
+          "2027-02-01",
+          "2027-03-01",
+          "2027-06-01",
+          "2027-07-01"
+        ]
+      },
+      "MAIN_CATEGORY_NAME": {
+        "distinct_count": 10,
+        "value_distribution": [
+          {
+            "value": "인터넷",
+            "count": 69
+          },
+          {
+            "value": "렌탈",
+            "count": 50
+          },
+          {
+            "value": "유심만",
+            "count": 38
+          },
+          {
+            "value": "모바일",
+            "count": 34
+          },
+          {
+            "value": "알뜰 요금제",
+            "count": 33
+          },
+          {
+            "value": "기업용인터넷",
+            "count": 26
+          },
+          {
+            "value": "다이렉트자보",
+            "count": 12
+          },
+          {
+            "value": "상조",
+            "count": 5
+          },
+          {
+            "value": "부동산",
+            "count": 3
+          },
+          {
+            "value": "이사",
+            "count": 1
+          }
+        ]
+      },
+      "TOTAL_COUNT": {
+        "min": "5",
+        "max": "275068",
+        "avg": "24033.0775",
+        "median": "1855.000",
+        "stddev": "54256.7634",
+        "distinct_count": 234,
+        "null_pct": 0.0
+      },
+      "CONSULT_REQUEST_COUNT": {
+        "min": "0",
+        "max": "139866",
+        "avg": "9362.1144",
+        "median": "173.000",
+        "stddev": "22488.1282",
+        "distinct_count": 172,
+        "null_pct": 0.0
+      },
+      "SUBSCRIPTION_COUNT": {
+        "min": "0",
+        "max": "113145",
+        "avg": "10374.0627",
+        "median": "624.000",
+        "stddev": "22268.8171",
+        "distinct_count": 217,
+        "null_pct": 0.0
+      },
+      "REGISTEND_COUNT": {
+        "min": "0",
+        "max": "95921",
+        "avg": "9288.0000",
+        "median": "405.000",
+        "stddev": "19885.0538",
+        "distinct_count": 201,
+        "null_pct": 0.0
+      },
+      "OPEN_COUNT": {
+        "min": "0",
+        "max": "82044",
+        "avg": "7713.8339",
+        "median": "449.000",
+        "stddev": "16558.8164",
+        "distinct_count": 203,
+        "null_pct": 0.0
+      },
+      "PAYEND_COUNT": {
+        "min": "0",
+        "max": "81216",
+        "avg": "7706.7269",
+        "median": "368.000",
+        "stddev": "16471.2255",
+        "distinct_count": 187,
+        "null_pct": 0.0
+      },
+      "CVR_CONSULT_REQUEST": {
+        "min": "0.00",
+        "max": "100.00",
+        "avg": "31.5916",
+        "median": "26.2100",
+        "stddev": "31.2626",
+        "distinct_count": 195,
+        "null_pct": 0.0
+      },
+      "CVR_SUBSCRIPTION": {
+        "min": "0.00",
+        "max": "347400.00",
+        "avg": "4974.5291",
+        "median": "117.3400",
+        "stddev": "28925.8354",
+        "distinct_count": 194,
+        "null_pct": 22.88
+      },
+      "CVR_REGISTEND": {
+        "min": "0.00",
+        "max": "110.53",
+        "avg": "77.1360",
+        "median": "88.3550",
+        "stddev": "27.3693",
+        "distinct_count": 201,
+        "null_pct": 5.54
+      },
+      "CVR_OPEN": {
+        "min": "0.00",
+        "max": "661.90",
+        "avg": "93.9637",
+        "median": "86.6000",
+        "stddev": "90.644",
+        "distinct_count": 203,
+        "null_pct": 8.12
+      },
+      "CVR_PAYEND": {
+        "min": "0.00",
+        "max": "166.23",
+        "avg": "96.7008",
+        "median": "99.9500",
+        "stddev": "26.1585",
+        "distinct_count": 99,
+        "null_pct": 16.61
+      },
+      "OVERALL_CVR": {
+        "min": "0.00",
+        "max": "100.00",
+        "avg": "36.7134",
+        "median": "32.0300",
+        "stddev": "33.2021",
+        "distinct_count": 187,
+        "null_pct": 0.0
+      }
+    },
+    "date_columns": [
+      "YEAR_MONTH"
+    ]
+  },
+  "V04_CHANNEL_CONTRACT_PERFORMANCE": {
+    "view_name": "V04_CHANNEL_CONTRACT_PERFORMANCE",
+    "fqn": "SOUTH_KOREA_TELECOM_SUBSCRIPTION_ANALYTICS__CONTRACTS_MARKETING_AND_CALL_CENTER_INSIGHTS_BY_REGION.TELECOM_INSIGHTS.V04_CHANNEL_CONTRACT_PERFORMANCE",
+    "columns": [
+      {
+        "name": "YEAR_MONTH",
+        "type": "DATE",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "집계 기준 연월"
+      },
+      {
+        "name": "MAIN_CATEGORY_NAME",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "상품 유형"
+      },
+      {
+        "name": "RECEIVE_PATH_NAME",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "접수 경로명 (예: 콜센터, 셀프접수, 파트너 등)"
+      },
+      {
+        "name": "INFLOW_PATH_NAME",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "마케팅 유입 경로명 (예: 그로스마케팅, 랜딩페이지, 바로상담 등)"
+      },
+      {
+        "name": "CONTRACT_COUNT",
+        "type": "NUMBER(18,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "해당 채널 총 계약 건수"
+      },
+      {
+        "name": "REGISTEND_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "접수 완료 건수"
+      },
+      {
+        "name": "OPEN_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "개통 완료 건수"
+      },
+      {
+        "name": "PAYEND_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "지급 완료 건수"
+      },
+      {
+        "name": "OPEN_CVR",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "개통 완료 전환율 (%)"
+      },
+      {
+        "name": "PAYEND_CVR",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "지급 완료 전환율 (%)"
+      },
+      {
+        "name": "AVG_NET_SALES",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "0 제외 평균 순매출 (원)"
+      },
+      {
+        "name": "TOTAL_NET_SALES",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "총 순매출 (원)"
+      }
+    ],
+    "row_count": 7845,
+    "sample_rows": [
+      {
+        "YEAR_MONTH": "2026-03-01",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "RECEIVE_PATH_NAME": "ARS전화번호남기기",
+        "INFLOW_PATH_NAME": "기타",
+        "CONTRACT_COUNT": "5",
+        "REGISTEND_COUNT": "2",
+        "OPEN_COUNT": "0",
+        "PAYEND_COUNT": "0",
+        "OPEN_CVR": "0.00",
+        "PAYEND_CVR": "0.00",
+        "AVG_NET_SALES": "279525",
+        "TOTAL_NET_SALES": "279525"
+      },
+      {
+        "YEAR_MONTH": "2024-03-01",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "RECEIVE_PATH_NAME": "인바운드",
+        "INFLOW_PATH_NAME": "지식인",
+        "CONTRACT_COUNT": "444",
+        "REGISTEND_COUNT": "166",
+        "OPEN_COUNT": "140",
+        "PAYEND_COUNT": "142",
+        "OPEN_CVR": "31.53",
+        "PAYEND_CVR": "31.98",
+        "AVG_NET_SALES": "508804",
+        "TOTAL_NET_SALES": "76829455"
+      },
+      {
+        "YEAR_MONTH": "2024-02-01",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "RECEIVE_PATH_NAME": "인바운드",
+        "INFLOW_PATH_NAME": "미분류",
+        "CONTRACT_COUNT": "57170",
+        "REGISTEND_COUNT": "28174",
+        "OPEN_COUNT": "20767",
+        "PAYEND_COUNT": "21942",
+        "OPEN_CVR": "36.33",
+        "PAYEND_CVR": "38.38",
+        "AVG_NET_SALES": "451813",
+        "TOTAL_NET_SALES": "11021975546"
+      },
+      {
+        "YEAR_MONTH": "2026-03-01",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "RECEIVE_PATH_NAME": "인바운드",
+        "INFLOW_PATH_NAME": "플랫폼",
+        "CONTRACT_COUNT": "2667",
+        "REGISTEND_COUNT": "1063",
+        "OPEN_COUNT": "753",
+        "PAYEND_COUNT": "741",
+        "OPEN_CVR": "28.23",
+        "PAYEND_CVR": "27.78",
+        "AVG_NET_SALES": "459223",
+        "TOTAL_NET_SALES": "223641373"
+      },
+      {
+        "YEAR_MONTH": "2025-06-01",
+        "MAIN_CATEGORY_NAME": "모바일",
+        "RECEIVE_PATH_NAME": "플랫폼",
+        "INFLOW_PATH_NAME": "랜딩페이지",
+        "CONTRACT_COUNT": "10462",
+        "REGISTEND_COUNT": "1611",
+        "OPEN_COUNT": "1366",
+        "PAYEND_COUNT": "1361",
+        "OPEN_CVR": "13.06",
+        "PAYEND_CVR": "13.01",
+        "AVG_NET_SALES": "343464",
+        "TOTAL_NET_SALES": "561220458"
+      }
+    ],
+    "null_info": {
+      "YEAR_MONTH": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "MAIN_CATEGORY_NAME": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "RECEIVE_PATH_NAME": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "INFLOW_PATH_NAME": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CONTRACT_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "REGISTEND_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "OPEN_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "PAYEND_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "OPEN_CVR": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "PAYEND_CVR": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "AVG_NET_SALES": {
+        "null_count": 1099,
+        "null_pct": 14.01
+      },
+      "TOTAL_NET_SALES": {
+        "null_count": 0,
+        "null_pct": 0.0
+      }
+    },
+    "column_stats": {
+      "YEAR_MONTH": {
+        "min": "2021-08-01",
+        "max": "2026-12-01",
+        "distinct_count": 62,
+        "all_values": [
+          "2021-08-01",
+          "2021-10-01",
+          "2021-11-01",
+          "2022-01-01",
+          "2022-02-01",
+          "2022-03-01",
+          "2022-04-01",
+          "2022-05-01",
+          "2022-06-01",
+          "2022-07-01",
+          "2022-08-01",
+          "2022-09-01",
+          "2022-10-01",
+          "2022-11-01",
+          "2022-12-01",
+          "2023-01-01",
+          "2023-02-01",
+          "2023-03-01",
+          "2023-04-01",
+          "2023-05-01",
+          "2023-06-01",
+          "2023-07-01",
+          "2023-08-01",
+          "2023-09-01",
+          "2023-10-01",
+          "2023-11-01",
+          "2023-12-01",
+          "2024-01-01",
+          "2024-02-01",
+          "2024-03-01",
+          "2024-04-01",
+          "2024-05-01",
+          "2024-06-01",
+          "2024-07-01",
+          "2024-08-01",
+          "2024-09-01",
+          "2024-10-01",
+          "2024-11-01",
+          "2024-12-01",
+          "2025-01-01",
+          "2025-02-01",
+          "2025-03-01",
+          "2025-04-01",
+          "2025-05-01",
+          "2025-06-01",
+          "2025-07-01",
+          "2025-08-01",
+          "2025-09-01",
+          "2025-10-01",
+          "2025-11-01",
+          "2025-12-01",
+          "2026-01-01",
+          "2026-02-01",
+          "2026-03-01",
+          "2026-04-01",
+          "2026-05-01",
+          "2026-06-01",
+          "2026-07-01",
+          "2026-08-01",
+          "2026-09-01",
+          "2026-10-01",
+          "2026-12-01"
+        ]
+      },
+      "MAIN_CATEGORY_NAME": {
+        "distinct_count": 10,
+        "value_distribution": [
+          {
+            "value": "인터넷",
+            "count": 2884
+          },
+          {
+            "value": "렌탈",
+            "count": 1868
+          },
+          {
+            "value": "유심만",
+            "count": 1075
+          },
+          {
+            "value": "모바일",
+            "count": 964
+          },
+          {
+            "value": "알뜰 요금제",
+            "count": 706
+          },
+          {
+            "value": "기업용인터넷",
+            "count": 292
+          },
+          {
+            "value": "다이렉트자보",
+            "count": 42
+          },
+          {
+            "value": "상조",
+            "count": 8
+          },
+          {
+            "value": "부동산",
+            "count": 5
+          },
+          {
+            "value": "이사",
+            "count": 1
+          }
+        ]
+      },
+      "RECEIVE_PATH_NAME": {
+        "distinct_count": 38,
+        "value_distribution": [
+          {
+            "value": "인바운드",
+            "count": 3073
+          },
+          {
+            "value": "플랫폼",
+            "count": 1944
+          },
+          {
+            "value": "카톡",
+            "count": 870
+          },
+          {
+            "value": "기타",
+            "count": 555
+          },
+          {
+            "value": "아정당랜딩",
+            "count": 465
+          },
+          {
+            "value": "ARS전화번호남기기",
+            "count": 215
+          },
+          {
+            "value": "아정당매장",
+            "count": 178
+          },
+          {
+            "value": "다이렉트",
+            "count": 123
+          },
+          {
+            "value": "자리톡",
+            "count": 79
+          },
+          {
+            "value": "뱅크샐러드",
+            "count": 76
+          },
+          {
+            "value": "노써치",
+            "count": 38
+          },
+          {
+            "value": "MJ렌탈",
+            "count": 32
+          },
+          {
+            "value": "BNK경남은행",
+            "count": 24
+          },
+          {
+            "value": "피터팬",
+            "count": 21
+          },
+          {
+            "value": "크레소티",
+            "count": 20
+          },
+          {
+            "value": "딜러앱",
+            "count": 19
+          },
+          {
+            "value": "짐싸",
+            "count": 15
+          },
+          {
+            "value": "웰컴저축은행",
+            "count": 12
+          },
+          {
+            "value": "지혜쌤 ",
+            "count": 9
+          },
+          {
+            "value": "렌트리",
+            "count": 8
+          },
+          {
+            "value": "이청잘",
+            "count": 8
+          },
+          {
+            "value": "아파트너",
+            "count": 8
+          },
+          {
+            "value": "빼기",
+            "count": 7
+          },
+          {
+            "value": "삼쩜삼",
+            "count": 7
+          },
+          {
+            "value": "미분류",
+            "count": 6
+          },
+          {
+            "value": "위드라이브",
+            "count": 5
+          },
+          {
+            "value": "토스",
+            "count": 5
+          },
+          {
+            "value": "마미톡",
+            "count": 4
+          },
+          {
+            "value": "식봄",
+            "count": 4
+          },
+          {
+            "value": "AFART",
+            "count": 4
+          },
+          {
+            "value": "고방",
+            "count": 3
+          },
+          {
+            "value": "모바일 이벤트",
+            "count": 2
+          },
+          {
+            "value": "이사대학",
+            "count": 1
+          },
+          {
+            "value": "이사직영팀",
+            "count": 1
+          },
+          {
+            "value": "오일나우",
+            "count": 1
+          },
+          {
+            "value": "통신의 달인",
+            "count": 1
+          },
+          {
+            "value": "영업용",
+            "count": 1
+          },
+          {
+            "value": "짤스튜디오",
+            "count": 1
+          }
+        ]
+      },
+      "INFLOW_PATH_NAME": {
+        "distinct_count": 57,
+        "value_distribution": [
+          {
+            "value": "미분류",
+            "count": 686
+          },
+          {
+            "value": "재인입",
+            "count": 551
+          },
+          {
+            "value": "인터넷(네이버/구글 등)",
+            "count": 443
+          },
+          {
+            "value": "유튜브(자사)",
+            "count": 404
+          },
+          {
+            "value": "카카오",
+            "count": 358
+          },
+          {
+            "value": "블로그",
+            "count": 356
+          },
+          {
+            "value": "네이버 브랜드 검색 광고",
+            "count": 354
+          },
+          {
+            "value": "기타",
+            "count": 336
+          },
+          {
+            "value": "전화예약상담",
+            "count": 332
+          },
+          {
+            "value": "유튜브(PPL)",
+            "count": 321
+          },
+          {
+            "value": "랜딩페이지",
+            "count": 311
+          },
+          {
+            "value": "플랫폼",
+            "count": 299
+          },
+          {
+            "value": "카페",
+            "count": 262
+          },
+          {
+            "value": "지인추천",
+            "count": 237
+          },
+          {
+            "value": "아정당 이사",
+            "count": 225
+          },
+          {
+            "value": "네이버 파워링크 광고",
+            "count": 210
+          },
+          {
+            "value": "바로상담",
+            "count": 185
+          },
+          {
+            "value": "지식인",
+            "count": 166
+          },
+          {
+            "value": "협력업체",
+            "count": 160
+          },
+          {
+            "value": "TV광고",
+            "count": 117
+          },
+          {
+            "value": "제휴업체",
+            "count": 115
+          },
+          {
+            "value": "추천질문지",
+            "count": 113
+          },
+          {
+            "value": "방문고객",
+            "count": 112
+          },
+          {
+            "value": "페이스북",
+            "count": 109
+          },
+          {
+            "value": "디시",
+            "count": 102
+          },
+          {
+            "value": "바로가입",
+            "count": 85
+          },
+          {
+            "value": "사전예약이벤트",
+            "count": 84
+          },
+          {
+            "value": "뽐뿌",
+            "count": 72
+          },
+          {
+            "value": "인스타",
+            "count": 67
+          },
+          {
+            "value": "당근",
+            "count": 66
+          },
+          {
+            "value": "틱톡",
+            "count": 64
+          },
+          {
+            "value": "그로스마케팅",
+            "count": 63
+          },
+          {
+            "value": "렌탈전용상담",
+            "count": 61
+          },
+          {
+            "value": "CCTV랜딩",
+            "count": 43
+          },
+          {
+            "value": "블라인드",
+            "count": 39
+          },
+          {
+            "value": "기업용",
+            "count": 39
+          },
+          {
+            "value": "아정당 청소",
+            "count": 35
+          },
+          {
+            "value": "고객신청서완료",
+            "count": 28
+          },
+          {
+            "value": "매장전화인입",
+            "count": 27
+          },
+          {
+            "value": "외부행사",
+            "count": 25
+          },
+          {
+            "value": "네이버플레이스",
+            "count": 22
+          },
+          {
+            "value": "전화예약상담(자보)",
+            "count": 22
+          },
+          {
+            "value": "MJ 협력업체",
+            "count": 20
+          },
+          {
+            "value": "통달",
+            "count": 17
+          },
+          {
+            "value": "지마켓",
+            "count": 16
+          },
+          {
+            "value": "마켓클럽",
+            "count": 15
+          },
+          {
+            "value": "라디오",
+            "count": 15
+          },
+          {
+            "value": "특가딜",
+            "count": 14
+          },
+          {
+            "value": "옥션",
+            "count": 7
+          },
+          {
+            "value": "SSG렌탈",
+            "count": 7
+          },
+          {
+            "value": "숨고",
+            "count": 6
+          },
+          {
+            "value": "역경매",
+            "count": 5
+          },
+          {
+            "value": "SK매직",
+            "count": 5
+          },
+          {
+            "value": "견적비교",
+            "count": 4
+          },
+          {
+            "value": "골프존",
+            "count": 3
+          },
+          {
+            "value": "이토랜드 ",
+            "count": 3
+          },
+          {
+            "value": "그로스프로모션",
+            "count": 2
+          }
+        ]
+      },
+      "CONTRACT_COUNT": {
+        "min": "5",
+        "max": "61379",
+        "avg": "828.9027",
+        "median": "42.000",
+        "stddev": "3429.7124",
+        "distinct_count": 1609,
+        "null_pct": 0.0
+      },
+      "REGISTEND_COUNT": {
+        "min": "0",
+        "max": "28174",
+        "avg": "320.3294",
+        "median": "13.000",
+        "stddev": "1342.014",
+        "distinct_count": 1152,
+        "null_pct": 0.0
+      },
+      "OPEN_COUNT": {
+        "min": "0",
+        "max": "22529",
+        "avg": "266.0512",
+        "median": "11.000",
+        "stddev": "1105.3041",
+        "distinct_count": 1089,
+        "null_pct": 0.0
+      },
+      "PAYEND_COUNT": {
+        "min": "0",
+        "max": "22460",
+        "avg": "265.8064",
+        "median": "11.000",
+        "stddev": "1112.8495",
+        "distinct_count": 1081,
+        "null_pct": 0.0
+      },
+      "OPEN_CVR": {
+        "min": "0.00",
+        "max": "100.00",
+        "avg": "33.5390",
+        "median": "31.9100",
+        "stddev": "24.8048",
+        "distinct_count": 2722,
+        "null_pct": 0.0
+      },
+      "PAYEND_CVR": {
+        "min": "0.00",
+        "max": "100.00",
+        "avg": "33.2599",
+        "median": "31.5800",
+        "stddev": "25.0332",
+        "distinct_count": 2708,
+        "null_pct": 0.0
+      },
+      "AVG_NET_SALES": {
+        "min": "-720000",
+        "max": "1184700",
+        "avg": "410405.7114",
+        "median": "407143.000",
+        "stddev": "186234.6969",
+        "distinct_count": 6363,
+        "null_pct": 14.01
+      },
+      "TOTAL_NET_SALES": {
+        "min": "-901827000",
+        "max": "11021975546",
+        "avg": "101942822.4224",
+        "median": "3594698.000",
+        "stddev": "423203135.9237",
+        "distinct_count": 6399,
+        "null_pct": 0.0
+      }
+    },
+    "date_columns": [
+      "YEAR_MONTH"
+    ]
+  },
+  "V05_REGIONAL_NEW_INSTALL": {
+    "view_name": "V05_REGIONAL_NEW_INSTALL",
+    "fqn": "SOUTH_KOREA_TELECOM_SUBSCRIPTION_ANALYTICS__CONTRACTS_MARKETING_AND_CALL_CENTER_INSIGHTS_BY_REGION.TELECOM_INSIGHTS.V05_REGIONAL_NEW_INSTALL",
+    "columns": [
+      {
+        "name": "YEAR_MONTH",
+        "type": "DATE",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "집계 기준 연월"
+      },
+      {
+        "name": "INSTALL_STATE",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "설치 주소 시도"
+      },
+      {
+        "name": "INSTALL_CITY",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "설치 주소 시군구"
+      },
+      {
+        "name": "CONTRACT_COUNT",
+        "type": "NUMBER(18,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "인터넷 계약 총 건수"
+      },
+      {
+        "name": "OPEN_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "개통 완료 건수"
+      },
+      {
+        "name": "PAYEND_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "지급 완료 건수"
+      },
+      {
+        "name": "BUNDLE_COUNT",
+        "type": "NUMBER(13,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "TV/전화 등 결합 상품 계약 건수"
+      },
+      {
+        "name": "STANDALONE_COUNT",
+        "type": "NUMBER(13,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "인터넷 단독 계약 건수"
+      },
+      {
+        "name": "AVG_NET_SALES",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "0 제외 평균 순매출 (원)"
+      }
+    ],
+    "row_count": 8267,
+    "sample_rows": [
+      {
+        "YEAR_MONTH": "2025-01-01",
+        "INSTALL_STATE": "충남",
+        "INSTALL_CITY": "천안시",
+        "CONTRACT_COUNT": "1239",
+        "OPEN_COUNT": "938",
+        "PAYEND_COUNT": "938",
+        "BUNDLE_COUNT": "376",
+        "STANDALONE_COUNT": "863",
+        "AVG_NET_SALES": "517507"
+      },
+      {
+        "YEAR_MONTH": "2025-04-01",
+        "INSTALL_STATE": "전북특별자치도",
+        "INSTALL_CITY": "완주군",
+        "CONTRACT_COUNT": "144",
+        "OPEN_COUNT": "113",
+        "PAYEND_COUNT": "113",
+        "BUNDLE_COUNT": "40",
+        "STANDALONE_COUNT": "104",
+        "AVG_NET_SALES": "449168"
+      },
+      {
+        "YEAR_MONTH": "2024-12-01",
+        "INSTALL_STATE": "서울",
+        "INSTALL_CITY": "강남구",
+        "CONTRACT_COUNT": "905",
+        "OPEN_COUNT": "682",
+        "PAYEND_COUNT": "680",
+        "BUNDLE_COUNT": "256",
+        "STANDALONE_COUNT": "649",
+        "AVG_NET_SALES": "497365"
+      },
+      {
+        "YEAR_MONTH": "2025-09-01",
+        "INSTALL_STATE": "제주특별자치도",
+        "INSTALL_CITY": "제주시",
+        "CONTRACT_COUNT": "692",
+        "OPEN_COUNT": "493",
+        "PAYEND_COUNT": "493",
+        "BUNDLE_COUNT": "213",
+        "STANDALONE_COUNT": "479",
+        "AVG_NET_SALES": "476947"
+      },
+      {
+        "YEAR_MONTH": "2024-08-01",
+        "INSTALL_STATE": "전북특별자치도",
+        "INSTALL_CITY": "전주시",
+        "CONTRACT_COUNT": "516",
+        "OPEN_COUNT": "397",
+        "PAYEND_COUNT": "397",
+        "BUNDLE_COUNT": "146",
+        "STANDALONE_COUNT": "370",
+        "AVG_NET_SALES": "462838"
+      }
+    ],
+    "null_info": {
+      "YEAR_MONTH": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "INSTALL_STATE": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "INSTALL_CITY": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CONTRACT_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "OPEN_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "PAYEND_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "BUNDLE_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "STANDALONE_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "AVG_NET_SALES": {
+        "null_count": 95,
+        "null_pct": 1.15
+      }
+    },
+    "column_stats": {
+      "YEAR_MONTH": {
+        "min": "2023-02-01",
+        "max": "2027-06-01",
+        "distinct_count": 46,
+        "all_values": [
+          "2023-02-01",
+          "2023-03-01",
+          "2023-04-01",
+          "2023-05-01",
+          "2023-06-01",
+          "2023-07-01",
+          "2023-08-01",
+          "2023-09-01",
+          "2023-10-01",
+          "2023-11-01",
+          "2023-12-01",
+          "2024-01-01",
+          "2024-02-01",
+          "2024-03-01",
+          "2024-04-01",
+          "2024-05-01",
+          "2024-06-01",
+          "2024-07-01",
+          "2024-08-01",
+          "2024-09-01",
+          "2024-10-01",
+          "2024-11-01",
+          "2024-12-01",
+          "2025-01-01",
+          "2025-02-01",
+          "2025-03-01",
+          "2025-04-01",
+          "2025-05-01",
+          "2025-06-01",
+          "2025-07-01",
+          "2025-08-01",
+          "2025-09-01",
+          "2025-10-01",
+          "2025-11-01",
+          "2025-12-01",
+          "2026-01-01",
+          "2026-02-01",
+          "2026-03-01",
+          "2026-04-01",
+          "2026-05-01",
+          "2026-06-01",
+          "2026-07-01",
+          "2026-08-01",
+          "2026-09-01",
+          "2026-12-01",
+          "2027-06-01"
+        ]
+      },
+      "INSTALL_STATE": {
+        "distinct_count": 19,
+        "value_distribution": [
+          {
+            "value": "경기",
+            "count": 1071
+          },
+          {
+            "value": "세종특별자치시",
+            "count": 970
+          },
+          {
+            "value": "서울",
+            "count": 864
+          },
+          {
+            "value": "경북",
+            "count": 644
+          },
+          {
+            "value": "전남",
+            "count": 633
+          },
+          {
+            "value": "강원특별자치도",
+            "count": 552
+          },
+          {
+            "value": "경남",
+            "count": 545
+          },
+          {
+            "value": "부산",
+            "count": 539
+          },
+          {
+            "value": "충남",
+            "count": 482
+          },
+          {
+            "value": "전북특별자치도",
+            "count": 357
+          },
+          {
+            "value": "충북",
+            "count": 346
+          },
+          {
+            "value": "인천",
+            "count": 335
+          },
+          {
+            "value": "대구",
+            "count": 289
+          },
+          {
+            "value": "광주",
+            "count": 170
+          },
+          {
+            "value": "대전",
+            "count": 169
+          },
+          {
+            "value": "울산",
+            "count": 166
+          },
+          {
+            "value": "제주특별자치도",
+            "count": 69
+          },
+          {
+            "value": "전북",
+            "count": 64
+          },
+          {
+            "value": "",
+            "count": 2
+          }
+        ]
+      },
+      "INSTALL_CITY": {
+        "distinct_count": 286,
+        "value_distribution": [
+          {
+            "value": "중구",
+            "count": 200
+          },
+          {
+            "value": "동구",
+            "count": 199
+          },
+          {
+            "value": "서구",
+            "count": 172
+          },
+          {
+            "value": "남구",
+            "count": 138
+          },
+          {
+            "value": "북구",
+            "count": 132
+          },
+          {
+            "value": "강서구",
+            "count": 69
+          },
+          {
+            "value": "고성군",
+            "count": 56
+          },
+          {
+            "value": "전주시",
+            "count": 41
+          },
+          {
+            "value": "고양시",
+            "count": 40
+          },
+          {
+            "value": "천안시",
+            "count": 39
+          },
+          {
+            "value": "부평구",
+            "count": 38
+          },
+          {
+            "value": "화성시",
+            "count": 38
+          },
+          {
+            "value": "청주시",
+            "count": 36
+          },
+          {
+            "value": "강남구",
+            "count": 36
+          },
+          {
+            "value": "부천시",
+            "count": 36
+          },
+          {
+            "value": "구미시",
+            "count": 36
+          },
+          {
+            "value": "수원시",
+            "count": 36
+          },
+          {
+            "value": "포항시",
+            "count": 36
+          },
+          {
+            "value": "달서구",
+            "count": 35
+          },
+          {
+            "value": "동작구",
+            "count": 35
+          },
+          {
+            "value": "파주시",
+            "count": 35
+          },
+          {
+            "value": "제주시",
+            "count": 35
+          },
+          {
+            "value": "양천구",
+            "count": 35
+          },
+          {
+            "value": "노원구",
+            "count": 35
+          },
+          {
+            "value": "연제구",
+            "count": 35
+          },
+          {
+            "value": "정읍시",
+            "count": 35
+          },
+          {
+            "value": "성남시",
+            "count": 35
+          },
+          {
+            "value": "이천시",
+            "count": 35
+          },
+          {
+            "value": "김포시",
+            "count": 35
+          },
+          {
+            "value": "연수구",
+            "count": 35
+          },
+          {
+            "value": "서초구",
+            "count": 35
+          },
+          {
+            "value": "안산시",
+            "count": 35
+          },
+          {
+            "value": "창원시",
+            "count": 35
+          },
+          {
+            "value": "미추홀구",
+            "count": 35
+          },
+          {
+            "value": "양산시",
+            "count": 35
+          },
+          {
+            "value": "광주시",
+            "count": 35
+          },
+          {
+            "value": "남양주시",
+            "count": 35
+          },
+          {
+            "value": "광산구",
+            "count": 35
+          },
+          {
+            "value": "성동구",
+            "count": 35
+          },
+          {
+            "value": "광명시",
+            "count": 35
+          },
+          {
+            "value": "도봉구",
+            "count": 35
+          },
+          {
+            "value": "용인시",
+            "count": 35
+          },
+          {
+            "value": "관악구",
+            "count": 35
+          },
+          {
+            "value": "달성군",
+            "count": 35
+          },
+          {
+            "value": "김해시",
+            "count": 35
+          },
+          {
+            "value": "해운대구",
+            "count": 35
+          },
+          {
+            "value": "평택시",
+            "count": 35
+          },
+          {
+            "value": "영등포구",
+            "count": 35
+          },
+          {
+            "value": "마포구",
+            "count": 35
+          },
+          {
+            "value": "은평구",
+            "count": 35
+          },
+          {
+            "value": "군산시",
+            "count": 35
+          },
+          {
+            "value": "송파구",
+            "count": 35
+          },
+          {
+            "value": "아산시",
+            "count": 34
+          },
+          {
+            "value": "구리시",
+            "count": 34
+          },
+          {
+            "value": "양평군",
+            "count": 34
+          },
+          {
+            "value": "동대문구",
+            "count": 34
+          },
+          {
+            "value": "원주시",
+            "count": 34
+          },
+          {
+            "value": "포천시",
+            "count": 34
+          },
+          {
+            "value": "중랑구",
+            "count": 34
+          },
+          {
+            "value": "금정구",
+            "count": 34
+          },
+          {
+            "value": "순천시",
+            "count": 34
+          },
+          {
+            "value": "안양시",
+            "count": 34
+          },
+          {
+            "value": "안성시",
+            "count": 34
+          },
+          {
+            "value": "시흥시",
+            "count": 34
+          },
+          {
+            "value": "경산시",
+            "count": 34
+          },
+          {
+            "value": "성북구",
+            "count": 34
+          },
+          {
+            "value": "진천군",
+            "count": 34
+          },
+          {
+            "value": "금천구",
+            "count": 34
+          },
+          {
+            "value": "유성구",
+            "count": 34
+          },
+          {
+            "value": "음성군",
+            "count": 34
+          },
+          {
+            "value": "거제시",
+            "count": 34
+          },
+          {
+            "value": "수성구",
+            "count": 34
+          },
+          {
+            "value": "수영구",
+            "count": 34
+          },
+          {
+            "value": "여수시",
+            "count": 34
+          },
+          {
+            "value": "진주시",
+            "count": 34
+          },
+          {
+            "value": "강북구",
+            "count": 34
+          },
+          {
+            "value": "서대문구",
+            "count": 34
+          },
+          {
+            "value": "완주군",
+            "count": 34
+          },
+          {
+            "value": "의정부시",
+            "count": 34
+          },
+          {
+            "value": "오산시",
+            "count": 34
+          },
+          {
+            "value": "양주시",
+            "count": 34
+          },
+          {
+            "value": "의왕시",
+            "count": 34
+          },
+          {
+            "value": "부산진구",
+            "count": 34
+          },
+          {
+            "value": "군포시",
+            "count": 34
+          },
+          {
+            "value": "광진구",
+            "count": 34
+          },
+          {
+            "value": "기장군",
+            "count": 34
+          },
+          {
+            "value": "종로구",
+            "count": 34
+          },
+          {
+            "value": "남동구",
+            "count": 34
+          },
+          {
+            "value": "경주시",
+            "count": 34
+          },
+          {
+            "value": "구로구",
+            "count": 34
+          },
+          {
+            "value": "익산시",
+            "count": 34
+          },
+          {
+            "value": "하남시",
+            "count": 34
+          },
+          {
+            "value": "사하구",
+            "count": 34
+          },
+          {
+            "value": "서귀포시",
+            "count": 34
+          },
+          {
+            "value": "용산구",
+            "count": 34
+          },
+          {
+            "value": "계양구",
+            "count": 34
+          },
+          {
+            "value": "강동구",
+            "count": 34
+          },
+          {
+            "value": "영천시",
+            "count": 33
+          },
+          {
+            "value": "사상구",
+            "count": 33
+          },
+          {
+            "value": "서산시",
+            "count": 33
+          },
+          {
+            "value": "충주시",
+            "count": 33
+          },
+          {
+            "value": "나주시",
+            "count": 33
+          },
+          {
+            "value": "당진시",
+            "count": 33
+          },
+          {
+            "value": "예산군",
+            "count": 33
+          },
+          {
+            "value": "보령시",
+            "count": 33
+          },
+          {
+            "value": "남원시",
+            "count": 33
+          },
+          {
+            "value": "여주시",
+            "count": 33
+          },
+          {
+            "value": "광양시",
+            "count": 33
+          },
+          {
+            "value": "동해시",
+            "count": 33
+          },
+          {
+            "value": "동래구",
+            "count": 33
+          },
+          {
+            "value": "대덕구",
+            "count": 33
+          },
+          {
+            "value": "속초시",
+            "count": 33
+          },
+          {
+            "value": "목포시",
+            "count": 33
+          },
+          {
+            "value": "홍성군",
+            "count": 33
+          },
+          {
+            "value": "사천시",
+            "count": 33
+          },
+          {
+            "value": "김천시",
+            "count": 33
+          },
+          {
+            "value": "안동시",
+            "count": 33
+          },
+          {
+            "value": "김제시",
+            "count": 33
+          },
+          {
+            "value": "무안군",
+            "count": 33
+          },
+          {
+            "value": "과천시",
+            "count": 33
+          },
+          {
+            "value": "가평군",
+            "count": 33
+          },
+          {
+            "value": "계룡시",
+            "count": 33
+          },
+          {
+            "value": "동두천시",
+            "count": 33
+          },
+          {
+            "value": "강화군",
+            "count": 33
+          },
+          {
+            "value": "홍천군",
+            "count": 33
+          },
+          {
+            "value": "강릉시",
+            "count": 33
+          },
+          {
+            "value": "공주시",
+            "count": 33
+          },
+          {
+            "value": "춘천시",
+            "count": 33
+          },
+          {
+            "value": "칠곡군",
+            "count": 33
+          },
+          {
+            "value": "증평군",
+            "count": 33
+          },
+          {
+            "value": "제천시",
+            "count": 33
+          },
+          {
+            "value": "영주시",
+            "count": 33
+          },
+          {
+            "value": "논산시",
+            "count": 33
+          },
+          {
+            "value": "통영시",
+            "count": 33
+          },
+          {
+            "value": "영도구",
+            "count": 33
+          },
+          {
+            "value": "울주군",
+            "count": 33
+          },
+          {
+            "value": "상주시",
+            "count": 33
+          },
+          {
+            "value": "밀양시",
+            "count": 33
+          },
+          {
+            "value": "철원군",
+            "count": 32
+          },
+          {
+            "value": "조치원읍",
+            "count": 32
+          },
+          {
+            "value": "함안군",
+            "count": 32
+          },
+          {
+            "value": "부여군",
+            "count": 32
+          },
+          {
+            "value": "태안군",
+            "count": 32
+          },
+          {
+            "value": "영월군",
+            "count": 31
+          },
+          {
+            "value": "연천군",
+            "count": 31
+          },
+          {
+            "value": "해남군",
+            "count": 31
+          },
+          {
+            "value": "고창군",
+            "count": 31
+          },
+          {
+            "value": "화천군",
+            "count": 31
+          },
+          {
+            "value": "문경시",
+            "count": 31
+          },
+          {
+            "value": "태백시",
+            "count": 31
+          },
+          {
+            "value": "화순군",
+            "count": 31
+          },
+          {
+            "value": "한누리대로",
+            "count": 31
+          },
+          {
+            "value": "영암군",
+            "count": 31
+          },
+          {
+            "value": "해밀3로",
+            "count": 30
+          },
+          {
+            "value": "울진군",
+            "count": 30
+          },
+          {
+            "value": "인제군",
+            "count": 30
+          },
+          {
+            "value": "거창군",
+            "count": 30
+          },
+          {
+            "value": "금산군",
+            "count": 30
+          },
+          {
+            "value": "남세종로",
+            "count": 30
+          },
+          {
+            "value": "영동군",
+            "count": 30
+          },
+          {
+            "value": "시청대로",
+            "count": 30
+          },
+          {
+            "value": "고흥군",
+            "count": 30
+          },
+          {
+            "value": "단양군",
+            "count": 30
+          },
+          {
+            "value": "창녕군",
+            "count": 30
+          },
+          {
+            "value": "예천군",
+            "count": 30
+          },
+          {
+            "value": "삼척시",
+            "count": 29
+          },
+          {
+            "value": "영광군",
+            "count": 29
+          },
+          {
+            "value": "횡성군",
+            "count": 29
+          },
+          {
+            "value": "성주군",
+            "count": 29
+          },
+          {
+            "value": "양양군",
+            "count": 29
+          },
+          {
+            "value": "부안군",
+            "count": 28
+          },
+          {
+            "value": "의성군",
+            "count": 28
+          },
+          {
+            "value": "평창군",
+            "count": 28
+          },
+          {
+            "value": "옥천군",
+            "count": 28
+          },
+          {
+            "value": "괴산군",
+            "count": 28
+          },
+          {
+            "value": "정선군",
+            "count": 28
+          },
+          {
+            "value": "장흥군",
+            "count": 28
+          },
+          {
+            "value": "고령군",
+            "count": 27
+          },
+          {
+            "value": "완도군",
+            "count": 27
+          },
+          {
+            "value": "장성군",
+            "count": 27
+          },
+          {
+            "value": "함양군",
+            "count": 27
+          },
+          {
+            "value": "강진군",
+            "count": 27
+          },
+          {
+            "value": "도움1로",
+            "count": 27
+          },
+          {
+            "value": "양구군",
+            "count": 27
+          },
+          {
+            "value": "청도군",
+            "count": 27
+          },
+          {
+            "value": "진도군",
+            "count": 27
+          },
+          {
+            "value": "남해군",
+            "count": 27
+          },
+          {
+            "value": "보은군",
+            "count": 27
+          },
+          {
+            "value": "서천군",
+            "count": 27
+          },
+          {
+            "value": "새롬중앙로",
+            "count": 26
+          },
+          {
+            "value": "다정중앙로",
+            "count": 26
+          },
+          {
+            "value": "구례군",
+            "count": 25
+          },
+          {
+            "value": "무주군",
+            "count": 25
+          },
+          {
+            "value": "달빛로",
+            "count": 25
+          },
+          {
+            "value": "봉화군",
+            "count": 25
+          },
+          {
+            "value": "합천군",
+            "count": 25
+          },
+          {
+            "value": "영덕군",
+            "count": 25
+          },
+          {
+            "value": "마음로",
+            "count": 25
+          },
+          {
+            "value": "다정북로",
+            "count": 25
+          },
+          {
+            "value": "담양군",
+            "count": 25
+          },
+          {
+            "value": "하동군",
+            "count": 25
+          },
+          {
+            "value": "의령군",
+            "count": 25
+          },
+          {
+            "value": "장수군",
+            "count": 24
+          },
+          {
+            "value": "신안군",
+            "count": 24
+          },
+          {
+            "value": "순창군",
+            "count": 24
+          },
+          {
+            "value": "산청군",
+            "count": 24
+          },
+          {
+            "value": "함평군",
+            "count": 24
+          },
+          {
+            "value": "다솜1로",
+            "count": 24
+          },
+          {
+            "value": "갈매로",
+            "count": 24
+          },
+          {
+            "value": "청양군",
+            "count": 24
+          },
+          {
+            "value": "보성군",
+            "count": 24
+          },
+          {
+            "value": "옹진군",
+            "count": 24
+          },
+          {
+            "value": "임실군",
+            "count": 23
+          },
+          {
+            "value": "곡성군",
+            "count": 23
+          },
+          {
+            "value": "청송군",
+            "count": 23
+          },
+          {
+            "value": "마음안로",
+            "count": 23
+          },
+          {
+            "value": "달빛1로",
+            "count": 22
+          },
+          {
+            "value": "도움3로",
+            "count": 22
+          },
+          {
+            "value": "보듬3로",
+            "count": 22
+          },
+          {
+            "value": "산울7로",
+            "count": 22
+          },
+          {
+            "value": "진안군",
+            "count": 21
+          },
+          {
+            "value": "산울2로",
+            "count": 21
+          },
+          {
+            "value": "누리로",
+            "count": 20
+          },
+          {
+            "value": "대평로",
+            "count": 19
+          },
+          {
+            "value": "다정남로",
+            "count": 18
+          },
+          {
+            "value": "가름로",
+            "count": 18
+          },
+          {
+            "value": "영양군",
+            "count": 18
+          },
+          {
+            "value": "장군면",
+            "count": 18
+          },
+          {
+            "value": "새롬남로",
+            "count": 17
+          },
+          {
+            "value": "연서면",
+            "count": 17
+          },
+          {
+            "value": "금남면",
+            "count": 17
+          },
+          {
+            "value": "집현북로",
+            "count": 16
+          },
+          {
+            "value": "반곡로",
+            "count": 16
+          },
+          {
+            "value": "군위군",
+            "count": 16
+          },
+          {
+            "value": "새롬북로",
+            "count": 15
+          },
+          {
+            "value": "만남로",
+            "count": 15
+          },
+          {
+            "value": "보람로",
+            "count": 15
+          },
+          {
+            "value": "집현서로",
+            "count": 14
+          },
+          {
+            "value": "마음안1로",
+            "count": 13
+          },
+          {
+            "value": "보듬4로",
+            "count": 13
+          },
+          {
+            "value": "울릉군",
+            "count": 13
+          },
+          {
+            "value": "부강면",
+            "count": 12
+          },
+          {
+            "value": "산울3로",
+            "count": 11
+          },
+          {
+            "value": "보듬2로",
+            "count": 10
+          },
+          {
+            "value": "전의면",
+            "count": 10
+          },
+          {
+            "value": "대평3길",
+            "count": 10
+          },
+          {
+            "value": "연기면",
+            "count": 10
+          },
+          {
+            "value": "산울1로",
+            "count": 9
+          },
+          {
+            "value": "나성북1로",
+            "count": 8
+          },
+          {
+            "value": "보람동로",
+            "count": 8
+          },
+          {
+            "value": "중앙공원서로",
+            "count": 8
+          },
+          {
+            "value": "밝은뜰로",
+            "count": 8
+          },
+          {
+            "value": "나리1로",
+            "count": 7
+          },
+          {
+            "value": "노을3로",
+            "count": 7
+          },
+          {
+            "value": "다솜로",
+            "count": 7
+          },
+          {
+            "value": "소정면",
+            "count": 6
+          },
+          {
+            "value": "국세청로",
+            "count": 6
+          },
+          {
+            "value": "절재로",
+            "count": 6
+          },
+          {
+            "value": "대평1길",
+            "count": 6
+          },
+          {
+            "value": "나성로",
+            "count": 6
+          },
+          {
+            "value": "보람1길",
+            "count": 5
+          },
+          {
+            "value": "나성북로",
+            "count": 5
+          },
+          {
+            "value": "반곡1길",
+            "count": 5
+          },
+          {
+            "value": "소담3로",
+            "count": 5
+          },
+          {
+            "value": "연동면",
+            "count": 5
+          },
+          {
+            "value": "새롬로",
+            "count": 4
+          },
+          {
+            "value": "집현서2로",
+            "count": 4
+          },
+          {
+            "value": "나리로",
+            "count": 4
+          },
+          {
+            "value": "전동면",
+            "count": 4
+          },
+          {
+            "value": "소담8로",
+            "count": 3
+          },
+          {
+            "value": "국책연구원1로",
+            "count": 3
+          },
+          {
+            "value": "반곡2길",
+            "count": 3
+          },
+          {
+            "value": "가온로",
+            "count": 2
+          },
+          {
+            "value": "다정서로",
+            "count": 2
+          },
+          {
+            "value": "법원1로",
+            "count": 2
+          },
+          {
+            "value": "소담로",
+            "count": 2
+          },
+          {
+            "value": "호려울로",
+            "count": 2
+          },
+          {
+            "value": "정부2청사로",
+            "count": 1
+          },
+          {
+            "value": "보듬1로",
+            "count": 1
+          },
+          {
+            "value": "노을1로",
+            "count": 1
+          },
+          {
+            "value": "(경서동)",
+            "count": 1
+          },
+          {
+            "value": "집현중앙7로",
+            "count": 1
+          },
+          {
+            "value": "보듬6로",
+            "count": 1
+          },
+          {
+            "value": "새롬중앙1로",
+            "count": 1
+          },
+          {
+            "value": "법원2로",
+            "count": 1
+          },
+          {
+            "value": "(금락리)",
+            "count": 1
+          }
+        ]
+      },
+      "CONTRACT_COUNT": {
+        "min": "5",
+        "max": "3234",
+        "avg": "241.2083",
+        "median": "76.000",
+        "stddev": "367.2922",
+        "distinct_count": 1230,
+        "null_pct": 0.0
+      },
+      "OPEN_COUNT": {
+        "min": "0",
+        "max": "2197",
+        "avg": "175.3190",
+        "median": "53.000",
+        "stddev": "268.5892",
+        "distinct_count": 1003,
+        "null_pct": 0.0
+      },
+      "PAYEND_COUNT": {
+        "min": "0",
+        "max": "2197",
+        "avg": "176.1622",
+        "median": "56.000",
+        "stddev": "267.865",
+        "distinct_count": 1003,
+        "null_pct": 0.0
+      },
+      "BUNDLE_COUNT": {
+        "min": "0",
+        "max": "1090",
+        "avg": "72.8097",
+        "median": "23.000",
+        "stddev": "113.7902",
+        "distinct_count": 539,
+        "null_pct": 0.0
+      },
+      "STANDALONE_COUNT": {
+        "min": "1",
+        "max": "2144",
+        "avg": "168.3986",
+        "median": "53.000",
+        "stddev": "254.2462",
+        "distinct_count": 949,
+        "null_pct": 0.0
+      },
+      "AVG_NET_SALES": {
+        "min": "-125368",
+        "max": "1457057",
+        "avg": "443212.9124",
+        "median": "469073.000",
+        "stddev": "106322.0",
+        "distinct_count": 8007,
+        "null_pct": 1.15
+      }
+    },
+    "date_columns": [
+      "YEAR_MONTH"
+    ]
+  },
+  "V06_RENTAL_CATEGORY_TRENDS": {
+    "view_name": "V06_RENTAL_CATEGORY_TRENDS",
+    "fqn": "SOUTH_KOREA_TELECOM_SUBSCRIPTION_ANALYTICS__CONTRACTS_MARKETING_AND_CALL_CENTER_INSIGHTS_BY_REGION.TELECOM_INSIGHTS.V06_RENTAL_CATEGORY_TRENDS",
+    "columns": [
+      {
+        "name": "YEAR_MONTH",
+        "type": "DATE",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "집계 기준 연월"
+      },
+      {
+        "name": "INSTALL_STATE",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "설치 주소 시도"
+      },
+      {
+        "name": "RENTAL_MAIN_CATEGORY",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "렌탈 대분류 (예: 정수기, 공기청정기 등)"
+      },
+      {
+        "name": "RENTAL_SUB_CATEGORY",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "렌탈 소분류 (브랜드/모델 계열)"
+      },
+      {
+        "name": "CONTRACT_COUNT",
+        "type": "NUMBER(18,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "계약 건수"
+      },
+      {
+        "name": "OPEN_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "개통 완료 건수"
+      },
+      {
+        "name": "PAYEND_COUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "지급 완료 건수"
+      },
+      {
+        "name": "OPEN_CVR",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "개통 완료 전환율 (%)"
+      },
+      {
+        "name": "PAYEND_CVR",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "지급 완료 전환율 (%)"
+      },
+      {
+        "name": "AVG_NET_SALES",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "0 제외 평균 순매출 (원)"
+      },
+      {
+        "name": "AVG_POLICY_AMOUNT",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "0 제외 평균 정책금 총액 (원)"
+      }
+    ],
+    "row_count": 5916,
+    "sample_rows": [
+      {
+        "YEAR_MONTH": "2024-04-01",
+        "INSTALL_STATE": "서울",
+        "RENTAL_MAIN_CATEGORY": "주방가전",
+        "RENTAL_SUB_CATEGORY": "정수기",
+        "CONTRACT_COUNT": "1229",
+        "OPEN_COUNT": "1003",
+        "PAYEND_COUNT": "1003",
+        "OPEN_CVR": "81.61",
+        "PAYEND_CVR": "81.61",
+        "AVG_NET_SALES": "293877",
+        "AVG_POLICY_AMOUNT": "382640"
+      },
+      {
+        "YEAR_MONTH": "2024-11-01",
+        "INSTALL_STATE": "부산",
+        "RENTAL_MAIN_CATEGORY": "주방가전",
+        "RENTAL_SUB_CATEGORY": "정수기",
+        "CONTRACT_COUNT": "668",
+        "OPEN_COUNT": "526",
+        "PAYEND_COUNT": "527",
+        "OPEN_CVR": "78.74",
+        "PAYEND_CVR": "78.89",
+        "AVG_NET_SALES": "318772",
+        "AVG_POLICY_AMOUNT": "416021"
+      },
+      {
+        "YEAR_MONTH": "2025-11-01",
+        "INSTALL_STATE": "대구",
+        "RENTAL_MAIN_CATEGORY": "주방가전",
+        "RENTAL_SUB_CATEGORY": "정수기",
+        "CONTRACT_COUNT": "737",
+        "OPEN_COUNT": "541",
+        "PAYEND_COUNT": "541",
+        "OPEN_CVR": "73.41",
+        "PAYEND_CVR": "73.41",
+        "AVG_NET_SALES": "348505",
+        "AVG_POLICY_AMOUNT": "442550"
+      },
+      {
+        "YEAR_MONTH": "2025-03-01",
+        "INSTALL_STATE": "인천",
+        "RENTAL_MAIN_CATEGORY": "주방가전",
+        "RENTAL_SUB_CATEGORY": "정수기",
+        "CONTRACT_COUNT": "1072",
+        "OPEN_COUNT": "817",
+        "PAYEND_COUNT": "817",
+        "OPEN_CVR": "76.21",
+        "PAYEND_CVR": "76.21",
+        "AVG_NET_SALES": "326767",
+        "AVG_POLICY_AMOUNT": "409291"
+      },
+      {
+        "YEAR_MONTH": "2024-06-01",
+        "INSTALL_STATE": "경기",
+        "RENTAL_MAIN_CATEGORY": "주방가전",
+        "RENTAL_SUB_CATEGORY": "정수기",
+        "CONTRACT_COUNT": "2950",
+        "OPEN_COUNT": "2507",
+        "PAYEND_COUNT": "2506",
+        "OPEN_CVR": "84.98",
+        "PAYEND_CVR": "84.95",
+        "AVG_NET_SALES": "301004",
+        "AVG_POLICY_AMOUNT": "392859"
+      }
+    ],
+    "null_info": {
+      "YEAR_MONTH": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "INSTALL_STATE": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "RENTAL_MAIN_CATEGORY": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "RENTAL_SUB_CATEGORY": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CONTRACT_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "OPEN_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "PAYEND_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "OPEN_CVR": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "PAYEND_CVR": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "AVG_NET_SALES": {
+        "null_count": 48,
+        "null_pct": 0.81
+      },
+      "AVG_POLICY_AMOUNT": {
+        "null_count": 492,
+        "null_pct": 8.32
+      }
+    },
+    "column_stats": {
+      "YEAR_MONTH": {
+        "min": "2023-03-01",
+        "max": "2026-06-01",
+        "distinct_count": 40,
+        "all_values": [
+          "2023-03-01",
+          "2023-04-01",
+          "2023-05-01",
+          "2023-06-01",
+          "2023-07-01",
+          "2023-08-01",
+          "2023-09-01",
+          "2023-10-01",
+          "2023-11-01",
+          "2023-12-01",
+          "2024-01-01",
+          "2024-02-01",
+          "2024-03-01",
+          "2024-04-01",
+          "2024-05-01",
+          "2024-06-01",
+          "2024-07-01",
+          "2024-08-01",
+          "2024-09-01",
+          "2024-10-01",
+          "2024-11-01",
+          "2024-12-01",
+          "2025-01-01",
+          "2025-02-01",
+          "2025-03-01",
+          "2025-04-01",
+          "2025-05-01",
+          "2025-06-01",
+          "2025-07-01",
+          "2025-08-01",
+          "2025-09-01",
+          "2025-10-01",
+          "2025-11-01",
+          "2025-12-01",
+          "2026-01-01",
+          "2026-02-01",
+          "2026-03-01",
+          "2026-04-01",
+          "2026-05-01",
+          "2026-06-01"
+        ]
+      },
+      "INSTALL_STATE": {
+        "distinct_count": 19,
+        "value_distribution": [
+          {
+            "value": "경기",
+            "count": 742
+          },
+          {
+            "value": "서울",
+            "count": 582
+          },
+          {
+            "value": "인천",
+            "count": 480
+          },
+          {
+            "value": "부산",
+            "count": 437
+          },
+          {
+            "value": "경남",
+            "count": 402
+          },
+          {
+            "value": "충남",
+            "count": 368
+          },
+          {
+            "value": "경북",
+            "count": 348
+          },
+          {
+            "value": "대구",
+            "count": 334
+          },
+          {
+            "value": "충북",
+            "count": 307
+          },
+          {
+            "value": "광주",
+            "count": 295
+          },
+          {
+            "value": "대전",
+            "count": 294
+          },
+          {
+            "value": "전남",
+            "count": 281
+          },
+          {
+            "value": "강원특별자치도",
+            "count": 271
+          },
+          {
+            "value": "전북특별자치도",
+            "count": 265
+          },
+          {
+            "value": "울산",
+            "count": 210
+          },
+          {
+            "value": "제주특별자치도",
+            "count": 162
+          },
+          {
+            "value": "세종특별자치시",
+            "count": 109
+          },
+          {
+            "value": "전북",
+            "count": 21
+          },
+          {
+            "value": "",
+            "count": 8
+          }
+        ]
+      },
+      "RENTAL_MAIN_CATEGORY": {
+        "distinct_count": 8,
+        "value_distribution": [
+          {
+            "value": "생활가전",
+            "count": 1715
+          },
+          {
+            "value": "주방가전",
+            "count": 1392
+          },
+          {
+            "value": "계절가전",
+            "count": 1099
+          },
+          {
+            "value": "TV/디지털",
+            "count": 839
+          },
+          {
+            "value": "미분류",
+            "count": 432
+          },
+          {
+            "value": "가구",
+            "count": 319
+          },
+          {
+            "value": "헬스 뷰티 반려 기타",
+            "count": 119
+          },
+          {
+            "value": "상업용가전",
+            "count": 1
+          }
+        ]
+      },
+      "RENTAL_SUB_CATEGORY": {
+        "distinct_count": 41,
+        "value_distribution": [
+          {
+            "value": "정수기",
+            "count": 586
+          },
+          {
+            "value": "비데",
+            "count": 501
+          },
+          {
+            "value": "공기청정기",
+            "count": 474
+          },
+          {
+            "value": "미분류",
+            "count": 432
+          },
+          {
+            "value": "세탁기",
+            "count": 394
+          },
+          {
+            "value": "TV",
+            "count": 384
+          },
+          {
+            "value": "냉장고",
+            "count": 346
+          },
+          {
+            "value": "에어컨",
+            "count": 293
+          },
+          {
+            "value": "침대/매트리스",
+            "count": 271
+          },
+          {
+            "value": "건조기",
+            "count": 241
+          },
+          {
+            "value": "노트북",
+            "count": 217
+          },
+          {
+            "value": "청소기",
+            "count": 200
+          },
+          {
+            "value": "안마의자",
+            "count": 196
+          },
+          {
+            "value": "냉난방기",
+            "count": 195
+          },
+          {
+            "value": "컴퓨터/게이밍PC",
+            "count": 166
+          },
+          {
+            "value": "음식물처리기",
+            "count": 154
+          },
+          {
+            "value": "제습기",
+            "count": 128
+          },
+          {
+            "value": "스타일러",
+            "count": 121
+          },
+          {
+            "value": "기타",
+            "count": 89
+          },
+          {
+            "value": "식기세척기",
+            "count": 87
+          },
+          {
+            "value": "김치냉장고",
+            "count": 80
+          },
+          {
+            "value": "전기레인지",
+            "count": 43
+          },
+          {
+            "value": "커피머신",
+            "count": 42
+          },
+          {
+            "value": "프레임",
+            "count": 40
+          },
+          {
+            "value": "프린터",
+            "count": 38
+          },
+          {
+            "value": "전자렌지/오븐",
+            "count": 36
+          },
+          {
+            "value": "연수기",
+            "count": 33
+          },
+          {
+            "value": "태블릿",
+            "count": 31
+          },
+          {
+            "value": "로봇청소기",
+            "count": 29
+          },
+          {
+            "value": "펫케어",
+            "count": 16
+          },
+          {
+            "value": "런닝머신",
+            "count": 11
+          },
+          {
+            "value": "전기밥솥",
+            "count": 11
+          },
+          {
+            "value": "가습기",
+            "count": 9
+          },
+          {
+            "value": "소파",
+            "count": 7
+          },
+          {
+            "value": "제빙기",
+            "count": 5
+          },
+          {
+            "value": "헬스케어/웰니스",
+            "count": 3
+          },
+          {
+            "value": "전자칠판",
+            "count": 2
+          },
+          {
+            "value": "와인셀러",
+            "count": 2
+          },
+          {
+            "value": "냉동고",
+            "count": 1
+          },
+          {
+            "value": "TV장/거실장",
+            "count": 1
+          },
+          {
+            "value": "빔프로젝터",
+            "count": 1
+          }
+        ]
+      },
+      "CONTRACT_COUNT": {
+        "min": "5",
+        "max": "8602",
+        "avg": "93.1109",
+        "median": "14.000",
+        "stddev": "398.8407",
+        "distinct_count": 558,
+        "null_pct": 0.0
+      },
+      "OPEN_COUNT": {
+        "min": "0",
+        "max": "5307",
+        "avg": "65.4167",
+        "median": "6.000",
+        "stddev": "300.0787",
+        "distinct_count": 496,
+        "null_pct": 0.0
+      },
+      "PAYEND_COUNT": {
+        "min": "0",
+        "max": "5306",
+        "avg": "65.7432",
+        "median": "6.000",
+        "stddev": "300.1155",
+        "distinct_count": 498,
+        "null_pct": 0.0
+      },
+      "OPEN_CVR": {
+        "min": "0.00",
+        "max": "100.00",
+        "avg": "47.6766",
+        "median": "50.0000",
+        "stddev": "28.2505",
+        "distinct_count": 1240,
+        "null_pct": 0.0
+      },
+      "PAYEND_CVR": {
+        "min": "0.00",
+        "max": "100.00",
+        "avg": "48.2497",
+        "median": "50.0000",
+        "stddev": "28.5678",
+        "distinct_count": 1254,
+        "null_pct": 0.0
+      },
+      "AVG_NET_SALES": {
+        "min": "-470000",
+        "max": "1844503",
+        "avg": "345921.3839",
+        "median": "328106.500",
+        "stddev": "121512.5958",
+        "distinct_count": 5782,
+        "null_pct": 0.81
+      },
+      "AVG_POLICY_AMOUNT": {
+        "min": "21780",
+        "max": "3790160",
+        "avg": "393231.5371",
+        "median": "385518.000",
+        "stddev": "148745.113",
+        "distinct_count": 5318,
+        "null_pct": 8.32
+      }
+    },
+    "date_columns": [
+      "YEAR_MONTH"
+    ]
+  },
+  "V07_GA4_MARKETING_ATTRIBUTION": {
+    "view_name": "V07_GA4_MARKETING_ATTRIBUTION",
+    "fqn": "SOUTH_KOREA_TELECOM_SUBSCRIPTION_ANALYTICS__CONTRACTS_MARKETING_AND_CALL_CENTER_INSIGHTS_BY_REGION.TELECOM_INSIGHTS.V07_GA4_MARKETING_ATTRIBUTION",
+    "columns": [
+      {
+        "name": "YEAR_MONTH",
+        "type": "DATE",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "집계 기준 연월"
+      },
+      {
+        "name": "UTM_SOURCE",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "UTM 소스 (예: google, naver, facebook, (direct))"
+      },
+      {
+        "name": "UTM_MEDIUM",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "UTM 매체 (예: cpc, organic, referral, (none))"
+      },
+      {
+        "name": "TOTAL_SESSIONS",
+        "type": "NUMBER(30,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "총 세션 수"
+      },
+      {
+        "name": "TOTAL_USERS",
+        "type": "NUMBER(30,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "총 사용자 수"
+      },
+      {
+        "name": "TOTAL_CONSULT_REQUESTS",
+        "type": "NUMBER(30,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "상담 요청 이벤트 총 발생 수"
+      },
+      {
+        "name": "TOTAL_CONSULT_PHONE",
+        "type": "NUMBER(30,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "전화 상담 클릭 총 수"
+      },
+      {
+        "name": "TOTAL_CONSULT_KAKAO",
+        "type": "NUMBER(30,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "카카오 상담 클릭 총 수"
+      },
+      {
+        "name": "TOTAL_CONSULT_CHANNELTALK",
+        "type": "NUMBER(30,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "채널톡 상담 클릭 총 수"
+      },
+      {
+        "name": "TOTAL_CONTRACTS",
+        "type": "NUMBER(30,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "계약 총 건수"
+      },
+      {
+        "name": "CONSULT_CVR",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "상담 요청 전환율 (%) = 상담요청 / 세션"
+      },
+      {
+        "name": "CONTRACT_CVR",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "계약 전환율 (%) = 계약 / 세션"
+      },
+      {
+        "name": "TOTAL_REVENUE",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "총 매출 (원)"
+      }
+    ],
+    "row_count": 8683,
+    "sample_rows": [
+      {
+        "YEAR_MONTH": "2026-04-01",
+        "UTM_SOURCE": "tiktok",
+        "UTM_MEDIUM": "da",
+        "TOTAL_SESSIONS": "5",
+        "TOTAL_USERS": "3",
+        "TOTAL_CONSULT_REQUESTS": "0",
+        "TOTAL_CONSULT_PHONE": "0",
+        "TOTAL_CONSULT_KAKAO": "0",
+        "TOTAL_CONSULT_CHANNELTALK": "0",
+        "TOTAL_CONTRACTS": "0",
+        "CONSULT_CVR": "0.00",
+        "CONTRACT_CVR": "0.00",
+        "TOTAL_REVENUE": "0"
+      },
+      {
+        "YEAR_MONTH": "2026-01-01",
+        "UTM_SOURCE": "ajunews.com",
+        "UTM_MEDIUM": "referral",
+        "TOTAL_SESSIONS": "6",
+        "TOTAL_USERS": "5",
+        "TOTAL_CONSULT_REQUESTS": "0",
+        "TOTAL_CONSULT_PHONE": "0",
+        "TOTAL_CONSULT_KAKAO": "0",
+        "TOTAL_CONSULT_CHANNELTALK": "0",
+        "TOTAL_CONTRACTS": "0",
+        "CONSULT_CVR": "0.00",
+        "CONTRACT_CVR": "0.00",
+        "TOTAL_REVENUE": "0"
+      },
+      {
+        "YEAR_MONTH": "2026-04-01",
+        "UTM_SOURCE": "dailian.co.kr",
+        "UTM_MEDIUM": "referral",
+        "TOTAL_SESSIONS": "25",
+        "TOTAL_USERS": "25",
+        "TOTAL_CONSULT_REQUESTS": "0",
+        "TOTAL_CONSULT_PHONE": "0",
+        "TOTAL_CONSULT_KAKAO": "0",
+        "TOTAL_CONSULT_CHANNELTALK": "0",
+        "TOTAL_CONTRACTS": "0",
+        "CONSULT_CVR": "0.00",
+        "CONTRACT_CVR": "0.00",
+        "TOTAL_REVENUE": "0"
+      },
+      {
+        "YEAR_MONTH": "2026-02-01",
+        "UTM_SOURCE": "m.pay.naver.com",
+        "UTM_MEDIUM": "referral",
+        "TOTAL_SESSIONS": "10",
+        "TOTAL_USERS": "10",
+        "TOTAL_CONSULT_REQUESTS": "0",
+        "TOTAL_CONSULT_PHONE": "0",
+        "TOTAL_CONSULT_KAKAO": "0",
+        "TOTAL_CONSULT_CHANNELTALK": "0",
+        "TOTAL_CONTRACTS": "0",
+        "CONSULT_CVR": "0.00",
+        "CONTRACT_CVR": "0.00",
+        "TOTAL_REVENUE": "0"
+      },
+      {
+        "YEAR_MONTH": "2026-03-01",
+        "UTM_SOURCE": "zep.us",
+        "UTM_MEDIUM": "referral",
+        "TOTAL_SESSIONS": "6",
+        "TOTAL_USERS": "6",
+        "TOTAL_CONSULT_REQUESTS": "0",
+        "TOTAL_CONSULT_PHONE": "0",
+        "TOTAL_CONSULT_KAKAO": "0",
+        "TOTAL_CONSULT_CHANNELTALK": "0",
+        "TOTAL_CONTRACTS": "0",
+        "CONSULT_CVR": "0.00",
+        "CONTRACT_CVR": "0.00",
+        "TOTAL_REVENUE": "0"
+      }
+    ],
+    "null_info": {
+      "YEAR_MONTH": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "UTM_SOURCE": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "UTM_MEDIUM": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "TOTAL_SESSIONS": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "TOTAL_USERS": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "TOTAL_CONSULT_REQUESTS": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "TOTAL_CONSULT_PHONE": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "TOTAL_CONSULT_KAKAO": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "TOTAL_CONSULT_CHANNELTALK": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "TOTAL_CONTRACTS": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CONSULT_CVR": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CONTRACT_CVR": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "TOTAL_REVENUE": {
+        "null_count": 0,
+        "null_pct": 0.0
+      }
+    },
+    "column_stats": {
+      "YEAR_MONTH": {
+        "min": "2025-02-01",
+        "max": "2026-04-01",
+        "distinct_count": 15,
+        "all_values": [
+          "2025-02-01",
+          "2025-03-01",
+          "2025-04-01",
+          "2025-05-01",
+          "2025-06-01",
+          "2025-07-01",
+          "2025-08-01",
+          "2025-09-01",
+          "2025-10-01",
+          "2025-11-01",
+          "2025-12-01",
+          "2026-01-01",
+          "2026-02-01",
+          "2026-03-01",
+          "2026-04-01"
+        ]
+      },
+      "UTM_SOURCE": {
+        "distinct_count": 799,
+        "top_values": [
+          {
+            "value": "nb_influencer_it",
+            "count": 688
+          },
+          {
+            "value": "yt_influencer_entertainment",
+            "count": 578
+          },
+          {
+            "value": "yt_influencer_daily",
+            "count": 356
+          },
+          {
+            "value": "owned",
+            "count": 341
+          },
+          {
+            "value": "yt_influencer_humor",
+            "count": 319
+          },
+          {
+            "value": "naver",
+            "count": 316
+          },
+          {
+            "value": "yt_influencer_sports",
+            "count": 297
+          },
+          {
+            "value": "yt_influencer_information",
+            "count": 286
+          },
+          {
+            "value": "yt_influencer_car",
+            "count": 201
+          },
+          {
+            "value": "nc_money",
+            "count": 193
+          },
+          {
+            "value": "yt_influencer_issue",
+            "count": 178
+          },
+          {
+            "value": "google",
+            "count": 176
+          },
+          {
+            "value": "yt_influencer_interview",
+            "count": 135
+          },
+          {
+            "value": "community_money",
+            "count": 131
+          },
+          {
+            "value": "yt_influencer_politics",
+            "count": 113
+          },
+          {
+            "value": "fb",
+            "count": 105
+          },
+          {
+            "value": "nb_influencer_daily",
+            "count": 105
+          },
+          {
+            "value": "yt_influencer_review",
+            "count": 104
+          },
+          {
+            "value": "ig",
+            "count": 89
+          },
+          {
+            "value": "yt_influencer_food",
+            "count": 82
+          }
+        ]
+      },
+      "UTM_MEDIUM": {
+        "distinct_count": 1808,
+        "top_values": [
+          {
+            "value": "referral",
+            "count": 2178
+          },
+          {
+            "value": "organic",
+            "count": 150
+          },
+          {
+            "value": "(none)",
+            "count": 123
+          },
+          {
+            "value": "da",
+            "count": 79
+          },
+          {
+            "value": "posting",
+            "count": 68
+          },
+          {
+            "value": "cpm",
+            "count": 58
+          },
+          {
+            "value": "comment",
+            "count": 37
+          },
+          {
+            "value": "sa_electronics",
+            "count": 31
+          },
+          {
+            "value": "sa_mvno_phone",
+            "count": 30
+          },
+          {
+            "value": "profile",
+            "count": 29
+          },
+          {
+            "value": "sa_brand",
+            "count": 29
+          },
+          {
+            "value": "Others",
+            "count": 28
+          },
+          {
+            "value": "brandsearch",
+            "count": 24
+          },
+          {
+            "value": "sa",
+            "count": 23
+          },
+          {
+            "value": "츄잉",
+            "count": 19
+          },
+          {
+            "value": "naver_cafe",
+            "count": 18
+          },
+          {
+            "value": "mvno",
+            "count": 18
+          },
+          {
+            "value": "해운대원주민",
+            "count": 18
+          },
+          {
+            "value": "하텍",
+            "count": 18
+          },
+          {
+            "value": "infor",
+            "count": 18
+          }
+        ]
+      },
+      "TOTAL_SESSIONS": {
+        "min": "5",
+        "max": "880461",
+        "avg": "4940.2735",
+        "median": "27.000",
+        "stddev": "43290.9901",
+        "distinct_count": 1541,
+        "null_pct": 0.0
+      },
+      "TOTAL_USERS": {
+        "min": "1",
+        "max": "692983",
+        "avg": "4144.4876",
+        "median": "24.000",
+        "stddev": "34245.72",
+        "distinct_count": 1486,
+        "null_pct": 0.0
+      },
+      "TOTAL_CONSULT_REQUESTS": {
+        "min": "0",
+        "max": "104042",
+        "avg": "214.3927",
+        "median": "1.000",
+        "stddev": "2961.218",
+        "distinct_count": 546,
+        "null_pct": 0.0
+      },
+      "TOTAL_CONSULT_PHONE": {
+        "min": "0",
+        "max": "69565",
+        "avg": "142.3923",
+        "median": "0.000",
+        "stddev": "2022.0803",
+        "distinct_count": 461,
+        "null_pct": 0.0
+      },
+      "TOTAL_CONSULT_KAKAO": {
+        "min": "0",
+        "max": "34477",
+        "avg": "71.9719",
+        "median": "0.000",
+        "stddev": "966.5284",
+        "distinct_count": 358,
+        "null_pct": 0.0
+      },
+      "TOTAL_CONSULT_CHANNELTALK": {
+        "min": "0",
+        "max": "21",
+        "avg": "0.0275",
+        "median": "0.000",
+        "stddev": "0.5127",
+        "distinct_count": 16,
+        "null_pct": 0.0,
+        "value_distribution": [
+          {
+            "value": "0",
+            "count": 8624
+          },
+          {
+            "value": "1",
+            "count": 26
+          },
+          {
+            "value": "2",
+            "count": 9
+          },
+          {
+            "value": "3",
+            "count": 6
+          },
+          {
+            "value": "6",
+            "count": 3
+          },
+          {
+            "value": "15",
+            "count": 2
+          },
+          {
+            "value": "10",
+            "count": 2
+          },
+          {
+            "value": "7",
+            "count": 2
+          },
+          {
+            "value": "5",
+            "count": 2
+          },
+          {
+            "value": "9",
+            "count": 1
+          },
+          {
+            "value": "20",
+            "count": 1
+          },
+          {
+            "value": "8",
+            "count": 1
+          },
+          {
+            "value": "4",
+            "count": 1
+          },
+          {
+            "value": "12",
+            "count": 1
+          },
+          {
+            "value": "11",
+            "count": 1
+          },
+          {
+            "value": "21",
+            "count": 1
+          }
+        ]
+      },
+      "TOTAL_CONTRACTS": {
+        "min": "0",
+        "max": "23175",
+        "avg": "75.6431",
+        "median": "0.000",
+        "stddev": "668.5249",
+        "distinct_count": 468,
+        "null_pct": 0.0
+      },
+      "CONSULT_CVR": {
+        "min": "0.00",
+        "max": "8030.77",
+        "avg": "7.6843",
+        "median": "2.1400",
+        "stddev": "86.8491",
+        "distinct_count": 1402,
+        "null_pct": 0.0
+      },
+      "CONTRACT_CVR": {
+        "min": "0.00",
+        "max": "66.67",
+        "avg": "3.4366",
+        "median": "0.0000",
+        "stddev": "6.6568",
+        "distinct_count": 1109,
+        "null_pct": 0.0
+      },
+      "TOTAL_REVENUE": {
+        "min": "0",
+        "max": "2113112038",
+        "avg": "6598630.5135",
+        "median": "0.000",
+        "stddev": "66774813.2329",
+        "distinct_count": 1663,
+        "null_pct": 0.0
+      }
+    },
+    "date_columns": [
+      "YEAR_MONTH"
+    ]
+  },
+  "V08_GA4_DEVICE_STATS": {
+    "view_name": "V08_GA4_DEVICE_STATS",
+    "fqn": "SOUTH_KOREA_TELECOM_SUBSCRIPTION_ANALYTICS__CONTRACTS_MARKETING_AND_CALL_CENTER_INSIGHTS_BY_REGION.TELECOM_INSIGHTS.V08_GA4_DEVICE_STATS",
+    "columns": [
+      {
+        "name": "YEAR_MONTH",
+        "type": "DATE",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "집계 기준 연월 (2025-01-01 이후 데이터)"
+      },
+      {
+        "name": "DEVICE_CATEGORY",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "디바이스 유형 (mobile, desktop, tablet)"
+      },
+      {
+        "name": "SESSION_COUNT",
+        "type": "NUMBER(30,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "session_start 이벤트 기준 총 세션 수"
+      },
+      {
+        "name": "USER_COUNT",
+        "type": "NUMBER(30,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "세션 기준 순 사용자 수"
+      },
+      {
+        "name": "CONVERSION_EVENT_COUNT",
+        "type": "NUMBER(30,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "전환 이벤트 총 수"
+      },
+      {
+        "name": "CONVERSION_RATE",
+        "type": "NUMBER(38,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "전환율 (%) = 전환 이벤트 / 세션"
+      }
+    ],
+    "row_count": 57,
+    "sample_rows": [
+      {
+        "YEAR_MONTH": "2026-01-01",
+        "DEVICE_CATEGORY": "smart tv",
+        "SESSION_COUNT": "22",
+        "USER_COUNT": "21",
+        "CONVERSION_EVENT_COUNT": "0",
+        "CONVERSION_RATE": "0.00"
+      },
+      {
+        "YEAR_MONTH": "2025-04-01",
+        "DEVICE_CATEGORY": "tablet",
+        "SESSION_COUNT": "25024",
+        "USER_COUNT": "20107",
+        "CONVERSION_EVENT_COUNT": "3206",
+        "CONVERSION_RATE": "12.81"
+      },
+      {
+        "YEAR_MONTH": "2025-02-01",
+        "DEVICE_CATEGORY": "tablet",
+        "SESSION_COUNT": "1809",
+        "USER_COUNT": "1560",
+        "CONVERSION_EVENT_COUNT": "292",
+        "CONVERSION_RATE": "16.14"
+      },
+      {
+        "YEAR_MONTH": "2025-02-01",
+        "DEVICE_CATEGORY": "desktop",
+        "SESSION_COUNT": "59130",
+        "USER_COUNT": "46963",
+        "CONVERSION_EVENT_COUNT": "4264",
+        "CONVERSION_RATE": "7.21"
+      },
+      {
+        "YEAR_MONTH": "2025-07-01",
+        "DEVICE_CATEGORY": "desktop",
+        "SESSION_COUNT": "1423581",
+        "USER_COUNT": "722687",
+        "CONVERSION_EVENT_COUNT": "76792",
+        "CONVERSION_RATE": "5.39"
+      }
+    ],
+    "null_info": {
+      "YEAR_MONTH": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "DEVICE_CATEGORY": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "SESSION_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "USER_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CONVERSION_EVENT_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CONVERSION_RATE": {
+        "null_count": 0,
+        "null_pct": 0.0
+      }
+    },
+    "column_stats": {
+      "YEAR_MONTH": {
+        "min": "2025-02-01",
+        "max": "2026-04-01",
+        "distinct_count": 15,
+        "all_values": [
+          "2025-02-01",
+          "2025-03-01",
+          "2025-04-01",
+          "2025-05-01",
+          "2025-06-01",
+          "2025-07-01",
+          "2025-08-01",
+          "2025-09-01",
+          "2025-10-01",
+          "2025-11-01",
+          "2025-12-01",
+          "2026-01-01",
+          "2026-02-01",
+          "2026-03-01",
+          "2026-04-01"
+        ]
+      },
+      "DEVICE_CATEGORY": {
+        "distinct_count": 4,
+        "value_distribution": [
+          {
+            "value": "desktop",
+            "count": 15
+          },
+          {
+            "value": "mobile",
+            "count": 15
+          },
+          {
+            "value": "tablet",
+            "count": 15
+          },
+          {
+            "value": "smart tv",
+            "count": 12
+          }
+        ]
+      },
+      "SESSION_COUNT": {
+        "min": "6",
+        "max": "2389681",
+        "avg": "752829.8947",
+        "median": "47355.000",
+        "stddev": "857576.4514",
+        "distinct_count": 52,
+        "null_pct": 0.0
+      },
+      "USER_COUNT": {
+        "min": "4",
+        "max": "1703558",
+        "avg": "513144.4035",
+        "median": "37657.000",
+        "stddev": "604053.8044",
+        "distinct_count": 52,
+        "null_pct": 0.0
+      },
+      "CONVERSION_EVENT_COUNT": {
+        "min": "0",
+        "max": "281194",
+        "avg": "58830.3333",
+        "median": "6061.000",
+        "stddev": "83946.2123",
+        "distinct_count": 48,
+        "null_pct": 0.0,
+        "value_distribution": [
+          {
+            "value": "0",
+            "count": 10
+          },
+          {
+            "value": "178415",
+            "count": 1
+          },
+          {
+            "value": "1",
+            "count": 1
+          },
+          {
+            "value": "37612",
+            "count": 1
+          },
+          {
+            "value": "44701",
+            "count": 1
+          },
+          {
+            "value": "6061",
+            "count": 1
+          },
+          {
+            "value": "138957",
+            "count": 1
+          },
+          {
+            "value": "281194",
+            "count": 1
+          },
+          {
+            "value": "47000",
+            "count": 1
+          },
+          {
+            "value": "2669",
+            "count": 1
+          },
+          {
+            "value": "201426",
+            "count": 1
+          },
+          {
+            "value": "2253",
+            "count": 1
+          },
+          {
+            "value": "206393",
+            "count": 1
+          },
+          {
+            "value": "59622",
+            "count": 1
+          },
+          {
+            "value": "202041",
+            "count": 1
+          },
+          {
+            "value": "2737",
+            "count": 1
+          },
+          {
+            "value": "76792",
+            "count": 1
+          },
+          {
+            "value": "4014",
+            "count": 1
+          },
+          {
+            "value": "67572",
+            "count": 1
+          },
+          {
+            "value": "240479",
+            "count": 1
+          },
+          {
+            "value": "173246",
+            "count": 1
+          },
+          {
+            "value": "4136",
+            "count": 1
+          },
+          {
+            "value": "6186",
+            "count": 1
+          },
+          {
+            "value": "47632",
+            "count": 1
+          },
+          {
+            "value": "220903",
+            "count": 1
+          },
+          {
+            "value": "19419",
+            "count": 1
+          },
+          {
+            "value": "82",
+            "count": 1
+          },
+          {
+            "value": "3206",
+            "count": 1
+          },
+          {
+            "value": "3002",
+            "count": 1
+          },
+          {
+            "value": "292",
+            "count": 1
+          },
+          {
+            "value": "33445",
+            "count": 1
+          },
+          {
+            "value": "3298",
+            "count": 1
+          },
+          {
+            "value": "3495",
+            "count": 1
+          },
+          {
+            "value": "35067",
+            "count": 1
+          },
+          {
+            "value": "1507",
+            "count": 1
+          },
+          {
+            "value": "56214",
+            "count": 1
+          },
+          {
+            "value": "214645",
+            "count": 1
+          },
+          {
+            "value": "3520",
+            "count": 1
+          },
+          {
+            "value": "40259",
+            "count": 1
+          },
+          {
+            "value": "131937",
+            "count": 1
+          },
+          {
+            "value": "4264",
+            "count": 1
+          },
+          {
+            "value": "44999",
+            "count": 1
+          },
+          {
+            "value": "41474",
+            "count": 1
+          },
+          {
+            "value": "2083",
+            "count": 1
+          },
+          {
+            "value": "218260",
+            "count": 1
+          },
+          {
+            "value": "2973",
+            "count": 1
+          },
+          {
+            "value": "2",
+            "count": 1
+          },
+          {
+            "value": "237844",
+            "count": 1
+          }
+        ]
+      },
+      "CONVERSION_RATE": {
+        "min": "0.00",
+        "max": "28.57",
+        "avg": "7.4714",
+        "median": "7.8600",
+        "stddev": "5.4929",
+        "distinct_count": 48,
+        "null_pct": 0.0,
+        "value_distribution": [
+          {
+            "value": "0.00",
+            "count": 10
+          },
+          {
+            "value": "3.18",
+            "count": 1
+          },
+          {
+            "value": "5.39",
+            "count": 1
+          },
+          {
+            "value": "12.81",
+            "count": 1
+          },
+          {
+            "value": "10.52",
+            "count": 1
+          },
+          {
+            "value": "16.14",
+            "count": 1
+          },
+          {
+            "value": "2.88",
+            "count": 1
+          },
+          {
+            "value": "7.86",
+            "count": 1
+          },
+          {
+            "value": "4.75",
+            "count": 1
+          },
+          {
+            "value": "9.97",
+            "count": 1
+          },
+          {
+            "value": "14.19",
+            "count": 1
+          },
+          {
+            "value": "2.76",
+            "count": 1
+          },
+          {
+            "value": "11.80",
+            "count": 1
+          },
+          {
+            "value": "10.26",
+            "count": 1
+          },
+          {
+            "value": "2.91",
+            "count": 1
+          },
+          {
+            "value": "9.71",
+            "count": 1
+          },
+          {
+            "value": "11.11",
+            "count": 1
+          },
+          {
+            "value": "10.55",
+            "count": 1
+          },
+          {
+            "value": "13.06",
+            "count": 1
+          },
+          {
+            "value": "11.92",
+            "count": 1
+          },
+          {
+            "value": "13.13",
+            "count": 1
+          },
+          {
+            "value": "6.27",
+            "count": 1
+          },
+          {
+            "value": "11.58",
+            "count": 1
+          },
+          {
+            "value": "2.42",
+            "count": 1
+          },
+          {
+            "value": "11.50",
+            "count": 1
+          },
+          {
+            "value": "9.58",
+            "count": 1
+          },
+          {
+            "value": "7.21",
+            "count": 1
+          },
+          {
+            "value": "4.41",
+            "count": 1
+          },
+          {
+            "value": "9.73",
+            "count": 1
+          },
+          {
+            "value": "12.15",
+            "count": 1
+          },
+          {
+            "value": "3.64",
+            "count": 1
+          },
+          {
+            "value": "10.41",
+            "count": 1
+          },
+          {
+            "value": "11.29",
+            "count": 1
+          },
+          {
+            "value": "10.15",
+            "count": 1
+          },
+          {
+            "value": "2.69",
+            "count": 1
+          },
+          {
+            "value": "8.57",
+            "count": 1
+          },
+          {
+            "value": "10.06",
+            "count": 1
+          },
+          {
+            "value": "12.78",
+            "count": 1
+          },
+          {
+            "value": "9.89",
+            "count": 1
+          },
+          {
+            "value": "14.18",
+            "count": 1
+          },
+          {
+            "value": "3.95",
+            "count": 1
+          },
+          {
+            "value": "6.36",
+            "count": 1
+          },
+          {
+            "value": "9.45",
+            "count": 1
+          },
+          {
+            "value": "7.33",
+            "count": 1
+          },
+          {
+            "value": "6.59",
+            "count": 1
+          },
+          {
+            "value": "6.67",
+            "count": 1
+          },
+          {
+            "value": "3.54",
+            "count": 1
+          },
+          {
+            "value": "28.57",
+            "count": 1
+          }
+        ]
+      }
+    },
+    "date_columns": [
+      "YEAR_MONTH"
+    ]
+  },
+  "V09_MONTHLY_CALL_STATS": {
+    "view_name": "V09_MONTHLY_CALL_STATS",
+    "fqn": "SOUTH_KOREA_TELECOM_SUBSCRIPTION_ANALYTICS__CONTRACTS_MARKETING_AND_CALL_CENTER_INSIGHTS_BY_REGION.TELECOM_INSIGHTS.V09_MONTHLY_CALL_STATS",
+    "columns": [
+      {
+        "name": "YEAR_MONTH",
+        "type": "DATE",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "집계 기준 연월"
+      },
+      {
+        "name": "DIVISION_NAME",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "통화 방향 (수신/발신)"
+      },
+      {
+        "name": "MAIN_CATEGORY_NAME",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "상담 상품 유형 (인터넷, 렌탈, 모바일 등)"
+      },
+      {
+        "name": "CALL_COUNT",
+        "type": "NUMBER(18,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "총 통화 시도 건수"
+      },
+      {
+        "name": "AVG_BILL_SECOND",
+        "type": "NUMBER(38,1)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "0 제외 평균 과금 시간 (초)"
+      },
+      {
+        "name": "AVG_BILL_MINUTE",
+        "type": "NUMBER(38,1)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "0 제외 평균 과금 시간 (분)"
+      },
+      {
+        "name": "MAX_BILL_SECOND",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "최장 통화 시간 (초)"
+      },
+      {
+        "name": "TOTAL_BILL_SECOND",
+        "type": "NUMBER(38,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "총 통화 시간 합계 (초)"
+      },
+      {
+        "name": "CONNECTED_COUNT",
+        "type": "NUMBER(13,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "통화 연결 성공 건수"
+      },
+      {
+        "name": "UNCONNECTED_COUNT",
+        "type": "NUMBER(13,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "통화 연결 실패 건수"
+      },
+      {
+        "name": "CONNECTION_RATE",
+        "type": "NUMBER(23,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "통화 연결률 (%) = 연결 성공 / 총 시도"
+      }
+    ],
+    "row_count": 404,
+    "sample_rows": [
+      {
+        "YEAR_MONTH": "2024-01-01",
+        "DIVISION_NAME": "발신",
+        "MAIN_CATEGORY_NAME": "유심만",
+        "CALL_COUNT": "6",
+        "AVG_BILL_SECOND": "23.0",
+        "AVG_BILL_MINUTE": "0.4",
+        "MAX_BILL_SECOND": "23",
+        "TOTAL_BILL_SECOND": "23",
+        "CONNECTED_COUNT": "1",
+        "UNCONNECTED_COUNT": "5",
+        "CONNECTION_RATE": "16.67"
+      },
+      {
+        "YEAR_MONTH": "2025-03-01",
+        "DIVISION_NAME": "수신",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "CALL_COUNT": "81999",
+        "AVG_BILL_SECOND": "322.1",
+        "AVG_BILL_MINUTE": "5.4",
+        "MAX_BILL_SECOND": "6119",
+        "TOTAL_BILL_SECOND": "17527316",
+        "CONNECTED_COUNT": "54029",
+        "UNCONNECTED_COUNT": "27970",
+        "CONNECTION_RATE": "65.89"
+      },
+      {
+        "YEAR_MONTH": "2024-09-01",
+        "DIVISION_NAME": "발신",
+        "MAIN_CATEGORY_NAME": "렌탈",
+        "CALL_COUNT": "31954",
+        "AVG_BILL_SECOND": "223.3",
+        "AVG_BILL_MINUTE": "3.7",
+        "MAX_BILL_SECOND": "3501",
+        "TOTAL_BILL_SECOND": "5037996",
+        "CONNECTED_COUNT": "22361",
+        "UNCONNECTED_COUNT": "9593",
+        "CONNECTION_RATE": "69.98"
+      },
+      {
+        "YEAR_MONTH": "2024-10-01",
+        "DIVISION_NAME": "발신",
+        "MAIN_CATEGORY_NAME": "유심만",
+        "CALL_COUNT": "12237",
+        "AVG_BILL_SECOND": "258.8",
+        "AVG_BILL_MINUTE": "4.3",
+        "MAX_BILL_SECOND": "6007",
+        "TOTAL_BILL_SECOND": "2260258",
+        "CONNECTED_COUNT": "8656",
+        "UNCONNECTED_COUNT": "3581",
+        "CONNECTION_RATE": "70.74"
+      },
+      {
+        "YEAR_MONTH": "2026-03-01",
+        "DIVISION_NAME": "발신",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "CALL_COUNT": "220258",
+        "AVG_BILL_SECOND": "194.9",
+        "AVG_BILL_MINUTE": "3.2",
+        "MAX_BILL_SECOND": "4858",
+        "TOTAL_BILL_SECOND": "29283195",
+        "CONNECTED_COUNT": "141098",
+        "UNCONNECTED_COUNT": "79160",
+        "CONNECTION_RATE": "64.06"
+      }
+    ],
+    "null_info": {
+      "YEAR_MONTH": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "DIVISION_NAME": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "MAIN_CATEGORY_NAME": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CALL_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "AVG_BILL_SECOND": {
+        "null_count": 3,
+        "null_pct": 0.74
+      },
+      "AVG_BILL_MINUTE": {
+        "null_count": 3,
+        "null_pct": 0.74
+      },
+      "MAX_BILL_SECOND": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "TOTAL_BILL_SECOND": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CONNECTED_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "UNCONNECTED_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CONNECTION_RATE": {
+        "null_count": 0,
+        "null_pct": 0.0
+      }
+    },
+    "column_stats": {
+      "YEAR_MONTH": {
+        "min": "2022-12-01",
+        "max": "2026-03-01",
+        "distinct_count": 36,
+        "all_values": [
+          "2022-12-01",
+          "2023-05-01",
+          "2023-06-01",
+          "2023-07-01",
+          "2023-08-01",
+          "2023-09-01",
+          "2023-10-01",
+          "2023-11-01",
+          "2023-12-01",
+          "2024-01-01",
+          "2024-02-01",
+          "2024-03-01",
+          "2024-04-01",
+          "2024-05-01",
+          "2024-06-01",
+          "2024-07-01",
+          "2024-08-01",
+          "2024-09-01",
+          "2024-10-01",
+          "2024-11-01",
+          "2024-12-01",
+          "2025-01-01",
+          "2025-02-01",
+          "2025-03-01",
+          "2025-04-01",
+          "2025-05-01",
+          "2025-06-01",
+          "2025-07-01",
+          "2025-08-01",
+          "2025-09-01",
+          "2025-10-01",
+          "2025-11-01",
+          "2025-12-01",
+          "2026-01-01",
+          "2026-02-01",
+          "2026-03-01"
+        ]
+      },
+      "DIVISION_NAME": {
+        "distinct_count": 2,
+        "value_distribution": [
+          {
+            "value": "수신",
+            "count": 203
+          },
+          {
+            "value": "발신",
+            "count": 201
+          }
+        ]
+      },
+      "MAIN_CATEGORY_NAME": {
+        "distinct_count": 10,
+        "value_distribution": [
+          {
+            "value": "인터넷",
+            "count": 69
+          },
+          {
+            "value": "렌탈",
+            "count": 63
+          },
+          {
+            "value": "유심만",
+            "count": 61
+          },
+          {
+            "value": "알뜰 요금제",
+            "count": 59
+          },
+          {
+            "value": "모바일",
+            "count": 56
+          },
+          {
+            "value": "기업용인터넷",
+            "count": 50
+          },
+          {
+            "value": "다이렉트자보",
+            "count": 24
+          },
+          {
+            "value": "상조",
+            "count": 9
+          },
+          {
+            "value": "이사",
+            "count": 7
+          },
+          {
+            "value": "부동산",
+            "count": 6
+          }
+        ]
+      },
+      "CALL_COUNT": {
+        "min": "5",
+        "max": "220258",
+        "avg": "23661.1807",
+        "median": "3882.500",
+        "stddev": "37927.8079",
+        "distinct_count": 363,
+        "null_pct": 0.0
+      },
+      "AVG_BILL_SECOND": {
+        "min": "8.0",
+        "max": "720.5",
+        "avg": "216.3778",
+        "median": "219.0000",
+        "stddev": "83.0883",
+        "distinct_count": 385,
+        "null_pct": 0.74
+      },
+      "AVG_BILL_MINUTE": {
+        "min": "0.1",
+        "max": "12.0",
+        "avg": "3.6077",
+        "median": "3.6000",
+        "stddev": "1.3853",
+        "distinct_count": 62,
+        "null_pct": 0.74
+      },
+      "MAX_BILL_SECOND": {
+        "min": "0",
+        "max": "59288",
+        "avg": "3134.8762",
+        "median": "3030.000",
+        "stddev": "3715.3976",
+        "distinct_count": 387,
+        "null_pct": 0.0
+      },
+      "TOTAL_BILL_SECOND": {
+        "min": "0",
+        "max": "29283195",
+        "avg": "3697569.5941",
+        "median": "482665.000",
+        "stddev": "5742546.1318",
+        "distinct_count": 400,
+        "null_pct": 0.0
+      },
+      "CONNECTED_COUNT": {
+        "min": "0",
+        "max": "141098",
+        "avg": "14888.9703",
+        "median": "2104.000",
+        "stddev": "24014.0741",
+        "distinct_count": 339,
+        "null_pct": 0.0
+      },
+      "UNCONNECTED_COUNT": {
+        "min": "0",
+        "max": "79160",
+        "avg": "8772.2104",
+        "median": "1527.500",
+        "stddev": "14433.0419",
+        "distinct_count": 348,
+        "null_pct": 0.0
+      },
+      "CONNECTION_RATE": {
+        "min": "0.00",
+        "max": "100.00",
+        "avg": "56.8945",
+        "median": "62.5000",
+        "stddev": "17.8208",
+        "distinct_count": 375,
+        "null_pct": 0.0
+      }
+    },
+    "date_columns": [
+      "YEAR_MONTH"
+    ]
+  },
+  "V10_HOURLY_CALL_DISTRIBUTION": {
+    "view_name": "V10_HOURLY_CALL_DISTRIBUTION",
+    "fqn": "SOUTH_KOREA_TELECOM_SUBSCRIPTION_ANALYTICS__CONTRACTS_MARKETING_AND_CALL_CENTER_INSIGHTS_BY_REGION.TELECOM_INSIGHTS.V10_HOURLY_CALL_DISTRIBUTION",
+    "columns": [
+      {
+        "name": "HOUR_OF_DAY",
+        "type": "NUMBER(2,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "통화 시작 시각 (0~23)"
+      },
+      {
+        "name": "DAY_OF_WEEK",
+        "type": "NUMBER(2,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "요일 번호 (1=일, 2=월, ..., 7=토)"
+      },
+      {
+        "name": "DAY_OF_WEEK_NAME",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "요일명 (일/월/화/수/목/금/토)"
+      },
+      {
+        "name": "DIVISION_NAME",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "통화 방향 (수신/발신)"
+      },
+      {
+        "name": "CALL_COUNT",
+        "type": "NUMBER(18,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "해당 시간대/요일 총 통화 건수"
+      },
+      {
+        "name": "CONNECTED_COUNT",
+        "type": "NUMBER(13,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "통화 연결 성공 건수"
+      },
+      {
+        "name": "UNCONNECTED_COUNT",
+        "type": "NUMBER(13,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "통화 연결 실패 건수"
+      },
+      {
+        "name": "CONNECTION_RATE",
+        "type": "NUMBER(23,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "통화 연결률 (%)"
+      },
+      {
+        "name": "AVG_BILL_SECOND",
+        "type": "NUMBER(38,1)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "0 제외 평균 과금 시간 (초)"
+      },
+      {
+        "name": "AVG_BILL_MINUTE",
+        "type": "NUMBER(38,1)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "0 제외 평균 과금 시간 (분)"
+      }
+    ],
+    "row_count": 336,
+    "sample_rows": [
+      {
+        "HOUR_OF_DAY": "16",
+        "DAY_OF_WEEK": "4",
+        "DAY_OF_WEEK_NAME": "수",
+        "DIVISION_NAME": "수신",
+        "CALL_COUNT": "39880",
+        "CONNECTED_COUNT": "39051",
+        "UNCONNECTED_COUNT": "829",
+        "CONNECTION_RATE": "97.92",
+        "AVG_BILL_SECOND": "280.3",
+        "AVG_BILL_MINUTE": "4.7"
+      },
+      {
+        "HOUR_OF_DAY": "18",
+        "DAY_OF_WEEK": "6",
+        "DAY_OF_WEEK_NAME": "금",
+        "DIVISION_NAME": "발신",
+        "CALL_COUNT": "12778",
+        "CONNECTED_COUNT": "11713",
+        "UNCONNECTED_COUNT": "1065",
+        "CONNECTION_RATE": "91.67",
+        "AVG_BILL_SECOND": "233.1",
+        "AVG_BILL_MINUTE": "3.9"
+      },
+      {
+        "HOUR_OF_DAY": "12",
+        "DAY_OF_WEEK": "1",
+        "DAY_OF_WEEK_NAME": "일",
+        "DIVISION_NAME": "발신",
+        "CALL_COUNT": "68194",
+        "CONNECTED_COUNT": "63781",
+        "UNCONNECTED_COUNT": "4413",
+        "CONNECTION_RATE": "93.53",
+        "AVG_BILL_SECOND": "196.4",
+        "AVG_BILL_MINUTE": "3.3"
+      },
+      {
+        "HOUR_OF_DAY": "18",
+        "DAY_OF_WEEK": "2",
+        "DAY_OF_WEEK_NAME": "월",
+        "DIVISION_NAME": "발신",
+        "CALL_COUNT": "60462",
+        "CONNECTED_COUNT": "56174",
+        "UNCONNECTED_COUNT": "4288",
+        "CONNECTION_RATE": "92.91",
+        "AVG_BILL_SECOND": "193.8",
+        "AVG_BILL_MINUTE": "3.2"
+      },
+      {
+        "HOUR_OF_DAY": "18",
+        "DAY_OF_WEEK": "0",
+        "DAY_OF_WEEK_NAME": null,
+        "DIVISION_NAME": "수신",
+        "CALL_COUNT": "4681",
+        "CONNECTED_COUNT": "4446",
+        "UNCONNECTED_COUNT": "235",
+        "CONNECTION_RATE": "94.98",
+        "AVG_BILL_SECOND": "431.5",
+        "AVG_BILL_MINUTE": "7.2"
+      }
+    ],
+    "null_info": {
+      "HOUR_OF_DAY": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "DAY_OF_WEEK": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "DAY_OF_WEEK_NAME": {
+        "null_count": 48,
+        "null_pct": 14.29
+      },
+      "DIVISION_NAME": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CALL_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CONNECTED_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "UNCONNECTED_COUNT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CONNECTION_RATE": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "AVG_BILL_SECOND": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "AVG_BILL_MINUTE": {
+        "null_count": 0,
+        "null_pct": 0.0
+      }
+    },
+    "column_stats": {
+      "HOUR_OF_DAY": {
+        "min": "0",
+        "max": "23",
+        "avg": "11.5000",
+        "median": "11.500",
+        "stddev": "6.9325",
+        "distinct_count": 24,
+        "null_pct": 0.0,
+        "value_distribution": [
+          {
+            "value": "11",
+            "count": 14
+          },
+          {
+            "value": "18",
+            "count": 14
+          },
+          {
+            "value": "10",
+            "count": 14
+          },
+          {
+            "value": "7",
+            "count": 14
+          },
+          {
+            "value": "6",
+            "count": 14
+          },
+          {
+            "value": "20",
+            "count": 14
+          },
+          {
+            "value": "1",
+            "count": 14
+          },
+          {
+            "value": "16",
+            "count": 14
+          },
+          {
+            "value": "21",
+            "count": 14
+          },
+          {
+            "value": "23",
+            "count": 14
+          },
+          {
+            "value": "15",
+            "count": 14
+          },
+          {
+            "value": "2",
+            "count": 14
+          },
+          {
+            "value": "4",
+            "count": 14
+          },
+          {
+            "value": "17",
+            "count": 14
+          },
+          {
+            "value": "12",
+            "count": 14
+          },
+          {
+            "value": "14",
+            "count": 14
+          },
+          {
+            "value": "9",
+            "count": 14
+          },
+          {
+            "value": "0",
+            "count": 14
+          },
+          {
+            "value": "13",
+            "count": 14
+          },
+          {
+            "value": "8",
+            "count": 14
+          },
+          {
+            "value": "22",
+            "count": 14
+          },
+          {
+            "value": "3",
+            "count": 14
+          },
+          {
+            "value": "5",
+            "count": 14
+          },
+          {
+            "value": "19",
+            "count": 14
+          }
+        ]
+      },
+      "DAY_OF_WEEK": {
+        "min": "0",
+        "max": "6",
+        "avg": "3.0000",
+        "median": "3.000",
+        "stddev": "2.003",
+        "distinct_count": 7,
+        "null_pct": 0.0,
+        "value_distribution": [
+          {
+            "value": "6",
+            "count": 48
+          },
+          {
+            "value": "5",
+            "count": 48
+          },
+          {
+            "value": "1",
+            "count": 48
+          },
+          {
+            "value": "4",
+            "count": 48
+          },
+          {
+            "value": "2",
+            "count": 48
+          },
+          {
+            "value": "3",
+            "count": 48
+          },
+          {
+            "value": "0",
+            "count": 48
+          }
+        ]
+      },
+      "DAY_OF_WEEK_NAME": {
+        "distinct_count": 6,
+        "value_distribution": [
+          {
+            "value": "화",
+            "count": 48
+          },
+          {
+            "value": "일",
+            "count": 48
+          },
+          {
+            "value": null,
+            "count": 48
+          },
+          {
+            "value": "월",
+            "count": 48
+          },
+          {
+            "value": "금",
+            "count": 48
+          },
+          {
+            "value": "목",
+            "count": 48
+          },
+          {
+            "value": "수",
+            "count": 48
+          }
+        ]
+      },
+      "DIVISION_NAME": {
+        "distinct_count": 2,
+        "value_distribution": [
+          {
+            "value": "발신",
+            "count": 168
+          },
+          {
+            "value": "수신",
+            "count": 168
+          }
+        ]
+      },
+      "CALL_COUNT": {
+        "min": "61",
+        "max": "95002",
+        "avg": "18990.6399",
+        "median": "6016.000",
+        "stddev": "25317.0135",
+        "distinct_count": 326,
+        "null_pct": 0.0
+      },
+      "CONNECTED_COUNT": {
+        "min": "58",
+        "max": "88037",
+        "avg": "17902.3125",
+        "median": "5738.000",
+        "stddev": "23687.9647",
+        "distinct_count": 323,
+        "null_pct": 0.0
+      },
+      "UNCONNECTED_COUNT": {
+        "min": "0",
+        "max": "6965",
+        "avg": "1088.3274",
+        "median": "223.500",
+        "stddev": "1735.4423",
+        "distinct_count": 253,
+        "null_pct": 0.0
+      },
+      "CONNECTION_RATE": {
+        "min": "80.29",
+        "max": "100.00",
+        "avg": "94.6723",
+        "median": "94.3250",
+        "stddev": "2.5981",
+        "distinct_count": 268,
+        "null_pct": 0.0
+      },
+      "AVG_BILL_SECOND": {
+        "min": "188.8",
+        "max": "514.1",
+        "avg": "314.0000",
+        "median": "301.0000",
+        "stddev": "73.8707",
+        "distinct_count": 313,
+        "null_pct": 0.0
+      },
+      "AVG_BILL_MINUTE": {
+        "min": "3.1",
+        "max": "8.6",
+        "avg": "5.2339",
+        "median": "5.0000",
+        "stddev": "1.2336",
+        "distinct_count": 46,
+        "null_pct": 0.0,
+        "value_distribution": [
+          {
+            "value": "4.6",
+            "count": 20
+          },
+          {
+            "value": "4.7",
+            "count": 17
+          },
+          {
+            "value": "6.1",
+            "count": 16
+          },
+          {
+            "value": "4.8",
+            "count": 14
+          },
+          {
+            "value": "4.5",
+            "count": 14
+          },
+          {
+            "value": "3.2",
+            "count": 14
+          },
+          {
+            "value": "6.3",
+            "count": 13
+          },
+          {
+            "value": "3.5",
+            "count": 13
+          },
+          {
+            "value": "4.4",
+            "count": 13
+          },
+          {
+            "value": "3.4",
+            "count": 12
+          },
+          {
+            "value": "4.9",
+            "count": 12
+          },
+          {
+            "value": "5.7",
+            "count": 12
+          },
+          {
+            "value": "5.9",
+            "count": 10
+          },
+          {
+            "value": "6.5",
+            "count": 10
+          },
+          {
+            "value": "6.9",
+            "count": 9
+          },
+          {
+            "value": "6.8",
+            "count": 9
+          },
+          {
+            "value": "5.0",
+            "count": 9
+          },
+          {
+            "value": "5.4",
+            "count": 7
+          },
+          {
+            "value": "6.4",
+            "count": 7
+          },
+          {
+            "value": "3.6",
+            "count": 7
+          },
+          {
+            "value": "5.2",
+            "count": 7
+          },
+          {
+            "value": "7.3",
+            "count": 6
+          },
+          {
+            "value": "6.2",
+            "count": 6
+          },
+          {
+            "value": "5.5",
+            "count": 6
+          },
+          {
+            "value": "3.3",
+            "count": 6
+          },
+          {
+            "value": "6.0",
+            "count": 6
+          },
+          {
+            "value": "3.8",
+            "count": 6
+          },
+          {
+            "value": "7.0",
+            "count": 5
+          },
+          {
+            "value": "5.6",
+            "count": 5
+          },
+          {
+            "value": "3.9",
+            "count": 5
+          },
+          {
+            "value": "7.2",
+            "count": 5
+          },
+          {
+            "value": "6.7",
+            "count": 5
+          },
+          {
+            "value": "6.6",
+            "count": 4
+          },
+          {
+            "value": "4.3",
+            "count": 4
+          },
+          {
+            "value": "7.1",
+            "count": 4
+          },
+          {
+            "value": "4.2",
+            "count": 3
+          },
+          {
+            "value": "5.3",
+            "count": 3
+          },
+          {
+            "value": "7.6",
+            "count": 3
+          },
+          {
+            "value": "7.7",
+            "count": 2
+          },
+          {
+            "value": "8.0",
+            "count": 1
+          },
+          {
+            "value": "8.6",
+            "count": 1
+          },
+          {
+            "value": "5.1",
+            "count": 1
+          },
+          {
+            "value": "7.4",
+            "count": 1
+          },
+          {
+            "value": "5.8",
+            "count": 1
+          },
+          {
+            "value": "3.1",
+            "count": 1
+          },
+          {
+            "value": "3.7",
+            "count": 1
+          }
+        ]
+      }
+    }
+  },
+  "V11_CALL_TO_CONTRACT_CONVERSION": {
+    "view_name": "V11_CALL_TO_CONTRACT_CONVERSION",
+    "fqn": "SOUTH_KOREA_TELECOM_SUBSCRIPTION_ANALYTICS__CONTRACTS_MARKETING_AND_CALL_CENTER_INSIGHTS_BY_REGION.TELECOM_INSIGHTS.V11_CALL_TO_CONTRACT_CONVERSION",
+    "columns": [
+      {
+        "name": "YEAR_MONTH",
+        "type": "DATE",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "집계 기준 연월 (통화 요청일 기준)"
+      },
+      {
+        "name": "MAIN_CATEGORY_NAME",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "상담 상품 유형 (인터넷, 렌탈, 모바일 등)"
+      },
+      {
+        "name": "DIVISION_NAME",
+        "type": "VARCHAR(16777216)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "통화 방향 (수신/발신)"
+      },
+      {
+        "name": "TOTAL_CALLS",
+        "type": "NUMBER(18,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "총 통화 건수"
+      },
+      {
+        "name": "LINKED_CONTRACTS",
+        "type": "NUMBER(18,0)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "연결된 고유 계약서 수"
+      },
+      {
+        "name": "CALLS_PER_CONTRACT",
+        "type": "NUMBER(25,1)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "계약 1건당 평균 통화 횟수"
+      },
+      {
+        "name": "CALL_TO_CONTRACT_CVR",
+        "type": "NUMBER(28,2)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "통화 → 계약 전환율 (%)"
+      },
+      {
+        "name": "AVG_LEADTIME_DAYS",
+        "type": "NUMBER(28,1)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "통화 요청일 → 계약서 생성일 평균 리드타임 (일)"
+      },
+      {
+        "name": "MEDIAN_LEADTIME_DAYS",
+        "type": "NUMBER(13,1)",
+        "kind": "COLUMN",
+        "null?": "Y",
+        "comment": "통화 요청일 → 계약서 생성일 중앙값 리드타임 (일)"
+      }
+    ],
+    "row_count": 404,
+    "sample_rows": [
+      {
+        "YEAR_MONTH": "2024-06-01",
+        "MAIN_CATEGORY_NAME": "알뜰 요금제",
+        "DIVISION_NAME": "수신",
+        "TOTAL_CALLS": "1618",
+        "LINKED_CONTRACTS": "607",
+        "CALLS_PER_CONTRACT": "2.7",
+        "CALL_TO_CONTRACT_CVR": "37.52",
+        "AVG_LEADTIME_DAYS": "-16.9",
+        "MEDIAN_LEADTIME_DAYS": "-2.0"
+      },
+      {
+        "YEAR_MONTH": "2024-03-01",
+        "MAIN_CATEGORY_NAME": "유심만",
+        "DIVISION_NAME": "발신",
+        "TOTAL_CALLS": "2990",
+        "LINKED_CONTRACTS": "555",
+        "CALLS_PER_CONTRACT": "5.4",
+        "CALL_TO_CONTRACT_CVR": "18.56",
+        "AVG_LEADTIME_DAYS": "-8.1",
+        "MEDIAN_LEADTIME_DAYS": "-4.0"
+      },
+      {
+        "YEAR_MONTH": "2024-08-01",
+        "MAIN_CATEGORY_NAME": "알뜰 요금제",
+        "DIVISION_NAME": "수신",
+        "TOTAL_CALLS": "1465",
+        "LINKED_CONTRACTS": "664",
+        "CALLS_PER_CONTRACT": "2.2",
+        "CALL_TO_CONTRACT_CVR": "45.32",
+        "AVG_LEADTIME_DAYS": "-24.3",
+        "MEDIAN_LEADTIME_DAYS": "-1.0"
+      },
+      {
+        "YEAR_MONTH": "2024-08-01",
+        "MAIN_CATEGORY_NAME": "기업용인터넷",
+        "DIVISION_NAME": "발신",
+        "TOTAL_CALLS": "21",
+        "LINKED_CONTRACTS": "12",
+        "CALLS_PER_CONTRACT": "1.8",
+        "CALL_TO_CONTRACT_CVR": "57.14",
+        "AVG_LEADTIME_DAYS": "-5.7",
+        "MEDIAN_LEADTIME_DAYS": "0.0"
+      },
+      {
+        "YEAR_MONTH": "2024-07-01",
+        "MAIN_CATEGORY_NAME": "인터넷",
+        "DIVISION_NAME": "발신",
+        "TOTAL_CALLS": "93050",
+        "LINKED_CONTRACTS": "32059",
+        "CALLS_PER_CONTRACT": "2.9",
+        "CALL_TO_CONTRACT_CVR": "34.45",
+        "AVG_LEADTIME_DAYS": "-7.7",
+        "MEDIAN_LEADTIME_DAYS": "-1.0"
+      }
+    ],
+    "null_info": {
+      "YEAR_MONTH": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "MAIN_CATEGORY_NAME": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "DIVISION_NAME": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "TOTAL_CALLS": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "LINKED_CONTRACTS": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CALLS_PER_CONTRACT": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "CALL_TO_CONTRACT_CVR": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "AVG_LEADTIME_DAYS": {
+        "null_count": 0,
+        "null_pct": 0.0
+      },
+      "MEDIAN_LEADTIME_DAYS": {
+        "null_count": 0,
+        "null_pct": 0.0
+      }
+    },
+    "column_stats": {
+      "YEAR_MONTH": {
+        "min": "2022-12-01",
+        "max": "2026-03-01",
+        "distinct_count": 36,
+        "all_values": [
+          "2022-12-01",
+          "2023-05-01",
+          "2023-06-01",
+          "2023-07-01",
+          "2023-08-01",
+          "2023-09-01",
+          "2023-10-01",
+          "2023-11-01",
+          "2023-12-01",
+          "2024-01-01",
+          "2024-02-01",
+          "2024-03-01",
+          "2024-04-01",
+          "2024-05-01",
+          "2024-06-01",
+          "2024-07-01",
+          "2024-08-01",
+          "2024-09-01",
+          "2024-10-01",
+          "2024-11-01",
+          "2024-12-01",
+          "2025-01-01",
+          "2025-02-01",
+          "2025-03-01",
+          "2025-04-01",
+          "2025-05-01",
+          "2025-06-01",
+          "2025-07-01",
+          "2025-08-01",
+          "2025-09-01",
+          "2025-10-01",
+          "2025-11-01",
+          "2025-12-01",
+          "2026-01-01",
+          "2026-02-01",
+          "2026-03-01"
+        ]
+      },
+      "MAIN_CATEGORY_NAME": {
+        "distinct_count": 10,
+        "value_distribution": [
+          {
+            "value": "인터넷",
+            "count": 69
+          },
+          {
+            "value": "렌탈",
+            "count": 63
+          },
+          {
+            "value": "유심만",
+            "count": 61
+          },
+          {
+            "value": "알뜰 요금제",
+            "count": 59
+          },
+          {
+            "value": "모바일",
+            "count": 56
+          },
+          {
+            "value": "기업용인터넷",
+            "count": 50
+          },
+          {
+            "value": "다이렉트자보",
+            "count": 24
+          },
+          {
+            "value": "상조",
+            "count": 9
+          },
+          {
+            "value": "이사",
+            "count": 7
+          },
+          {
+            "value": "부동산",
+            "count": 6
+          }
+        ]
+      },
+      "DIVISION_NAME": {
+        "distinct_count": 2,
+        "value_distribution": [
+          {
+            "value": "수신",
+            "count": 203
+          },
+          {
+            "value": "발신",
+            "count": 201
+          }
+        ]
+      },
+      "TOTAL_CALLS": {
+        "min": "5",
+        "max": "220258",
+        "avg": "23661.1807",
+        "median": "3882.500",
+        "stddev": "37927.8079",
+        "distinct_count": 363,
+        "null_pct": 0.0
+      },
+      "LINKED_CONTRACTS": {
+        "min": "1",
+        "max": "82161",
+        "avg": "9514.7772",
+        "median": "1261.000",
+        "stddev": "15642.6538",
+        "distinct_count": 353,
+        "null_pct": 0.0
+      },
+      "CALLS_PER_CONTRACT": {
+        "min": "1.0",
+        "max": "25.0",
+        "avg": "2.7312",
+        "median": "2.4000",
+        "stddev": "1.9304",
+        "distinct_count": 53,
+        "null_pct": 0.0
+      },
+      "CALL_TO_CONTRACT_CVR": {
+        "min": "4.00",
+        "max": "100.00",
+        "avg": "44.1961",
+        "median": "41.1950",
+        "stddev": "16.6148",
+        "distinct_count": 367,
+        "null_pct": 0.0
+      },
+      "AVG_LEADTIME_DAYS": {
+        "min": "-180.4",
+        "max": "0.0",
+        "avg": "-17.0097",
+        "median": "-10.4000",
+        "stddev": "20.6206",
+        "distinct_count": 226,
+        "null_pct": 0.0
+      },
+      "MEDIAN_LEADTIME_DAYS": {
+        "min": "-180.0",
+        "max": "0.0",
+        "avg": "-4.0037",
+        "median": "-1.0000",
+        "stddev": "13.4589",
+        "distinct_count": 33,
+        "null_pct": 0.0,
+        "value_distribution": [
+          {
+            "value": "-1.0",
+            "count": 139
+          },
+          {
+            "value": "0.0",
+            "count": 106
+          },
+          {
+            "value": "-2.0",
+            "count": 37
+          },
+          {
+            "value": "-3.0",
+            "count": 25
+          },
+          {
+            "value": "-4.0",
+            "count": 24
+          },
+          {
+            "value": "-5.0",
+            "count": 21
+          },
+          {
+            "value": "-6.0",
+            "count": 16
+          },
+          {
+            "value": "-7.0",
+            "count": 5
+          },
+          {
+            "value": "-8.0",
+            "count": 4
+          },
+          {
+            "value": "-1.5",
+            "count": 2
+          },
+          {
+            "value": "-33.0",
+            "count": 2
+          },
+          {
+            "value": "-3.5",
+            "count": 2
+          },
+          {
+            "value": "-0.5",
+            "count": 1
+          },
+          {
+            "value": "-11.0",
+            "count": 1
+          },
+          {
+            "value": "-52.0",
+            "count": 1
+          },
+          {
+            "value": "-96.0",
+            "count": 1
+          },
+          {
+            "value": "-39.0",
+            "count": 1
+          },
+          {
+            "value": "-9.0",
+            "count": 1
+          },
+          {
+            "value": "-7.5",
+            "count": 1
+          },
+          {
+            "value": "-18.0",
+            "count": 1
+          },
+          {
+            "value": "-15.0",
+            "count": 1
+          },
+          {
+            "value": "-91.0",
+            "count": 1
+          },
+          {
+            "value": "-20.0",
+            "count": 1
+          },
+          {
+            "value": "-62.5",
+            "count": 1
+          },
+          {
+            "value": "-180.0",
+            "count": 1
+          },
+          {
+            "value": "-73.5",
+            "count": 1
+          },
+          {
+            "value": "-10.0",
+            "count": 1
+          },
+          {
+            "value": "-40.0",
+            "count": 1
+          },
+          {
+            "value": "-55.0",
+            "count": 1
+          },
+          {
+            "value": "-69.0",
+            "count": 1
+          },
+          {
+            "value": "-19.0",
+            "count": 1
+          },
+          {
+            "value": "-5.5",
+            "count": 1
+          },
+          {
+            "value": "-16.0",
+            "count": 1
+          }
+        ]
+      }
+    },
+    "date_columns": [
+      "YEAR_MONTH"
+    ]
+  }
+}

@@ -1,0 +1,477 @@
+{
+  "stage_drop": [
+    {
+      "CAT": "기업용인터넷",
+      "STAGE_ORDER": 1,
+      "STAGE_NAME": "CONSULT_REQUEST",
+      "PREV": NaN,
+      "CURR": 2863,
+      "DROP_RATE": NaN,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "기업용인터넷",
+      "STAGE_ORDER": 2,
+      "STAGE_NAME": "SUBSCRIPTION",
+      "PREV": 2863.0,
+      "CURR": 17,
+      "DROP_RATE": 0.9941,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "기업용인터넷",
+      "STAGE_ORDER": 3,
+      "STAGE_NAME": "REGISTEND",
+      "PREV": 17.0,
+      "CURR": 7,
+      "DROP_RATE": 0.5882,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "기업용인터넷",
+      "STAGE_ORDER": 4,
+      "STAGE_NAME": "OPEN",
+      "PREV": 7.0,
+      "CURR": 4,
+      "DROP_RATE": 0.4286,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "기업용인터넷",
+      "STAGE_ORDER": 5,
+      "STAGE_NAME": "PAYEND",
+      "PREV": 4.0,
+      "CURR": 4,
+      "DROP_RATE": 0.0,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "다이렉트자보",
+      "STAGE_ORDER": 1,
+      "STAGE_NAME": "CONSULT_REQUEST",
+      "PREV": NaN,
+      "CURR": 23,
+      "DROP_RATE": NaN,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "다이렉트자보",
+      "STAGE_ORDER": 2,
+      "STAGE_NAME": "SUBSCRIPTION",
+      "PREV": 23.0,
+      "CURR": 980,
+      "DROP_RATE": -41.6087,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "다이렉트자보",
+      "STAGE_ORDER": 3,
+      "STAGE_NAME": "REGISTEND",
+      "PREV": 980.0,
+      "CURR": 197,
+      "DROP_RATE": 0.799,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "다이렉트자보",
+      "STAGE_ORDER": 4,
+      "STAGE_NAME": "OPEN",
+      "PREV": 197.0,
+      "CURR": 943,
+      "DROP_RATE": -3.7868,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "다이렉트자보",
+      "STAGE_ORDER": 5,
+      "STAGE_NAME": "PAYEND",
+      "PREV": 943.0,
+      "CURR": 0,
+      "DROP_RATE": 1.0,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "렌탈",
+      "STAGE_ORDER": 1,
+      "STAGE_NAME": "CONSULT_REQUEST",
+      "PREV": NaN,
+      "CURR": 45840,
+      "DROP_RATE": NaN,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "렌탈",
+      "STAGE_ORDER": 2,
+      "STAGE_NAME": "SUBSCRIPTION",
+      "PREV": 45840.0,
+      "CURR": 37533,
+      "DROP_RATE": 0.1812,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "렌탈",
+      "STAGE_ORDER": 3,
+      "STAGE_NAME": "REGISTEND",
+      "PREV": 37533.0,
+      "CURR": 32456,
+      "DROP_RATE": 0.1353,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "렌탈",
+      "STAGE_ORDER": 4,
+      "STAGE_NAME": "OPEN",
+      "PREV": 32456.0,
+      "CURR": 21901,
+      "DROP_RATE": 0.3252,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "렌탈",
+      "STAGE_ORDER": 5,
+      "STAGE_NAME": "PAYEND",
+      "PREV": 21901.0,
+      "CURR": 21801,
+      "DROP_RATE": 0.0046,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "모바일",
+      "STAGE_ORDER": 1,
+      "STAGE_NAME": "CONSULT_REQUEST",
+      "PREV": NaN,
+      "CURR": 1614,
+      "DROP_RATE": NaN,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "모바일",
+      "STAGE_ORDER": 2,
+      "STAGE_NAME": "SUBSCRIPTION",
+      "PREV": 1614.0,
+      "CURR": 1695,
+      "DROP_RATE": -0.0502,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "모바일",
+      "STAGE_ORDER": 3,
+      "STAGE_NAME": "REGISTEND",
+      "PREV": 1695.0,
+      "CURR": 1578,
+      "DROP_RATE": 0.069,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "모바일",
+      "STAGE_ORDER": 4,
+      "STAGE_NAME": "OPEN",
+      "PREV": 1578.0,
+      "CURR": 1467,
+      "DROP_RATE": 0.0703,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "모바일",
+      "STAGE_ORDER": 5,
+      "STAGE_NAME": "PAYEND",
+      "PREV": 1467.0,
+      "CURR": 1464,
+      "DROP_RATE": 0.002,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "상조",
+      "STAGE_ORDER": 1,
+      "STAGE_NAME": "CONSULT_REQUEST",
+      "PREV": NaN,
+      "CURR": 13,
+      "DROP_RATE": NaN,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "상조",
+      "STAGE_ORDER": 2,
+      "STAGE_NAME": "SUBSCRIPTION",
+      "PREV": 13.0,
+      "CURR": 0,
+      "DROP_RATE": 1.0,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "상조",
+      "STAGE_ORDER": 3,
+      "STAGE_NAME": "REGISTEND",
+      "PREV": 0.0,
+      "CURR": 0,
+      "DROP_RATE": NaN,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "상조",
+      "STAGE_ORDER": 4,
+      "STAGE_NAME": "OPEN",
+      "PREV": 0.0,
+      "CURR": 0,
+      "DROP_RATE": NaN,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "상조",
+      "STAGE_ORDER": 5,
+      "STAGE_NAME": "PAYEND",
+      "PREV": 0.0,
+      "CURR": 0,
+      "DROP_RATE": NaN,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "알뜰 요금제",
+      "STAGE_ORDER": 1,
+      "STAGE_NAME": "CONSULT_REQUEST",
+      "PREV": NaN,
+      "CURR": 1280,
+      "DROP_RATE": NaN,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "알뜰 요금제",
+      "STAGE_ORDER": 2,
+      "STAGE_NAME": "SUBSCRIPTION",
+      "PREV": 1280.0,
+      "CURR": 828,
+      "DROP_RATE": 0.3531,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "알뜰 요금제",
+      "STAGE_ORDER": 3,
+      "STAGE_NAME": "REGISTEND",
+      "PREV": 828.0,
+      "CURR": 582,
+      "DROP_RATE": 0.2971,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "알뜰 요금제",
+      "STAGE_ORDER": 4,
+      "STAGE_NAME": "OPEN",
+      "PREV": 582.0,
+      "CURR": 506,
+      "DROP_RATE": 0.1306,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "알뜰 요금제",
+      "STAGE_ORDER": 5,
+      "STAGE_NAME": "PAYEND",
+      "PREV": 506.0,
+      "CURR": 503,
+      "DROP_RATE": 0.0059,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "유심만",
+      "STAGE_ORDER": 1,
+      "STAGE_NAME": "CONSULT_REQUEST",
+      "PREV": NaN,
+      "CURR": 7020,
+      "DROP_RATE": NaN,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "유심만",
+      "STAGE_ORDER": 2,
+      "STAGE_NAME": "SUBSCRIPTION",
+      "PREV": 7020.0,
+      "CURR": 15625,
+      "DROP_RATE": -1.2258,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "유심만",
+      "STAGE_ORDER": 3,
+      "STAGE_NAME": "REGISTEND",
+      "PREV": 15625.0,
+      "CURR": 12895,
+      "DROP_RATE": 0.1747,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "유심만",
+      "STAGE_ORDER": 4,
+      "STAGE_NAME": "OPEN",
+      "PREV": 12895.0,
+      "CURR": 10649,
+      "DROP_RATE": 0.1742,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "유심만",
+      "STAGE_ORDER": 5,
+      "STAGE_NAME": "PAYEND",
+      "PREV": 10649.0,
+      "CURR": 10574,
+      "DROP_RATE": 0.007,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "인터넷",
+      "STAGE_ORDER": 1,
+      "STAGE_NAME": "CONSULT_REQUEST",
+      "PREV": NaN,
+      "CURR": 139642,
+      "DROP_RATE": NaN,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "인터넷",
+      "STAGE_ORDER": 2,
+      "STAGE_NAME": "SUBSCRIPTION",
+      "PREV": 139642.0,
+      "CURR": 111908,
+      "DROP_RATE": 0.1986,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "인터넷",
+      "STAGE_ORDER": 3,
+      "STAGE_NAME": "REGISTEND",
+      "PREV": 111908.0,
+      "CURR": 95926,
+      "DROP_RATE": 0.1428,
+      "BOTTLENECK_FLAG": false
+    },
+    {
+      "CAT": "인터넷",
+      "STAGE_ORDER": 4,
+      "STAGE_NAME": "OPEN",
+      "PREV": 95926.0,
+      "CURR": 72976,
+      "DROP_RATE": 0.2392,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "인터넷",
+      "STAGE_ORDER": 5,
+      "STAGE_NAME": "PAYEND",
+      "PREV": 72976.0,
+      "CURR": 71746,
+      "DROP_RATE": 0.0169,
+      "BOTTLENECK_FLAG": false
+    }
+  ],
+  "high_drop": [
+    {
+      "CAT": "기업용인터넷",
+      "STAGE_ORDER": 2,
+      "STAGE_NAME": "SUBSCRIPTION",
+      "PREV": 2863.0,
+      "CURR": 17,
+      "DROP_RATE": 0.9941,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "기업용인터넷",
+      "STAGE_ORDER": 3,
+      "STAGE_NAME": "REGISTEND",
+      "PREV": 17.0,
+      "CURR": 7,
+      "DROP_RATE": 0.5882,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "다이렉트자보",
+      "STAGE_ORDER": 3,
+      "STAGE_NAME": "REGISTEND",
+      "PREV": 980.0,
+      "CURR": 197,
+      "DROP_RATE": 0.799,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "다이렉트자보",
+      "STAGE_ORDER": 5,
+      "STAGE_NAME": "PAYEND",
+      "PREV": 943.0,
+      "CURR": 0,
+      "DROP_RATE": 1.0,
+      "BOTTLENECK_FLAG": true
+    },
+    {
+      "CAT": "상조",
+      "STAGE_ORDER": 2,
+      "STAGE_NAME": "SUBSCRIPTION",
+      "PREV": 13.0,
+      "CURR": 0,
+      "DROP_RATE": 1.0,
+      "BOTTLENECK_FLAG": true
+    }
+  ],
+  "bottlenecks": [
+    {
+      "MAIN_CATEGORY_NAME": "상조",
+      "WORST_BOTTLENECK_STAGE": "OPEN",
+      "AVG_DROP_RATE": 1.0,
+      "MAX_DROP_RATE": 1.0,
+      "MONTH_COUNT": 2
+    },
+    {
+      "MAIN_CATEGORY_NAME": "부동산",
+      "WORST_BOTTLENECK_STAGE": "REGISTEND",
+      "AVG_DROP_RATE": 1.0,
+      "MAX_DROP_RATE": 1.0,
+      "MONTH_COUNT": 1
+    },
+    {
+      "MAIN_CATEGORY_NAME": "다이렉트자보",
+      "WORST_BOTTLENECK_STAGE": "PAYEND",
+      "AVG_DROP_RATE": 1.0,
+      "MAX_DROP_RATE": 1.0,
+      "MONTH_COUNT": 7
+    },
+    {
+      "MAIN_CATEGORY_NAME": "기업용인터넷",
+      "WORST_BOTTLENECK_STAGE": "SUBSCRIPTION",
+      "AVG_DROP_RATE": 0.9905,
+      "MAX_DROP_RATE": 0.9955,
+      "MONTH_COUNT": 7
+    },
+    {
+      "MAIN_CATEGORY_NAME": "렌탈",
+      "WORST_BOTTLENECK_STAGE": "OPEN",
+      "AVG_DROP_RATE": 0.3221,
+      "MAX_DROP_RATE": 0.9966,
+      "MONTH_COUNT": 7
+    },
+    {
+      "MAIN_CATEGORY_NAME": "알뜰 요금제",
+      "WORST_BOTTLENECK_STAGE": "REGISTEND",
+      "AVG_DROP_RATE": 0.2748,
+      "MAX_DROP_RATE": 0.5294,
+      "MONTH_COUNT": 7
+    },
+    {
+      "MAIN_CATEGORY_NAME": "인터넷",
+      "WORST_BOTTLENECK_STAGE": "OPEN",
+      "AVG_DROP_RATE": 0.2675,
+      "MAX_DROP_RATE": 0.9259,
+      "MONTH_COUNT": 7
+    },
+    {
+      "MAIN_CATEGORY_NAME": "유심만",
+      "WORST_BOTTLENECK_STAGE": "REGISTEND",
+      "AVG_DROP_RATE": 0.1966,
+      "MAX_DROP_RATE": 0.6437,
+      "MONTH_COUNT": 7
+    },
+    {
+      "MAIN_CATEGORY_NAME": "모바일",
+      "WORST_BOTTLENECK_STAGE": "REGISTEND",
+      "AVG_DROP_RATE": 0.088,
+      "MAX_DROP_RATE": 0.2791,
+      "MONTH_COUNT": 7
+    }
+  ],
+  "major_high_drop": []
+}

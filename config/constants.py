@@ -1,0 +1,148 @@
+"""텔레콤 프로젝트 상수 정의."""
+
+from typing import Final
+
+# ---------------------------------------------------------------------------
+# Marketplace 데이터 소스
+# ---------------------------------------------------------------------------
+TELECOM_MARKETPLACE_DB: Final[str] = (
+    "SOUTH_KOREA_TELECOM_SUBSCRIPTION_ANALYTICS__"
+    "CONTRACTS_MARKETING_AND_CALL_CENTER_INSIGHTS_BY_REGION"
+)
+TELECOM_MARKETPLACE_SCHEMA: Final[str] = "TELECOM_INSIGHTS"
+
+# ---------------------------------------------------------------------------
+# 퍼널 스테이지 (순서 보장)
+# ---------------------------------------------------------------------------
+FUNNEL_STAGES: Final[list[str]] = [
+    "CONSULT_REQUEST",
+    "SUBSCRIPTION",
+    "REGISTEND",
+    "OPEN",
+    "PAYEND",
+]
+
+# ---------------------------------------------------------------------------
+# 상품 카테고리 (한국어 → 영문 키)
+# ---------------------------------------------------------------------------
+PRODUCT_CATEGORIES: Final[dict[str, str]] = {
+    "인터넷": "internet",
+    "렌탈": "rental",
+    "유심만": "usim_only",
+    "모바일": "mobile",
+    "알뜰 요금제": "budget_plan",
+    "기업용인터넷": "biz_internet",
+    "다이렉트자보": "direct_insurance",
+    "상조": "funeral_aid",
+    "부동산": "real_estate",
+    "이사": "moving",
+}
+
+# ---------------------------------------------------------------------------
+# 주요 채널 TOP 15 (V04 RECEIVE_PATH_NAME 기준 계약 건수 상위)
+# ---------------------------------------------------------------------------
+TOP_CHANNELS: Final[list[str]] = [
+    "SK텔링크",
+    "LG유플러스",
+    "KT",
+    "SKB",
+    "SK브로드밴드",
+    "네이버",
+    "카카오",
+    "토스",
+    "당근마켓",
+    "쿠팡",
+    "11번가",
+    "직접유입",
+    "제휴채널",
+    "인바운드",
+    "아웃바운드",
+]
+
+# ---------------------------------------------------------------------------
+# 행정구역 (17개 통합 명칭 — 전북특별자치도 → 전북)
+# ---------------------------------------------------------------------------
+STATES: Final[list[str]] = [
+    "서울",
+    "부산",
+    "대구",
+    "인천",
+    "광주",
+    "대전",
+    "울산",
+    "세종",
+    "경기",
+    "강원",
+    "충북",
+    "충남",
+    "전북",
+    "전남",
+    "경북",
+    "경남",
+    "제주",
+]
+
+# ---------------------------------------------------------------------------
+# 분석 임계값
+# ---------------------------------------------------------------------------
+FUNNEL_DROP_THRESHOLD: Final[float] = 0.15   # 15% 이상 이탈 → 병목
+CHANNEL_MIN_VOLUME: Final[int] = 50           # 채널 분석 최소 계약 건수
+GROWTH_THRESHOLD: Final[float] = 0.10         # 10% MoM 성장 기준
+
+# ---------------------------------------------------------------------------
+# 채널 시뮬레이션 기본 가중치
+# ---------------------------------------------------------------------------
+DEFAULT_WEIGHTS: Final[dict[str, float]] = {
+    "payend_cvr": 0.35,
+    "avg_net_sales": 0.25,
+    "contract_volume": 0.20,
+    "growth_rate": 0.10,
+    "stability": 0.10,
+}
+
+# ---------------------------------------------------------------------------
+# 피처 디스플레이 이름 (영문 컬럼 → 한국어 라벨)
+# ---------------------------------------------------------------------------
+FEATURE_DISPLAY_NAMES: Final[dict[str, str]] = {
+    # 공통
+    "year_month": "기준 년월",
+    "main_category_name": "상품 카테고리",
+    "install_state": "설치 시/도",
+    "install_city": "설치 시/군/구",
+    # 퍼널 지표
+    "total_count": "총 건수",
+    "consult_request_count": "상담 요청 건수",
+    "subscription_count": "가입 신청 건수",
+    "registend_count": "접수 완료 건수",
+    "open_count": "개통 건수",
+    "payend_count": "납입 완료 건수",
+    "contract_count": "계약 건수",
+    # CVR
+    "cvr_consult_request": "상담요청 전환율(%)",
+    "cvr_subscription": "가입신청 전환율(%)",
+    "cvr_registend": "접수 전환율(%)",
+    "cvr_open": "개통 전환율(%)",
+    "cvr_payend": "납입 전환율(%)",
+    "overall_cvr": "전체 전환율(%)",
+    "open_cvr": "개통 전환율(%)",
+    "payend_cvr": "납입완료 전환율(%)",
+    # 채널
+    "receive_path_name": "수신 경로",
+    "inflow_path_name": "유입 경로",
+    # 매출
+    "avg_net_sales": "평균 순매출",
+    "total_net_sales": "총 순매출",
+    "total_revenue": "총 수익",
+    # 마케팅
+    "utm_source": "UTM 소스",
+    "utm_medium": "UTM 매체",
+    "total_sessions": "총 세션수",
+    "total_users": "총 사용자수",
+    "total_consult_requests": "총 상담요청수",
+    "total_contracts": "총 계약수",
+    "consult_cvr": "상담 전환율(%)",
+    "contract_cvr": "계약 전환율(%)",
+    # 지역
+    "bundle_count": "결합 건수",
+    "standalone_count": "단독 건수",
+}

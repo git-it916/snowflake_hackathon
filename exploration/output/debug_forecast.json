@@ -1,0 +1,366 @@
+{
+  "total_rows": 69,
+  "columns": [
+    "SERIES_KEY",
+    "SERIES_TYPE",
+    "TARGET_METRIC",
+    "TS",
+    "FORECAST",
+    "LOWER",
+    "UPPER",
+    "CREATED_AT"
+  ],
+  "series_types": [
+    "CATEGORY",
+    "STATE"
+  ],
+  "cvr_forecast": [
+    {
+      "SERIES_KEY": "기업용인터넷",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-04-01",
+      "FORECAST": 0.01411956635,
+      "LOWER": -0.4095059296,
+      "UPPER": 0.4480307997,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "기업용인터넷",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-05-01",
+      "FORECAST": -0.05521821945,
+      "LOWER": -0.4970776671,
+      "UPPER": 0.3745040329,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "기업용인터넷",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-06-01",
+      "FORECAST": -0.1257668609,
+      "LOWER": -0.5760977406,
+      "UPPER": 0.3151386414,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "렌탈",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-05-01",
+      "FORECAST": 8.72468654,
+      "LOWER": -15.846866812,
+      "UPPER": 33.221316805,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "렌탈",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-06-01",
+      "FORECAST": 6.025308861,
+      "LOWER": -19.242503609,
+      "UPPER": 30.514719074,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "렌탈",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-07-01",
+      "FORECAST": 2.735792043,
+      "LOWER": -22.869469612,
+      "UPPER": 28.430438098,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "모바일",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-05-01",
+      "FORECAST": 8.023521372,
+      "LOWER": -28.259528287,
+      "UPPER": 44.288596639,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "모바일",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-06-01",
+      "FORECAST": 6.915209452,
+      "LOWER": -29.101663833,
+      "UPPER": 42.364036665,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "모바일",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-07-01",
+      "FORECAST": -14.119538579,
+      "LOWER": -49.776999735,
+      "UPPER": 21.557326587,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "알뜰 요금제",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-05-01",
+      "FORECAST": 7.893203842,
+      "LOWER": -17.457388724,
+      "UPPER": 33.157378196,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "알뜰 요금제",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-06-01",
+      "FORECAST": -11.137538374,
+      "LOWER": -36.06715116,
+      "UPPER": 12.893574964,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "알뜰 요금제",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-07-01",
+      "FORECAST": 17.935923912,
+      "LOWER": -6.454551669,
+      "UPPER": 42.429510955,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "유심만",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-05-01",
+      "FORECAST": 6.185503006,
+      "LOWER": -10.876356204,
+      "UPPER": 25.624244308,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "유심만",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-06-01",
+      "FORECAST": 5.405997753,
+      "LOWER": -22.484149869,
+      "UPPER": 31.812919998,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "유심만",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-07-01",
+      "FORECAST": 4.6264925,
+      "LOWER": -30.232464314,
+      "UPPER": 35.138942432,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "인터넷",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-05-01",
+      "FORECAST": -5.498071262,
+      "LOWER": -28.481193978,
+      "UPPER": 17.404786332,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "인터넷",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-06-01",
+      "FORECAST": 7.367141487,
+      "LOWER": -14.978182194,
+      "UPPER": 28.8782745,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    },
+    {
+      "SERIES_KEY": "인터넷",
+      "SERIES_TYPE": "CATEGORY",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2026-07-01",
+      "FORECAST": 4.632979124,
+      "LOWER": -17.012350263,
+      "UPPER": 26.374007253,
+      "CREATED_AT": "2026-04-01 17:32:55.218000"
+    }
+  ],
+  "regional_forecast_count": 51,
+  "regional_sample": [
+    {
+      "SERIES_KEY": "강원특별자치도",
+      "SERIES_TYPE": "STATE",
+      "TARGET_METRIC": "CONTRACT_COUNT",
+      "TS": "2026-05-01",
+      "FORECAST": 2647.893798828,
+      "LOWER": -4597.764434049,
+      "UPPER": 9893.552031706,
+      "CREATED_AT": "2026-04-01 17:35:59.626000"
+    },
+    {
+      "SERIES_KEY": "강원특별자치도",
+      "SERIES_TYPE": "STATE",
+      "TARGET_METRIC": "CONTRACT_COUNT",
+      "TS": "2026-06-01",
+      "FORECAST": 2647.893798828,
+      "LOWER": -4597.764434049,
+      "UPPER": 9893.552031706,
+      "CREATED_AT": "2026-04-01 17:35:59.626000"
+    },
+    {
+      "SERIES_KEY": "강원특별자치도",
+      "SERIES_TYPE": "STATE",
+      "TARGET_METRIC": "CONTRACT_COUNT",
+      "TS": "2026-07-01",
+      "FORECAST": 2712.451416016,
+      "LOWER": -4533.206816862,
+      "UPPER": 9958.109648893,
+      "CREATED_AT": "2026-04-01 17:35:59.626000"
+    },
+    {
+      "SERIES_KEY": "경기",
+      "SERIES_TYPE": "STATE",
+      "TARGET_METRIC": "CONTRACT_COUNT",
+      "TS": "2026-05-01",
+      "FORECAST": 6134.823242188,
+      "LOWER": -98466.743033273,
+      "UPPER": 110736.389517648,
+      "CREATED_AT": "2026-04-01 17:35:59.626000"
+    },
+    {
+      "SERIES_KEY": "경기",
+      "SERIES_TYPE": "STATE",
+      "TARGET_METRIC": "CONTRACT_COUNT",
+      "TS": "2026-06-01",
+      "FORECAST": 9201.177734375,
+      "LOWER": -95400.388541086,
+      "UPPER": 113802.744009836,
+      "CREATED_AT": "2026-04-01 17:35:59.626000"
+    },
+    {
+      "SERIES_KEY": "경기",
+      "SERIES_TYPE": "STATE",
+      "TARGET_METRIC": "CONTRACT_COUNT",
+      "TS": "2026-07-01",
+      "FORECAST": 10757.09375,
+      "LOWER": -93844.472525461,
+      "UPPER": 115358.660025461,
+      "CREATED_AT": "2026-04-01 17:35:59.626000"
+    },
+    {
+      "SERIES_KEY": "경남",
+      "SERIES_TYPE": "STATE",
+      "TARGET_METRIC": "CONTRACT_COUNT",
+      "TS": "2026-05-01",
+      "FORECAST": 1538.291625977,
+      "LOWER": -15881.781986114,
+      "UPPER": 18958.365238067,
+      "CREATED_AT": "2026-04-01 17:35:59.626000"
+    },
+    {
+      "SERIES_KEY": "경남",
+      "SERIES_TYPE": "STATE",
+      "TARGET_METRIC": "CONTRACT_COUNT",
+      "TS": "2026-06-01",
+      "FORECAST": 1721.76550293,
+      "LOWER": -15698.308109161,
+      "UPPER": 19141.83911502,
+      "CREATED_AT": "2026-04-01 17:35:59.626000"
+    },
+    {
+      "SERIES_KEY": "경남",
+      "SERIES_TYPE": "STATE",
+      "TARGET_METRIC": "CONTRACT_COUNT",
+      "TS": "2026-07-01",
+      "FORECAST": 2867.941650391,
+      "LOWER": -14552.1319617,
+      "UPPER": 20288.015262481,
+      "CREATED_AT": "2026-04-01 17:35:59.626000"
+    },
+    {
+      "SERIES_KEY": "경북",
+      "SERIES_TYPE": "STATE",
+      "TARGET_METRIC": "CONTRACT_COUNT",
+      "TS": "2026-05-01",
+      "FORECAST": 902.293518066,
+      "LOWER": -8688.220159098,
+      "UPPER": 10492.807195231,
+      "CREATED_AT": "2026-04-01 17:35:59.626000"
+    }
+  ],
+  "anomaly_total": 65,
+  "anomaly_positive": 14,
+  "anomaly_sample": [
+    {
+      "SERIES_KEY": "기업용인터넷",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2025-06-01",
+      "OBSERVED": 0.65,
+      "EXPECTED": 0.8899999857,
+      "LOWER": -0.540988601,
+      "UPPER": 2.320988572,
+      "IS_ANOMALY": false,
+      "ANOMALY_SCORE": 0.3711845237,
+      "CREATED_AT": "2026-04-01 17:33:29.920000"
+    },
+    {
+      "SERIES_KEY": "모바일",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2025-06-01",
+      "OBSERVED": 16.21,
+      "EXPECTED": 13.152423569,
+      "LOWER": -23.776344851,
+      "UPPER": 50.081191989,
+      "IS_ANOMALY": false,
+      "ANOMALY_SCORE": 0.5644566694,
+      "CREATED_AT": "2026-04-01 17:33:29.920000"
+    },
+    {
+      "SERIES_KEY": "렌탈",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2025-06-01",
+      "OBSERVED": 32.03,
+      "EXPECTED": 31.851354533,
+      "LOWER": 29.23976753,
+      "UPPER": 34.462941536,
+      "IS_ANOMALY": false,
+      "ANOMALY_SCORE": 0.5533268752,
+      "CREATED_AT": "2026-04-01 17:33:29.920000"
+    },
+    {
+      "SERIES_KEY": "인터넷",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2025-06-01",
+      "OBSERVED": 28.98,
+      "EXPECTED": 28.82020362,
+      "LOWER": -6.40083386,
+      "UPPER": 64.041241099,
+      "IS_ANOMALY": false,
+      "ANOMALY_SCORE": 0.5035474577,
+      "CREATED_AT": "2026-04-01 17:33:29.920000"
+    },
+    {
+      "SERIES_KEY": "알뜰 요금제",
+      "TARGET_METRIC": "OVERALL_CVR",
+      "TS": "2025-06-01",
+      "OBSERVED": 39.6,
+      "EXPECTED": 43.437983209,
+      "LOWER": 29.569792385,
+      "UPPER": 57.306174033,
+      "IS_ANOMALY": false,
+      "ANOMALY_SCORE": 0.2937664699,
+      "CREATED_AT": "2026-04-01 17:33:29.920000"
+    }
+  ]
+}

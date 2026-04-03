@@ -1,0 +1,22 @@
+# Snowflake Core
+snowflake-snowpark-python>=1.4.0
+snowflake-connector-python>=3.6.0
+snowflake-ml-python>=1.5.0
+
+# Streamlit UI
+streamlit>=1.30.0
+
+# Data & Analysis
+pandas>=2.0.0
+numpy>=1.24.0
+plotly>=5.18.0
+scipy>=1.11.0
+statsmodels>=0.14.0
+
+# ML & Explainability
+scikit-learn>=1.3.0
+xgboost>=2.0.0
+shap>=0.43.0
+
+# Utils
+python-dotenv>=1.0.0

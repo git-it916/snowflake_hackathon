@@ -1,0 +1,553 @@
+"""Snowpark Session 기반 텔레콤 데이터 로드 헬퍼."""
+
+from __future__ import annotations
+
+import json
+import logging
+from typing import Optional
+
+import pandas as pd
+
+from config.settings import get_streamlit_session
+
+logger = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# Schema 상수
+# ---------------------------------------------------------------------------
+_STAGING = "STAGING"
+_ANALYTICS = "ANALYTICS"
+_MART = "MART"
+
+# ---------------------------------------------------------------------------
+# Cortex 기본 설정
+# ---------------------------------------------------------------------------
+_DEFAULT_MODEL = "llama3.1-405b"
+_DEFAULT_TEMP = 0.3
+_SYSTEM_PROMPT_KR = (
+    "당신은 한국 통신사 가입 퍼널 데이터를 분석하는 시니어 데이터 분석가입니다. "
+    "상담 요청 → 가입 신청 → 접수 → 개통 → 납입 완료까지의 전환 퍼널을 깊이 이해하고, "
+    "채널별 효율, 지역별 수요, 마케팅 성과를 종합적으로 분석합니다. "
+    "한국어로 답변하되, 데이터 근거를 명확히 제시하세요. "
+    "단, 일반적인 인사나 잡담에는 자연스럽게 대화하세요. "
+    "데이터 분석은 사용자가 명시적으로 분석을 요청할 때만 수행하세요. "
+    "예: '안녕' → '안녕하세요! 채널 전략이나 퍼널 분석에 대해 궁금한 점이 있으시면 질문해주세요.'"
+)
+
+
+def _safe_escape(text: str) -> str:
+    """SQL 문자열 내 단일 따옴표 이스케이프."""
+    return text.replace("'", "''")
+
+
+def _qualified(schema: str, table: str) -> str:
+    """TELECOM_DB.<schema>.<table> 형태의 정규화 이름 반환."""
+    return f"TELECOM_DB.{schema}.{table}"
+
+
+class SnowflakeClient:
+    """Snowpark Session 기반 텔레콤 데이터 로더.
+
+    모든 메서드는 원본 데이터를 변경하지 않고 새 DataFrame을 반환합니다.
+    """
+
+    def __init__(self, session=None) -> None:
+        """클라이언트 초기화.
+
+        Args:
+            session: Snowpark Session. None이면 get_streamlit_session() 사용.
+        """
+        self._session = session if session is not None else get_streamlit_session()
+
+    # ------------------------------------------------------------------
+    # 내부 헬퍼
+    # ------------------------------------------------------------------
+
+    def _query(self, sql: str) -> pd.DataFrame:
+        """SQL 실행 후 Pandas DataFrame 반환. 에러 시 빈 DataFrame 반환."""
+        try:
+            return self._session.sql(sql).to_pandas()
+        except Exception:
+            logger.exception("SQL 실행 실패: %s", sql[:200])
+            return pd.DataFrame()
+
+    def _load_table(
+        self,
+        schema: str,
+        table: str,
+        category: Optional[str] = None,
+        state: Optional[str] = None,
+        category_col: str = "MAIN_CATEGORY_NAME",
+        state_col: str = "INSTALL_STATE",
+    ) -> pd.DataFrame:
+        """테이블 로드 + 선택적 필터.
+
+        Args:
+            category_col: 카테고리 필터 컬럼명 (기본: MAIN_CATEGORY_NAME)
+            state_col: 지역 필터 컬럼명 (기본: INSTALL_STATE)
+        """
+        fqn = _qualified(schema, table)
+        conditions: list[str] = []
+
+        if category is not None:
+            conditions.append(f"{category_col} = '{_safe_escape(category)}'")
+        if state is not None:
+            conditions.append(f"{state_col} = '{_safe_escape(state)}'")
+
+        sql = f"SELECT * FROM {fqn}"
+        if conditions:
+            sql += " WHERE " + " AND ".join(conditions)
+
+        return self._query(sql)
+
+    # ------------------------------------------------------------------
+    # MART 테이블 로드
+    # ------------------------------------------------------------------
+
+    def load_kpi(self) -> pd.DataFrame:
+        """MART.DT_KPI — 핵심 KPI 대시보드 데이터."""
+        return self._load_table(_MART, "DT_KPI")
+
+    def load_funnel_timeseries(
+        self, category: Optional[str] = None
+    ) -> pd.DataFrame:
+        """MART.V_FUNNEL_TIMESERIES — 퍼널 시계열 데이터.
+
+        Args:
+            category: 상품 카테고리 필터. None이면 전체 반환.
+        """
+        return self._load_table(_MART, "V_FUNNEL_TIMESERIES", category=category)
+
+    def load_channel_performance(
+        self, category: Optional[str] = None
+    ) -> pd.DataFrame:
+        """MART.V_CHANNEL_PERFORMANCE — 채널 성과 뷰."""
+        return self._load_table(_MART, "V_CHANNEL_PERFORMANCE", category=category)
+
+    def load_regional_heatmap(self) -> pd.DataFrame:
+        """MART.V_REGIONAL_HEATMAP — 지역 히트맵 뷰."""
+        return self._load_table(_MART, "V_REGIONAL_HEATMAP")
+
+    def load_forecast(self, metric: str = "CONTRACT_COUNT") -> pd.DataFrame:
+        """MART.FORECAST_OUTPUT — 예측 결과.
+
+        Args:
+            metric: 필터할 TARGET_METRIC 값 (기본: CONTRACT_COUNT).
+                    None이면 전체 반환.
+        """
+        df = self._load_table(_MART, "FORECAST_OUTPUT")
+        if metric and not df.empty and "TARGET_METRIC" in df.columns:
+            filtered = df[df["TARGET_METRIC"] == metric]
+            return filtered
+        return df
+
+    def load_anomalies(self) -> pd.DataFrame:
+        """MART.ANOMALY_OUTPUT — 이상 탐지 결과."""
+        return self._load_table(_MART, "ANOMALY_OUTPUT")
+
+    def load_data_quality(self) -> pd.DataFrame:
+        """MART.DATA_QUALITY_RESULTS — 데이터 품질 검증 결과."""
+        return self._query(
+            "SELECT * FROM TELECOM_DB.MART.DATA_QUALITY_RESULTS ORDER BY CHECK_TIME DESC"
+        )
+
+    def load_lineage(self) -> pd.DataFrame:
+        """MART.V_TABLE_LINEAGE — 테이블 의존성 계보."""
+        return self._query("SELECT * FROM TELECOM_DB.MART.V_TABLE_LINEAGE")
+
+    def load_lineage_summary(self) -> pd.DataFrame:
+        """MART.V_LINEAGE_SUMMARY — 파이프라인 계보 요약."""
+        return self._query("SELECT * FROM TELECOM_DB.MART.V_LINEAGE_SUMMARY")
+
+    def load_channel_ai_insight(self) -> pd.DataFrame:
+        """MART.CHANNEL_AI_INSIGHT — Cortex AI 채널 분석."""
+        return self._load_table(_MART, "CHANNEL_AI_INSIGHT")
+
+    def load_regional_ai_insight(self) -> pd.DataFrame:
+        """MART.REGIONAL_AI_INSIGHT — Cortex AI 지역 분석."""
+        return self._load_table(_MART, "REGIONAL_AI_INSIGHT")
+
+    # ------------------------------------------------------------------
+    # ANALYTICS 테이블 로드
+    # ------------------------------------------------------------------
+
+    def load_funnel_bottlenecks(self) -> pd.DataFrame:
+        """ANALYTICS.FUNNEL_BOTTLENECKS — 퍼널 병목 분석 결과."""
+        return self._load_table(_ANALYTICS, "FUNNEL_BOTTLENECKS")
+
+    def load_funnel_stage_drop(
+        self, category: Optional[str] = None
+    ) -> pd.DataFrame:
+        """ANALYTICS.FUNNEL_STAGE_DROP — 퍼널 스테이지 이탈 데이터.
+
+        Args:
+            category: 상품 카테고리 필터. None이면 전체 반환.
+        """
+        return self._load_table(_ANALYTICS, "FUNNEL_STAGE_DROP", category=category)
+
+    def load_channel_efficiency(
+        self, category: Optional[str] = None
+    ) -> pd.DataFrame:
+        """ANALYTICS.CHANNEL_EFFICIENCY — 채널 효율성 데이터."""
+        return self._load_table(_ANALYTICS, "CHANNEL_EFFICIENCY", category=category)
+
+    def load_regional_demand(
+        self, state: Optional[str] = None
+    ) -> pd.DataFrame:
+        """ANALYTICS.REGIONAL_DEMAND_SCORE — 지역 수요 점수.
+
+        Args:
+            state: 시/도 필터. None이면 전체 반환.
+        """
+        return self._load_table(_ANALYTICS, "REGIONAL_DEMAND_SCORE", state=state)
+
+    def load_feature_store(self) -> pd.DataFrame:
+        """ANALYTICS.ML_FEATURE_STORE — ML 피처 스토어."""
+        return self._load_table(_ANALYTICS, "ML_FEATURE_STORE")
+
+    # ------------------------------------------------------------------
+    # STAGING 테이블 로드
+    # ------------------------------------------------------------------
+
+    def load_marketing(self) -> pd.DataFrame:
+        """STAGING.STG_MARKETING — 마케팅 UTM 데이터."""
+        return self._load_table(_STAGING, "STG_MARKETING")
+
+    # ------------------------------------------------------------------
+    # Stored Procedure 호출
+    # ------------------------------------------------------------------
+
+    def run_funnel_analysis(self, category: str) -> dict:
+        """퍼널 분석 저장 프로시저 호출.
+
+        Args:
+            category: 분석 대상 상품 카테고리.
+
+        Returns:
+            프로시저 결과를 딕셔너리로 반환. 실패 시 에러 정보 딕셔너리.
+        """
+        safe_cat = _safe_escape(category)
+        sql = f"CALL TELECOM_DB.ANALYTICS.SP_FUNNEL_ANALYSIS('{safe_cat}')"
+        try:
+            result = self._session.sql(sql).collect()
+            if result and len(result) > 0:
+                raw = str(result[0][0])
+                return json.loads(raw)
+            return {"status": "empty", "category": category}
+        except json.JSONDecodeError:
+            logger.warning("SP_FUNNEL_ANALYSIS 결과 JSON 파싱 실패: %s", category)
+            return {"status": "parse_error", "raw": str(result[0][0]) if result else ""}
+        except Exception:
+            logger.exception("SP_FUNNEL_ANALYSIS 호출 실패: %s", category)
+            return {"status": "error", "category": category}
+
+    def run_channel_analysis(self, category: str) -> dict:
+        """채널 분석 저장 프로시저 호출.
+
+        Args:
+            category: 분석 대상 상품 카테고리.
+
+        Returns:
+            프로시저 결과를 딕셔너리로 반환. 실패 시 에러 정보 딕셔너리.
+        """
+        safe_cat = _safe_escape(category)
+        sql = f"CALL TELECOM_DB.ANALYTICS.SP_CHANNEL_ANALYSIS('{safe_cat}')"
+        try:
+            result = self._session.sql(sql).collect()
+            if result and len(result) > 0:
+                raw = str(result[0][0])
+                return json.loads(raw)
+            return {"status": "empty", "category": category}
+        except json.JSONDecodeError:
+            logger.warning("SP_CHANNEL_ANALYSIS 결과 JSON 파싱 실패: %s", category)
+            return {"status": "parse_error", "raw": str(result[0][0]) if result else ""}
+        except Exception:
+            logger.exception("SP_CHANNEL_ANALYSIS 호출 실패: %s", category)
+            return {"status": "error", "category": category}
+
+    # ------------------------------------------------------------------
+    # Cortex Analyst (자연어 → SQL)
+    # ------------------------------------------------------------------
+
+    def ask_analyst(self, question: str) -> dict:
+        """Cortex Analyst를 통한 자연어 SQL 질의.
+
+        Snowflake SiS 환경에서는 _snowflake API를 사용하고,
+        로컬 환경에서는 Cortex COMPLETE 기반 폴백으로 SQL을 생성합니다.
+
+        Args:
+            question: 자연어 분석 질문 (한국어).
+
+        Returns:
+            dict 형태의 응답:
+            - sql: 생성된 SQL 문 (없으면 None)
+            - text: 자연어 설명 텍스트
+            - source: 'analyst' | 'complete_fallback'
+            - error: 에러 메시지 (정상이면 None)
+        """
+        # --- SiS 환경: Cortex Analyst REST API ---
+        try:
+            import _snowflake  # noqa: F811 — SiS 전용 모듈
+
+            payload = json.dumps({
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": [{"type": "text", "text": question}],
+                    }
+                ],
+                "semantic_model_file": (
+                    "@TELECOM_DB.PUBLIC.CORTEX_STAGE/telecom_semantic.yaml"
+                ),
+            })
+
+            resp = _snowflake.send_snow_api_request(
+                "POST",
+                "/api/v2/cortex/analyst/message",
+                {},
+                {},
+                payload,
+                {},
+                30000,
+            )
+
+            raw_content = resp.get("content", "{}")
+            parsed = (
+                json.loads(raw_content)
+                if isinstance(raw_content, str)
+                else raw_content
+            )
+
+            return self._extract_analyst_response(parsed)
+
+        except ImportError:
+            logger.info(
+                "SiS 환경이 아닙니다. Cortex COMPLETE 폴백을 사용합니다."
+            )
+            return self._analyst_fallback(question)
+        except Exception:
+            logger.exception("Cortex Analyst API 호출 실패")
+            return {
+                "sql": None,
+                "text": "[Cortex Analyst 호출 실패. 잠시 후 다시 시도해주세요.]",
+                "source": "analyst",
+                "error": "API 호출 중 오류가 발생했습니다.",
+            }
+
+    def _extract_analyst_response(self, parsed: dict) -> dict:
+        """Cortex Analyst API 응답에서 SQL과 텍스트를 추출.
+
+        Args:
+            parsed: API 응답 JSON (파싱 완료).
+
+        Returns:
+            sql, text, source, error 키를 포함한 딕셔너리.
+        """
+        sql_text = None
+        explanation = ""
+
+        # 응답 메시지 구조 탐색
+        message = parsed.get("message", parsed)
+        content_items = message.get("content", [])
+
+        if isinstance(content_items, str):
+            return {
+                "sql": None,
+                "text": content_items,
+                "source": "analyst",
+                "error": None,
+            }
+
+        for item in content_items:
+            item_type = item.get("type", "")
+            if item_type == "sql":
+                sql_text = item.get("statement", item.get("text", ""))
+            elif item_type == "text":
+                explanation += item.get("text", "")
+
+        return {
+            "sql": sql_text,
+            "text": explanation.strip() or "[응답 텍스트 없음]",
+            "source": "analyst",
+            "error": None,
+        }
+
+    def _analyst_fallback(self, question: str) -> dict:
+        """로컬 환경 폴백: Cortex COMPLETE로 SQL 생성.
+
+        테이블 스키마 정보를 프롬프트에 포함하여
+        자연어 질문을 SQL로 변환합니다.
+
+        Args:
+            question: 사용자의 자연어 질문.
+
+        Returns:
+            sql, text, source, error 키를 포함한 딕셔너리.
+        """
+        schema_context = (
+            "아래는 TELECOM_DB의 주요 테이블 스키마입니다.\n\n"
+            "1. TELECOM_DB.STAGING.STG_FUNNEL (가입 퍼널 전환 데이터, 250행):\n"
+            "   - YEAR_MONTH (VARCHAR): 년월\n"
+            "   - MAIN_CATEGORY_NAME (VARCHAR): 상품 대분류\n"
+            "   - CATEGORY (VARCHAR): 상품 세부분류\n"
+            "   - TOTAL_COUNT (NUMBER): 총유입 건수\n"
+            "   - CONSULT_REQUEST_COUNT (NUMBER): 상담요청 건수\n"
+            "   - SUBSCRIPTION_COUNT (NUMBER): 가입신청 건수\n"
+            "   - REGISTEND_COUNT (NUMBER): 접수 건수\n"
+            "   - OPEN_COUNT (NUMBER): 개통 건수\n"
+            "   - PAYEND_COUNT (NUMBER): 납입완료 건수\n"
+            "   - CVR_CONSULT_REQUEST ~ CVR_PAYEND (NUMBER): 각 단계 전환율\n"
+            "   - OVERALL_CVR (NUMBER): 전체 전환율\n\n"
+            "2. TELECOM_DB.STAGING.STG_CHANNEL (채널별 성과 데이터, 7911행):\n"
+            "   - YEAR_MONTH, MAIN_CATEGORY_NAME, CATEGORY\n"
+            "   - RECEIVE_PATH_NAME (VARCHAR): 접수경로\n"
+            "   - CHANNEL (VARCHAR): 유입채널\n"
+            "   - INFLOW_PATH_NAME (VARCHAR): 세부유입경로\n"
+            "   - CONTRACT_COUNT (NUMBER): 계약건수\n"
+            "   - REGISTEND_COUNT, OPEN_COUNT, PAYEND_COUNT (NUMBER)\n"
+            "   - OPEN_CVR, PAYEND_CVR (NUMBER): 전환율\n"
+            "   - AVG_NET_SALES (NUMBER): 건당 평균매출\n"
+            "   - TOTAL_NET_SALES (NUMBER): 총매출\n\n"
+            "3. TELECOM_DB.STAGING.STG_REGIONAL (지역별 수요 데이터, 23555행):\n"
+            "   - YEAR_MONTH, INSTALL_STATE (VARCHAR): 시/도\n"
+            "   - INSTALL_CITY (VARCHAR): 시/군/구\n"
+            "   - MAIN_CATEGORY_NAME (VARCHAR): 상품 대분류\n"
+            "   - CONTRACT_COUNT, PAYEND_COUNT (NUMBER)\n"
+            "   - PAYEND_CVR (NUMBER): 납입전환율\n"
+            "   - AVG_NET_SALES (NUMBER): 건당 평균매출\n"
+            "   - BUNDLE_COUNT (NUMBER): 번들 건수\n"
+            "   - STANDALONE_COUNT (NUMBER): 단독 건수\n"
+        )
+
+        system_prompt = (
+            "당신은 Snowflake SQL 전문가입니다. "
+            "사용자의 자연어 질문을 유효한 Snowflake SQL로 변환하세요.\n\n"
+            f"{schema_context}\n"
+            "규칙:\n"
+            "1. 반드시 유효한 Snowflake SQL만 생성하세요.\n"
+            "2. 테이블은 TELECOM_DB.STAGING.테이블명 형식으로 참조하세요.\n"
+            "3. 응답은 JSON 형식으로: "
+            '{"sql": "SELECT ...", "explanation": "설명..."}\n'
+            "4. SQL이 불필요한 질문이면 sql을 null로 하고 "
+            "explanation만 작성하세요.\n"
+            "5. 한국어로 설명하세요."
+        )
+
+        raw_response = self._cortex_complete(system_prompt, question)
+
+        try:
+            result = json.loads(raw_response)
+            return {
+                "sql": result.get("sql"),
+                "text": result.get("explanation", raw_response),
+                "source": "complete_fallback",
+                "error": None,
+            }
+        except (json.JSONDecodeError, TypeError):
+            return {
+                "sql": None,
+                "text": raw_response,
+                "source": "complete_fallback",
+                "error": None,
+            }
+
+    # ------------------------------------------------------------------
+    # Cortex COMPLETE
+    # ------------------------------------------------------------------
+
+    def get_ai_insight(self, category: str) -> str:
+        """Cortex COMPLETE 기반 텔레콤 퍼널 인사이트 생성.
+
+        Args:
+            category: 분석 대상 상품 카테고리.
+
+        Returns:
+            AI 생성 인사이트 문자열. 실패 시 에러 메시지.
+        """
+        user_msg = (
+            f"'{category}' 카테고리의 가입 퍼널을 분석해주세요. "
+            "상담요청→가입신청→접수→개통→납입 각 단계의 전환율 패턴, "
+            "주요 병목 구간, 그리고 개선 방향을 제시해주세요."
+        )
+        return self._cortex_complete(_SYSTEM_PROMPT_KR, user_msg)
+
+    def ask_ai(self, question: str, context: Optional[str] = None) -> str:
+        """Cortex COMPLETE 기반 자유 질의응답.
+
+        Args:
+            question: 사용자 질문.
+            context: 추가 컨텍스트 (데이터 요약 등). None이면 기본 시스템 프롬프트만 사용.
+
+        Returns:
+            AI 응답 문자열. 실패 시 에러 메시지.
+        """
+        system = _SYSTEM_PROMPT_KR
+        if context is not None:
+            system = f"{system}\n\n참고 데이터:\n{context}"
+        return self._cortex_complete(system, question)
+
+    def _cortex_complete(
+        self,
+        system_prompt: str,
+        user_message: str,
+        model: str = _DEFAULT_MODEL,
+        temperature: float = _DEFAULT_TEMP,
+    ) -> str:
+        """Cortex COMPLETE 내부 호출.
+
+        Args:
+            system_prompt: 시스템 프롬프트.
+            user_message: 사용자 메시지.
+            model: 사용할 모델 이름.
+            temperature: 생성 온도 (0.0 ~ 1.0).
+
+        Returns:
+            생성된 텍스트. 실패 시 에러 메시지 문자열.
+        """
+        # 개행/백슬래시/싱글쿼트 이스케이프 (SQL 인젝션 방지)
+        safe_system = (
+            system_prompt.replace("\\", "\\\\")
+            .replace("\n", " ").replace("\r", " ")
+            .replace("'", "''")
+        )
+        safe_user = (
+            user_message.replace("\\", "\\\\")
+            .replace("\n", " ").replace("\r", " ")
+            .replace("'", "''")
+        )
+
+        sql = f"""
+            SELECT SNOWFLAKE.CORTEX.COMPLETE(
+                '{model.replace("'", "''")}',
+                [
+                    {{'role': 'system', 'content': '{safe_system}'}},
+                    {{'role': 'user', 'content': '{safe_user}'}}
+                ],
+                {{
+                    'temperature': {temperature},
+                    'max_tokens': 2048
+                }}
+            ) AS RESPONSE
+        """
+        try:
+            result = self._session.sql(sql).collect()
+            if result and len(result) > 0:
+                raw = str(result[0]["RESPONSE"])
+                try:
+                    parsed = json.loads(raw)
+                    choice = parsed.get("choices", [{}])[0]
+                    # Cortex 응답 형식 두 가지 모두 처리:
+                    # 1) {"messages": "text"}  — messages가 문자열
+                    # 2) {"message": {"content": "text"}}  — message가 객체
+                    msg = choice.get("messages") or choice.get("message")
+                    if isinstance(msg, str):
+                        return msg
+                    if isinstance(msg, dict):
+                        return msg.get("content", raw)
+                    return raw
+                except (json.JSONDecodeError, IndexError, KeyError):
+                    return raw
+            return "[응답 없음]"
+        except Exception:
+            logger.exception("Cortex COMPLETE 호출 실패")
+            return "[AI 인사이트 생성 실패. 잠시 후 다시 시도해주세요.]"

@@ -1,0 +1,154 @@
+{
+  "KOREAN_POPULATION__APARTMENT_MARKET_PRICE_DATA": {
+    "HACKATHON_2025Q2": [
+      {
+        "name": "REGION_APT_RICHGO_MARKET_PRICE_M_H",
+        "type": "TABLE"
+      },
+      {
+        "name": "REGION_MOIS_POPULATION_AGE_UNDER5_PER_FEMALE_20TO40_M_H",
+        "type": "TABLE"
+      },
+      {
+        "name": "REGION_MOIS_POPULATION_GENDER_AGE_M_H",
+        "type": "TABLE"
+      }
+    ]
+  },
+  "KOREA_REAL_ESTATE_APARTMENT_MARKET_INTELLIGENCE": {
+    "HACKATHON_2026": [
+      {
+        "name": "APT_DANJI_AND_TRANSPORTATION_TRAIN_DISTANCE",
+        "type": "TABLE"
+      },
+      {
+        "name": "DANJI_APT_INFO",
+        "type": "TABLE"
+      },
+      {
+        "name": "DANJI_APT_RICHGO_MARKET_PRICE_M_H",
+        "type": "TABLE"
+      },
+      {
+        "name": "REGION_APT_RICHGO_MARKET_PRICE_M_H",
+        "type": "TABLE"
+      },
+      {
+        "name": "REGION_POPULATION_MOVEMENT",
+        "type": "TABLE"
+      },
+      {
+        "name": "REGION_POPULATION_MOVEMENT_INOUT_BY_GENDER_AGE5",
+        "type": "TABLE"
+      }
+    ]
+  },
+  "NEXTRADE_EQUITY_MARKET_DATA": {
+    "FIN": [
+      {
+        "name": "NX_HT_BAT_REFER_A0",
+        "type": "TABLE"
+      },
+      {
+        "name": "NX_HT_ONL_MKTPR_A3",
+        "type": "TABLE"
+      },
+      {
+        "name": "NX_HT_ONL_MKTPR_B6",
+        "type": "TABLE"
+      },
+      {
+        "name": "NX_HT_ONL_MKTPR_E1",
+        "type": "TABLE"
+      },
+      {
+        "name": "NX_HT_ONL_STATS_B5",
+        "type": "TABLE"
+      },
+      {
+        "name": "NX_HT_ONL_STATS_C3",
+        "type": "TABLE"
+      },
+      {
+        "name": "NX_HT_ONL_STATS_P0",
+        "type": "TABLE"
+      }
+    ]
+  },
+  "SEOUL_DISTRICTLEVEL_DATA_FLOATING_POPULATION_CONSUMPTION_AND_ASSETS": {
+    "GRANDATA": [
+      {
+        "name": "ASSET_INCOME_INFO",
+        "type": "TABLE"
+      },
+      {
+        "name": "CARD_SALES_INFO",
+        "type": "TABLE"
+      },
+      {
+        "name": "CODE_MASTER",
+        "type": "TABLE"
+      },
+      {
+        "name": "FLOATING_POPULATION_INFO",
+        "type": "TABLE"
+      },
+      {
+        "name": "M_SCCO_MST",
+        "type": "TABLE"
+      }
+    ]
+  },
+  "SOUTH_KOREA_TELECOM_SUBSCRIPTION_ANALYTICS__CONTRACTS_MARKETING_AND_CALL_CENTER_INSIGHTS_BY_REGION": {
+    "TELECOM_INSIGHTS": [
+      {
+        "name": "V01_MONTHLY_REGIONAL_CONTRACT_STATS",
+        "type": "VIEW"
+      },
+      {
+        "name": "V02_SERVICE_BUNDLE_PATTERNS",
+        "type": "VIEW"
+      },
+      {
+        "name": "V03_CONTRACT_FUNNEL_CONVERSION",
+        "type": "VIEW"
+      },
+      {
+        "name": "V04_CHANNEL_CONTRACT_PERFORMANCE",
+        "type": "VIEW"
+      },
+      {
+        "name": "V05_REGIONAL_NEW_INSTALL",
+        "type": "VIEW"
+      },
+      {
+        "name": "V06_RENTAL_CATEGORY_TRENDS",
+        "type": "VIEW"
+      },
+      {
+        "name": "V07_GA4_MARKETING_ATTRIBUTION",
+        "type": "VIEW"
+      },
+      {
+        "name": "V08_GA4_DEVICE_STATS",
+        "type": "VIEW"
+      },
+      {
+        "name": "V09_MONTHLY_CALL_STATS",
+        "type": "VIEW"
+      },
+      {
+        "name": "V10_HOURLY_CALL_DISTRIBUTION",
+        "type": "VIEW"
+      },
+      {
+        "name": "V11_CALL_TO_CONTRACT_CONVERSION",
+        "type": "VIEW"
+      }
+    ]
+  },
+  "USER$SEUNGHUN": {
+    "LOCAL": [],
+    "PUBLIC": []
+  }
+}

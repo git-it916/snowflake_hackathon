@@ -1,0 +1,57 @@
+{
+  "heatmap_cols": [
+    "YEAR_MONTH",
+    "INSTALL_STATE",
+    "INSTALL_CITY",
+    "CONTRACT_COUNT",
+    "PAYEND_CVR",
+    "AVG_NET_SALES",
+    "DEMAND_SCORE",
+    "BUNDLE_RATIO",
+    "GROWTH_3M",
+    "GROWTH_FLAG",
+    "DEMAND_QUINTILE"
+  ],
+  "heatmap_dtypes": {
+    "YEAR_MONTH": "object",
+    "INSTALL_STATE": "object",
+    "INSTALL_CITY": "object",
+    "CONTRACT_COUNT": "int16",
+    "PAYEND_CVR": "float64",
+    "AVG_NET_SALES": "int32",
+    "DEMAND_SCORE": "float64",
+    "BUNDLE_RATIO": "float64",
+    "GROWTH_3M": "float64",
+    "GROWTH_FLAG": "bool",
+    "DEMAND_QUINTILE": "int64"
+  },
+  "heatmap_rows": 165,
+  "state_summary": [],
+  "score_dist": [
+    {
+      "MN": -1.5949,
+      "MX": 8.4921,
+      "AV": -1.8181818181742164e-06,
+      "MD": -0.9803,
+      "SD": 2.014016252703838
+    }
+  ],
+  "demand_cols": [
+    "YEAR_MONTH",
+    "INSTALL_STATE",
+    "INSTALL_CITY",
+    "CONTRACT_COUNT",
+    "PAYEND_CVR",
+    "AVG_NET_SALES",
+    "BUNDLE_COUNT",
+    "STANDALONE_COUNT",
+    "Z_CONTRACT",
+    "Z_PAYEND_CVR",
+    "Z_SALES",
+    "DEMAND_SCORE",
+    "BUNDLE_RATIO",
+    "GROWTH_3M",
+    "GROWTH_FLAG"
+  ],
+  "demand_rows": 23275
+}

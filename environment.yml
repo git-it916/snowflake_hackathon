@@ -1,0 +1,11 @@
+name: sf_env
+channels:
+  - snowflake
+dependencies:
+  - plotly
+  - scipy
+  - statsmodels
+  - scikit-learn
+  - xgboost
+  - shap
+  - snowflake-ml-python

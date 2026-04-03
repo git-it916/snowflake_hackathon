@@ -1,0 +1,84 @@
+-- 08_lineage.sql
+-- Data Lineage: 테이블 의존성 추적 및 접근 이력
+-- Snowflake CoCo Skill: lineage
+
+USE DATABASE TELECOM_DB;
+USE WAREHOUSE COMPUTE_WH;
+
+-- =========================================================================
+-- 1. 테이블 의존성 뷰 (Upstream/Downstream)
+--    어떤 테이블이 어떤 테이블에서 파생되었는지 추적
+-- =========================================================================
+CREATE OR REPLACE VIEW MART.V_TABLE_LINEAGE AS
+WITH deps AS (
+    SELECT
+        REFERENCED_DATABASE || '.' || REFERENCED_SCHEMA || '.' || REFERENCED_OBJECT_NAME AS UPSTREAM,
+        REFERENCING_DATABASE || '.' || REFERENCING_SCHEMA || '.' || REFERENCING_OBJECT_NAME AS DOWNSTREAM,
+        REFERENCED_OBJECT_DOMAIN AS UPSTREAM_TYPE,
+        REFERENCING_OBJECT_DOMAIN AS DOWNSTREAM_TYPE
+    FROM SNOWFLAKE.ACCOUNT_USAGE.OBJECT_DEPENDENCIES
+    WHERE REFERENCED_DATABASE = 'TELECOM_DB'
+       OR REFERENCING_DATABASE = 'TELECOM_DB'
+)
+SELECT DISTINCT
+    UPSTREAM,
+    UPSTREAM_TYPE,
+    DOWNSTREAM,
+    DOWNSTREAM_TYPE,
+    CASE
+        WHEN UPSTREAM LIKE '%STAGING%' THEN 'STAGING'
+        WHEN UPSTREAM LIKE '%ANALYTICS%' THEN 'ANALYTICS'
+        WHEN UPSTREAM LIKE '%MART%' THEN 'MART'
+        WHEN UPSTREAM LIKE '%TELECOM_INSIGHTS%' THEN 'MARKETPLACE'
+        ELSE 'OTHER'
+    END AS UPSTREAM_LAYER,
+    CASE
+        WHEN DOWNSTREAM LIKE '%STAGING%' THEN 'STAGING'
+        WHEN DOWNSTREAM LIKE '%ANALYTICS%' THEN 'ANALYTICS'
+        WHEN DOWNSTREAM LIKE '%MART%' THEN 'MART'
+        ELSE 'OTHER'
+    END AS DOWNSTREAM_LAYER
+FROM deps
+ORDER BY UPSTREAM_LAYER, UPSTREAM, DOWNSTREAM;
+
+-- =========================================================================
+-- 2. 테이블 접근 이력 뷰 (최근 30일)
+--    누가 언제 어떤 테이블을 읽었는지 추적
+-- =========================================================================
+CREATE OR REPLACE VIEW MART.V_ACCESS_HISTORY AS
+SELECT
+    QUERY_START_TIME,
+    USER_NAME,
+    ROLE_NAME,
+    BO.VALUE:"objectName"::STRING AS TABLE_NAME,
+    BO.VALUE:"objectDomain"::STRING AS OBJECT_TYPE,
+    QUERY_TYPE,
+    EXECUTION_STATUS
+FROM SNOWFLAKE.ACCOUNT_USAGE.ACCESS_HISTORY,
+    LATERAL FLATTEN(INPUT => BASE_OBJECTS_ACCESSED) BO
+WHERE QUERY_START_TIME >= DATEADD(DAY, -30, CURRENT_TIMESTAMP())
+  AND BO.VALUE:"objectName"::STRING LIKE 'TELECOM_DB%'
+ORDER BY QUERY_START_TIME DESC;
+
+-- =========================================================================
+-- 3. 파이프라인 계보 요약 (대시보드용)
+--    Marketplace → Staging → Analytics → Mart 흐름 집계
+-- =========================================================================
+CREATE OR REPLACE VIEW MART.V_LINEAGE_SUMMARY AS
+SELECT
+    UPSTREAM_LAYER,
+    DOWNSTREAM_LAYER,
+    COUNT(*) AS DEPENDENCY_COUNT,
+    LISTAGG(DISTINCT SPLIT_PART(UPSTREAM, '.', 3), ', ') AS UPSTREAM_TABLES,
+    LISTAGG(DISTINCT SPLIT_PART(DOWNSTREAM, '.', 3), ', ') AS DOWNSTREAM_TABLES
+FROM MART.V_TABLE_LINEAGE
+WHERE UPSTREAM_LAYER != 'OTHER' AND DOWNSTREAM_LAYER != 'OTHER'
+GROUP BY UPSTREAM_LAYER, DOWNSTREAM_LAYER
+ORDER BY
+    CASE UPSTREAM_LAYER
+        WHEN 'MARKETPLACE' THEN 1
+        WHEN 'STAGING' THEN 2
+        WHEN 'ANALYTICS' THEN 3
+        WHEN 'MART' THEN 4
+        ELSE 5
+    END;

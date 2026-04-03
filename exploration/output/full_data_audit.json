@@ -1,0 +1,223 @@
+{
+  "1_KPI": {
+    "rows": 1,
+    "data": [
+      {
+        "REPORT_MONTH": "2026-03-01",
+        "TOTAL_CONTRACTS": 393879,
+        "AVG_OVERALL_CVR": 24.33,
+        "TOP_CHANNEL": "인바운드",
+        "TOP_GROWTH_CITY": "수원시"
+      }
+    ],
+    "issue": "REPORT_MONTH이 완성월인지, CVR이 정상 범위(20-35%)인지"
+  },
+  "2_FUNNEL_MONTHS": [
+    {
+      "YEAR_MONTH": "2026-04-01",
+      "CATS": 8,
+      "TOTAL": 22059,
+      "CVR": 3.0
+    },
+    {
+      "YEAR_MONTH": "2026-03-01",
+      "CATS": 8,
+      "TOTAL": 393879,
+      "CVR": 18.25
+    },
+    {
+      "YEAR_MONTH": "2026-02-01",
+      "CATS": 9,
+      "TOTAL": 310161,
+      "CVR": 19.19
+    },
+    {
+      "YEAR_MONTH": "2026-01-01",
+      "CATS": 9,
+      "TOTAL": 349456,
+      "CVR": 18.79
+    },
+    {
+      "YEAR_MONTH": "2025-12-01",
+      "CATS": 9,
+      "TOTAL": 288099,
+      "CVR": 19.53
+    }
+  ],
+  "3_DROP_RATE_STATS": [
+    {
+      "TOTAL_ROWS": 1250,
+      "NEGATIVE_DROPS": 173,
+      "OVER_100_DROPS": 0,
+      "NULL_DROPS": 365,
+      "MIN_DROP": -3473.0,
+      "MAX_DROP": 1.0
+    }
+  ],
+  "4_CHANNEL_STATS": [
+    {
+      "TOTAL": 7878,
+      "NEGATIVE_SALES": 91,
+      "ZERO_CVR": 1165,
+      "TINY_VOLUME": 0,
+      "MIN_SALES": -720000,
+      "MAX_CVR": 100.0
+    }
+  ],
+  "5_REGIONAL_STATS": [
+    {
+      "TOTAL": 400,
+      "MIN_SCORE": -3.73,
+      "MAX_SCORE": 7.04,
+      "AVG_SCORE": 0.0,
+      "EXTREME_GROWTH": 7,
+      "NULL_GROWTH": 0,
+      "TINY_CITIES": 110
+    }
+  ],
+  "6_FORECAST_STATS": [
+    {
+      "TOTAL": 69,
+      "NEGATIVE_FC": 5,
+      "NEGATIVE_LOWER": 63,
+      "MIN_FC": -14.12,
+      "MAX_FC": 10757.09,
+      "MIN_LOWER": -98466.74
+    }
+  ],
+  "7_ANOMALY_STATS": [
+    {
+      "TOTAL": 65,
+      "ANOMALIES": 14,
+      "SERIES_COUNT": 6
+    }
+  ],
+  "8_ML_FEATURE_STATS": [
+    {
+      "TOTAL": 7534,
+      "NULL_TARGET": 0,
+      "ZERO_CVR": 1018,
+      "CHANNELS": 24,
+      "CATEGORIES": 9,
+      "MIN_YM": "2022-01-01",
+      "MAX_YM": "2026-04-01"
+    }
+  ],
+  "9_PREDICTIONS": {
+    "rows": 120
+  },
+  "10_TIMESERIES": [
+    {
+      "MAIN_CATEGORY_NAME": "인터넷",
+      "MONTHS": 56,
+      "MIN_CVR": 1.39,
+      "MAX_CVR": 100.0
+    },
+    {
+      "MAIN_CATEGORY_NAME": "렌탈",
+      "MONTHS": 45,
+      "MIN_CVR": 0.05,
+      "MAX_CVR": 100.0
+    },
+    {
+      "MAIN_CATEGORY_NAME": "알뜰 요금제",
+      "MONTHS": 34,
+      "MIN_CVR": 5.56,
+      "MAX_CVR": 100.0
+    },
+    {
+      "MAIN_CATEGORY_NAME": "모바일",
+      "MONTHS": 33,
+      "MIN_CVR": 10.34,
+      "MAX_CVR": 85.0
+    },
+    {
+      "MAIN_CATEGORY_NAME": "유심만",
+      "MONTHS": 33,
+      "MIN_CVR": 6.63,
+      "MAX_CVR": 84.96
+    },
+    {
+      "MAIN_CATEGORY_NAME": "기업용인터넷",
+      "MONTHS": 26,
+      "MIN_CVR": 0.0,
+      "MAX_CVR": 1.61
+    },
+    {
+      "MAIN_CATEGORY_NAME": "다이렉트자보",
+      "MONTHS": 13,
+      "MIN_CVR": 0.0,
+      "MAX_CVR": 0.0
+    },
+    {
+      "MAIN_CATEGORY_NAME": "상조",
+      "MONTHS": 6,
+      "MIN_CVR": 0.0,
+      "MAX_CVR": 0.0
+    },
+    {
+      "MAIN_CATEGORY_NAME": "부동산",
+      "MONTHS": 3,
+      "MIN_CVR": 0.0,
+      "MAX_CVR": 0.0
+    },
+    {
+      "MAIN_CATEGORY_NAME": "이사",
+      "MONTHS": 1,
+      "MIN_CVR": 0.0,
+      "MAX_CVR": 0.0
+    }
+  ],
+  "11_EXTREME_GROWTH": [
+    {
+      "CITY": "서울 강서구",
+      "GROWTH_3M": 14.8571,
+      "CONTRACT_COUNT": 111
+    },
+    {
+      "CITY": "충남 아산시",
+      "GROWTH_3M": 12.2,
+      "CONTRACT_COUNT": 66
+    },
+    {
+      "CITY": "서울 영등포구",
+      "GROWTH_3M": 12.0,
+      "CONTRACT_COUNT": 78
+    },
+    {
+      "CITY": "대전 서구",
+      "GROWTH_3M": 11.6,
+      "CONTRACT_COUNT": 63
+    },
+    {
+      "CITY": "경기 안산시",
+      "GROWTH_3M": 11.5,
+      "CONTRACT_COUNT": 100
+    },
+    {
+      "CITY": "경기 성남시",
+      "GROWTH_3M": 10.7692,
+      "CONTRACT_COUNT": 153
+    },
+    {
+      "CITY": "부산 부산진구",
+      "GROWTH_3M": 10.4,
+      "CONTRACT_COUNT": 57
+    },
+    {
+      "CITY": "대구 달서구",
+      "GROWTH_3M": 9.4,
+      "CONTRACT_COUNT": 52
+    },
+    {
+      "CITY": "경기 용인시",
+      "GROWTH_3M": 7.7059,
+      "CONTRACT_COUNT": 148
+    },
+    {
+      "CITY": "경기 시흥시",
+      "GROWTH_3M": 7.3333,
+      "CONTRACT_COUNT": 50
+    }
+  ]
+}
