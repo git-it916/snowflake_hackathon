@@ -83,17 +83,33 @@ div[data-testid="stMetric"] {
     background: rgba(255,255,255,0.03) !important;
     border: 1px solid rgba(0,229,255,0.2) !important;
     border-radius: 12px !important;
-    padding: 20px !important;
+    padding: 16px 20px !important;
+    overflow: hidden !important;
 }
 div[data-testid="stMetric"] label {
     color: rgba(255,255,255,0.5) !important;
-    font-size: 0.8rem !important;
+    font-size: 0.78rem !important;
     font-weight: 500 !important;
+    line-height: 1.3 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 div[data-testid="stMetric"] [data-testid="stMetricValue"] {
-    font-size: 1.8rem !important;
+    font-size: 1.6rem !important;
     font-weight: 700 !important;
     color: #fff !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+div[data-testid="stMetric"] [data-testid="stMetricDelta"] {
+    font-size: 0.75rem !important;
+    line-height: 1.3 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
 }
 
 /* === Hide deploy button & hamburger === */
@@ -191,6 +207,55 @@ hr {
 
 /* === Spinner === */
 .stSpinner > div { border-top-color: #00E5FF !important; }
+
+/* === Prevent text overlap in narrow columns === */
+div[data-testid="stColumn"] {
+    overflow: hidden !important;
+    min-width: 0 !important;
+}
+div[data-testid="stColumn"] p,
+div[data-testid="stColumn"] span,
+div[data-testid="stColumn"] label {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+/* === Subheader spacing fix (prevent overlap with caption below) === */
+h3 {
+    margin-bottom: 0.3rem !important;
+    line-height: 1.3 !important;
+}
+
+/* === Caption readability === */
+.stCaption, small {
+    line-height: 1.6 !important;
+    word-wrap: break-word !important;
+}
+
+/* === Alert/Info boxes: prevent text cropping === */
+div[data-testid="stAlert"] {
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+div[data-testid="stAlert"] p {
+    line-height: 1.5 !important;
+}
+
+/* === Expander text overflow fix === */
+details[data-testid="stExpander"] summary span {
+    white-space: normal !important;
+    word-wrap: break-word !important;
+}
+
+/* === Table text overflow fix === */
+div[data-testid="stDataFrame"] {
+    overflow-x: auto !important;
+}
+
+/* === Chat message spacing === */
+.stChatMessage p {
+    line-height: 1.6 !important;
+}
 
 /* === Keyframes === */
 @keyframes ping {

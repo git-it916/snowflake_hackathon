@@ -46,6 +46,8 @@ st.divider()
 # ---------------------------------------------------------------------------
 # Dependency imports (all guarded)
 # ---------------------------------------------------------------------------
+from components.utils import get_cached_client, safe_data_load, safe_render
+
 try:
     from data.snowflake_client import SnowflakeClient
     CLIENT_AVAILABLE = True
@@ -65,25 +67,12 @@ except Exception:
     _MARKOV_OK = False
 
 
-# ---------------------------------------------------------------------------
-# Singletons
-# ---------------------------------------------------------------------------
-@st.cache_resource
-def _get_client() -> "SnowflakeClient | None":
-    if not CLIENT_AVAILABLE:
-        return None
-    try:
-        return SnowflakeClient()
-    except Exception:
-        return None
-
-
 @st.cache_resource
 def _get_orchestrator() -> "AgentOrchestrator | None":
     if not ORCHESTRATOR_AVAILABLE:
         return None
     try:
-        client = _get_client()
+        client = get_cached_client()
         if client is None:
             return None
         return AgentOrchestrator(client._session)
@@ -197,7 +186,7 @@ def _get_chat_answer(
         except Exception:
             pass
 
-    return "AI 응답을 생성할 수 없습니다. Snowflake 연결을 확인해주세요."
+    return "현재 AI 서비스를 이용할 수 없습니다. Snowflake 연결 상태를 확인하고 잠시 후 다시 시도해주세요."
 
 
 # ---------------------------------------------------------------------------
@@ -222,7 +211,7 @@ def _stage_kr(stage: str) -> str:
 # =========================================================================
 _sidebar_result = render_sidebar()
 
-client = _get_client()
+client = get_cached_client()
 orchestrator = _get_orchestrator()
 
 if client is None and orchestrator is None:
@@ -233,7 +222,7 @@ if client is None and orchestrator is None:
 # =========================================================================
 # PAGE HEADER
 # =========================================================================
-st.caption("PAGE 3: AI STRATEGY")
+st.caption("PAGE 3: AI 전략")
 st.title("AI 전략 에이전트")
 
 st.markdown(
@@ -309,13 +298,14 @@ st.caption(f"카테고리: {category_filter}  |  리스크: {current_risk}")
 st.divider()
 
 # --- Analysis run button ---
-st.caption(
-    "클릭하면 3단계 AI 에이전트가 순차 실행됩니다: "
-    "Phase 1 — 분석가 Agent가 퍼널·채널·지역 데이터를 조회하고 핵심 발견을 추출합니다. "
-    "Phase 2 — 전략가 Agent가 채널 배분과 실행 전략을 수립합니다. "
-    "Phase 3 — 종합 Agent가 경영진 수준의 요약 보고서를 생성합니다. "
-    "Snowflake Cortex COMPLETE(llama3.1-405b)가 각 에이전트를 구동합니다."
-)
+st.caption("클릭하면 3단계 AI 에이전트가 순차 실행됩니다 (약 30초 소요).")
+with st.expander("실행 단계 상세", expanded=False):
+    st.markdown(
+        "1. **Phase 1 — 분석가 Agent**: 퍼널·채널·지역 데이터를 조회하고 핵심 발견을 추출합니다.\n"
+        "2. **Phase 2 — 전략가 Agent**: 채널 배분과 실행 전략을 수립합니다.\n"
+        "3. **Phase 3 — 종합 Agent**: 경영진 수준의 요약 보고서를 생성합니다.\n\n"
+        "각 Agent는 Snowflake Cortex COMPLETE(llama3.1-405b)로 구동됩니다."
+    )
 run_analysis = st.button(
     "전체 분석 실행",
     type="primary",
@@ -373,7 +363,10 @@ with col_analysis:
                 findings = analyst_report.get("key_findings", [])
                 confidence = analyst_report.get("confidence", "medium")
 
-        st.markdown(f"**분석가 Agent 핵심 발견** — 신뢰도: {_confidence_text(confidence)}")
+        st.markdown(
+            f"**분석가 Agent 핵심 발견** — 신뢰도: {_confidence_text(confidence)}",
+            help="HIGH: 데이터 충분, 분석 신뢰 가능 | MEDIUM: 일부 데이터 부족 | LOW: 재분석 권장",
+        )
 
         if findings:
             _FINDING_ICONS = ["📈", "⚠️", "ℹ️", "⭐"]
@@ -383,10 +376,14 @@ with col_analysis:
                     st.markdown(finding)
         else:
             # Markov chain insights as smart defaults when no analysis has run
+            st.info(
+                "아직 AI 분석을 실행하지 않았습니다. "
+                "아래는 **마르코프 체인**으로 자동 계산된 기본 분석 결과입니다.",
+                icon="💡",
+            )
             st.caption(
-                "AI 분석을 실행하기 전에도, 흡수 마르코프 체인 결과를 즉시 제공합니다. "
-                "Steady State는 현재 퍼널 구조의 이론적 장기 전환율이며, "
-                "민감도 분석의 TOP 3는 투자 대비 효과가 가장 큰 개선 포인트입니다."
+                "Steady State는 현재 퍼널 구조가 유지될 때의 이론적 장기 전환율이며, "
+                "민감도 분석의 TOP 3는 동일 예산 대비 효과가 가장 큰 개선 포인트입니다."
             )
             _markov_shown = False
             if _MARKOV_OK and client is not None:
@@ -628,12 +625,11 @@ with col_analysis:
 # =========================================================================
 with col_chat:
     _section_header("🤖", "AI 에이전트 Q&A", color="#00E5FF")
-    st.caption(
-        "분석 결과에 대한 후속 질문이나 추가 분석을 요청할 수 있습니다. "
-        "Snowflake Cortex COMPLETE(llama3.1-405b)가 실시간으로 응답하며, "
-        "퍼널 데이터에 기반한 답변을 제공합니다."
-    )
-    st.success("Online", icon="🟢")
+    st.caption("분석 결과에 대해 자유롭게 질문하세요. 퍼널·채널·지역 데이터에 기반한 답변을 제공합니다.")
+    if orchestrator is not None or client is not None:
+        st.success("AI 에이전트 연결됨", icon="🟢")
+    else:
+        st.error("AI 에이전트 미연결 — Snowflake 설정을 확인하세요", icon="🔴")
 
     # Initialize chat history
     if "ai_chat_messages" not in st.session_state:
@@ -653,7 +649,7 @@ with col_chat:
             st.markdown(msg["content"])
 
     # Quick action pills
-    st.caption("빠른 질문")
+    st.caption("아래 버튼을 클릭하면 AI가 즉시 답변합니다")
 
     _QUICK_ACTIONS = [
         (
@@ -678,7 +674,7 @@ with col_chat:
                 quick_q = question
 
     # Chat input
-    user_input = st.chat_input("질문을 입력하세요...")
+    user_input = st.chat_input("예: '채널별 ROI 비교해줘' 또는 '지역별 성장 분석'")
     question = quick_q or user_input
 
     if question:

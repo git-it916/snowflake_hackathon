@@ -18,6 +18,15 @@ except Exception:
 
 from components.nav import safe_page_link as _safe_pl
 from components.sidebar import render_sidebar
+from components.utils import (
+    MAJOR_CATEGORIES as _MAJOR_CATS,
+    PLOTLY_DARK_LAYOUT,
+    STAGE_LABELS as _STAGE_LABELS,
+    drop_incomplete_month,
+    get_cached_client,
+    safe_data_load,
+    safe_render,
+)
 
 # ---------------------------------------------------------------------------
 # Imports
@@ -29,12 +38,6 @@ except Exception:
     _PLOTLY_OK = False
 
 try:
-    from data.snowflake_client import SnowflakeClient
-    _CLIENT_OK = True
-except Exception:
-    _CLIENT_OK = False
-
-try:
     from analysis.insight_generator import generate_funnel_insights, generate_channel_insights
     _INSIGHT_OK = True
 except Exception:
@@ -44,16 +47,8 @@ except Exception:
 # ---------------------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------------------
-_STAGE_LABELS = {
-    "CONSULT_REQUEST": "상담요청",
-    "SUBSCRIPTION": "가입신청",
-    "REGISTEND": "접수완료",
-    "OPEN": "개통",
-    "PAYEND": "납입완료",
-}
 _STAGE_ORDER = ["SUBSCRIPTION", "REGISTEND", "OPEN", "PAYEND"]
 _STAGE_COLORS = ["#06b6d4", "#0ea5e9", "#3b82f6", "#2563eb"]
-_MAJOR_CATS = ["인터넷", "렌탈", "모바일", "알뜰 요금제", "유심만"]
 _TREND_COLOR_MAP = {"GROWTH": "#4DFF91", "DECLINE": "#FF4D4D", "STABLE": "#4D9AFF"}
 _TREND_LABEL_MAP = {"GROWTH": "성장", "DECLINE": "쇠퇴", "STABLE": "안정"}
 
@@ -62,34 +57,11 @@ _DARK_LAYOUT = dict(
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
     font=dict(family="Pretendard, sans-serif", color="#e0e0e0", size=12),
-    margin=dict(l=40, r=20, t=50, b=40),
     xaxis=dict(gridcolor="rgba(255,255,255,0.05)"),
     yaxis=dict(gridcolor="rgba(255,255,255,0.05)"),
 )
 
 _MIN_BUBBLE_CONTRACTS = 30
-
-
-# ---------------------------------------------------------------------------
-# Client singleton
-# ---------------------------------------------------------------------------
-@st.cache_resource
-def _get_client():
-    if not _CLIENT_OK:
-        return None
-    try:
-        return SnowflakeClient()
-    except Exception:
-        return None
-
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-def _drop_incomplete_month(df: pd.DataFrame, col: str = "YEAR_MONTH") -> pd.DataFrame:
-    if df.empty or col not in df.columns:
-        return df
-    return df[df[col] < df[col].max()]
 
 
 def _ensure_datetime(df: pd.DataFrame, col: str) -> pd.DataFrame:
@@ -345,6 +317,7 @@ def _build_cvr_trend(funnel_ts_df, anomaly_df, cat_filter):
                                          name="이상치", marker=dict(size=12, color="#d73027", symbol="x")))
     fig.update_layout(**_DARK_LAYOUT, title=f"전환율 추이 -- {trend_title}",
                       xaxis_title="년월", yaxis_title="전환율 (%)", height=400,
+                      margin=dict(l=40, r=20, t=50, b=40),
                       hovermode="x unified", legend=dict(orientation="h", yanchor="bottom", y=1.02))
     return fig
 
@@ -356,7 +329,7 @@ _sidebar_result = render_sidebar()
 cat_filter = _sidebar_result.get("category")
 start_ym, end_ym = "202301", "202603"
 
-client = _get_client()
+client = get_cached_client()
 if client is None:
     st.error("Snowflake 연결 실패. `.env` 설정을 확인하세요.")
     st.stop()
@@ -368,28 +341,16 @@ channel_df = pd.DataFrame()
 anomaly_df = pd.DataFrame()
 
 with st.spinner("데이터 로딩 중..."):
-    try:
-        stage_drop_df = _drop_incomplete_month(client.load_funnel_stage_drop(cat_filter))
-    except Exception:
-        pass
-    try:
-        bottleneck_df = client.load_funnel_bottlenecks()
-    except Exception:
-        pass
-    try:
-        funnel_ts_df = _drop_incomplete_month(client.load_funnel_timeseries(cat_filter))
-    except Exception:
-        pass
-    try:
-        raw_ch = client.load_channel_efficiency(cat_filter)
-        channel_df = _ensure_datetime(raw_ch, "YEAR_MONTH")
-        channel_df = _drop_incomplete_month(channel_df)
-    except Exception:
-        pass
-    try:
-        anomaly_df = client.load_anomalies()
-    except Exception:
-        pass
+    stage_drop_df = drop_incomplete_month(
+        safe_data_load(lambda: client.load_funnel_stage_drop(cat_filter), "퍼널 스테이지 로드 실패")
+    )
+    bottleneck_df = safe_data_load(lambda: client.load_funnel_bottlenecks(), "병목 데이터 로드 실패")
+    funnel_ts_df = drop_incomplete_month(
+        safe_data_load(lambda: client.load_funnel_timeseries(cat_filter), "퍼널 시계열 로드 실패")
+    )
+    raw_ch = safe_data_load(lambda: client.load_channel_efficiency(cat_filter), "채널 효율 로드 실패")
+    channel_df = drop_incomplete_month(_ensure_datetime(raw_ch, "YEAR_MONTH"))
+    anomaly_df = safe_data_load(lambda: client.load_anomalies(), "이상 탐지 로드 실패")
 
 ch_col = "RECEIVE_PATH_NAME" if "RECEIVE_PATH_NAME" in channel_df.columns else "CHANNEL"
 

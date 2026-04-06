@@ -7,7 +7,7 @@ from typing import Optional
 
 import pandas as pd
 
-from data.snowflake_client import SnowflakeClient, _ANALYTICS, _MART, _safe_escape
+from data.snowflake_client import SnowflakeClient, _ANALYTICS, _MART
 
 logger = logging.getLogger(__name__)
 

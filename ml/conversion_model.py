@@ -21,6 +21,13 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import TimeSeriesSplit
 
+from ml.model_validation import (
+    FeatureValidationResult,
+    ModelMetrics,
+    compute_metrics,
+    validate_features,
+)
+
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
@@ -107,6 +114,8 @@ class ConversionModel:
         self._feature_columns: list[str] = list(_FEATURE_COLUMNS)
         self._is_snowpark_model: bool = False
         self._train_df: pd.DataFrame | None = None
+        self._metrics: ModelMetrics | None = None
+        self._feature_validation: FeatureValidationResult | None = None
         logger.info("ConversionModel 초기화 완료")
 
     # ------------------------------------------------------------------
@@ -144,19 +153,31 @@ class ConversionModel:
 
         self._train_df = df.copy()
 
-        # 2. 피처 / 타겟 분리
-        available_features = [c for c in self._feature_columns if c in df.columns]
-        if len(available_features) < 3:
+        # 2. 피처 검증 (model_validation 모듈 사용)
+        self._feature_validation = validate_features(
+            df, self._feature_columns, _TARGET_COLUMN
+        )
+        if not self._feature_validation.is_valid:
             logger.error(
-                "사용 가능한 피처가 부족합니다: %d개", len(available_features)
+                "피처 검증 실패: %d/%d 피처 사용 가능",
+                self._feature_validation.available_features,
+                self._feature_validation.total_features,
             )
             return {
                 "accuracy": 0.0,
                 "f1_macro": 0.0,
                 "classification_report": "피처 부족",
                 "feature_importance": {},
+                "feature_validation": self._feature_validation,
             }
 
+        if self._feature_validation.high_null_features:
+            logger.warning(
+                "NULL 비율 높은 피처: %s",
+                ", ".join(self._feature_validation.high_null_features),
+            )
+
+        available_features = [c for c in self._feature_columns if c in df.columns]
         self._feature_columns = available_features
         x_data = df[available_features].copy()
         y_data = df[_TARGET_COLUMN].map(_LABEL_MAP).astype(int)
@@ -187,36 +208,47 @@ class ConversionModel:
         # 4. 전체 데이터로 최종 학습
         self._model = self._fit_model(x_data, y_data)
 
-        # 5. 전체 데이터 평가 (in-sample, CV 결과와 함께 보고)
+        # 5. 전체 데이터 평가 — 종합 메트릭 (model_validation 모듈)
         final_preds = self._predict_with_model(self._model, x_data)
-        acc = accuracy_score(y_data, final_preds)
-        f1 = float(np.mean(cv_scores)) if cv_scores else f1_score(
-            y_data, final_preds, average="macro", zero_division=0
-        )
+        final_proba = None
+        try:
+            final_proba = self._predict_proba_with_model(self._model, x_data)
+        except Exception:
+            pass
 
         target_names = [_LABEL_MAP_INV[i] for i in sorted(_LABEL_MAP.values())]
-        report = classification_report(
-            y_data,
-            final_preds,
+        self._metrics = compute_metrics(
+            y_true=y_data.values,
+            y_pred=final_preds,
+            y_proba=final_proba,
+            cv_scores=cv_scores,
+            n_features=len(available_features),
+            feature_columns=available_features,
             target_names=target_names,
-            zero_division=0,
         )
+
+        if not self._metrics.is_acceptable:
+            logger.warning(
+                "모델 품질 미달: F1=%.4f (최소 0.4 필요)", self._metrics.f1_macro
+            )
 
         # 6. Feature importance
         importance = self._extract_feature_importance()
 
         result = {
-            "accuracy": round(acc, 4),
-            "f1_macro": round(f1, 4),
+            **self._metrics.to_dict(),
             "cv_scores": [round(s, 4) for s in cv_scores],
-            "classification_report": report,
+            "classification_report": self._metrics.classification_report_text,
             "feature_importance": importance,
+            "feature_validation": self._feature_validation,
+            "model_acceptable": self._metrics.is_acceptable,
         }
 
         logger.info(
-            "모델 학습 완료: accuracy=%.4f, f1_macro(CV)=%.4f",
-            acc,
-            f1,
+            "모델 학습 완료: accuracy=%.4f, f1_macro(CV)=%.4f, AUC=%.4f",
+            self._metrics.accuracy,
+            self._metrics.cv_mean,
+            self._metrics.auc_ovr or 0.0,
         )
         return result
 

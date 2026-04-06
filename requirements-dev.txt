@@ -1,0 +1,16 @@
+# Development dependencies
+-r requirements.txt
+
+# Testing
+pytest>=7.4.0,<9.0.0
+pytest-cov>=4.1.0,<6.0.0
+
+# Linting & Formatting
+ruff>=0.1.0,<1.0.0
+
+# Type Checking
+mypy>=1.5.0,<2.0.0
+pandas-stubs>=2.0.0
+
+# Security Scanning
+bandit>=1.7.0,<2.0.0

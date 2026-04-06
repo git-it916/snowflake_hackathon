@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 from typing import Optional
 
 import pandas as pd
@@ -18,6 +19,11 @@ logger = logging.getLogger(__name__)
 _STAGING = "STAGING"
 _ANALYTICS = "ANALYTICS"
 _MART = "MART"
+
+# ---------------------------------------------------------------------------
+# SQL 안전 식별자 허용 패턴
+# ---------------------------------------------------------------------------
+_SAFE_IDENTIFIER_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]{0,254}$")
 
 # ---------------------------------------------------------------------------
 # Cortex 기본 설정
@@ -35,13 +41,47 @@ _SYSTEM_PROMPT_KR = (
 )
 
 
-def _safe_escape(text: str) -> str:
-    """SQL 문자열 내 단일 따옴표 이스케이프."""
-    return text.replace("'", "''")
+# ---------------------------------------------------------------------------
+# Custom Exceptions
+# ---------------------------------------------------------------------------
+class DataLoadError(Exception):
+    """데이터 로드 실패 시 발생하는 기본 예외."""
+
+
+class QueryExecutionError(DataLoadError):
+    """SQL 쿼리 실행 실패."""
+
+
+class SchemaValidationError(DataLoadError):
+    """스키마/식별자 검증 실패."""
+
+
+# ---------------------------------------------------------------------------
+# SQL 안전 헬퍼
+# ---------------------------------------------------------------------------
+def _validate_identifier(name: str) -> str:
+    """SQL 식별자(테이블명, 컬럼명)가 안전한지 검증.
+
+    허용: 영문, 숫자, 밑줄만. 최대 255자.
+
+    Raises:
+        SchemaValidationError: 유효하지 않은 식별자.
+    """
+    if not _SAFE_IDENTIFIER_RE.match(name):
+        raise SchemaValidationError(
+            f"유효하지 않은 SQL 식별자: {name!r}"
+        )
+    return name
 
 
 def _qualified(schema: str, table: str) -> str:
-    """TELECOM_DB.<schema>.<table> 형태의 정규화 이름 반환."""
+    """TELECOM_DB.<schema>.<table> 형태의 정규화 이름 반환.
+
+    Raises:
+        SchemaValidationError: schema/table 이름이 유효하지 않을 때.
+    """
+    _validate_identifier(schema)
+    _validate_identifier(table)
     return f"TELECOM_DB.{schema}.{table}"
 
 
@@ -71,6 +111,35 @@ class SnowflakeClient:
             logger.exception("SQL 실행 실패: %s", sql[:200])
             return pd.DataFrame()
 
+    def _query_with_filter(
+        self,
+        fqn: str,
+        filters: dict[str, str],
+    ) -> pd.DataFrame:
+        """Snowpark DataFrame API를 사용한 안전한 필터 쿼리.
+
+        SQL 문자열 보간 대신 Snowpark의 col().equal() 체인을 사용하여
+        SQL 인젝션을 원천 차단한다.
+
+        Args:
+            fqn: 정규화된 테이블 이름 (TELECOM_DB.SCHEMA.TABLE)
+            filters: {컬럼명: 값} 딕셔너리 (빈 값은 무시)
+        """
+        try:
+            from snowflake.snowpark.functions import col
+
+            df = self._session.table(fqn)
+            for col_name, value in filters.items():
+                if value is not None:
+                    _validate_identifier(col_name)
+                    df = df.filter(col(col_name) == value)
+            return df.to_pandas()
+        except SchemaValidationError:
+            raise
+        except Exception:
+            logger.exception("테이블 로드 실패: %s", fqn)
+            return pd.DataFrame()
+
     def _load_table(
         self,
         schema: str,
@@ -80,25 +149,20 @@ class SnowflakeClient:
         category_col: str = "MAIN_CATEGORY_NAME",
         state_col: str = "INSTALL_STATE",
     ) -> pd.DataFrame:
-        """테이블 로드 + 선택적 필터.
+        """테이블 로드 + 선택적 필터 (Snowpark API로 SQL 인젝션 방지).
 
         Args:
             category_col: 카테고리 필터 컬럼명 (기본: MAIN_CATEGORY_NAME)
             state_col: 지역 필터 컬럼명 (기본: INSTALL_STATE)
         """
         fqn = _qualified(schema, table)
-        conditions: list[str] = []
-
+        filters = {}
         if category is not None:
-            conditions.append(f"{category_col} = '{_safe_escape(category)}'")
+            filters[category_col] = category
         if state is not None:
-            conditions.append(f"{state_col} = '{_safe_escape(state)}'")
+            filters[state_col] = state
 
-        sql = f"SELECT * FROM {fqn}"
-        if conditions:
-            sql += " WHERE " + " AND ".join(conditions)
-
-        return self._query(sql)
+        return self._query_with_filter(fqn, filters)
 
     # ------------------------------------------------------------------
     # MART 테이블 로드
@@ -217,6 +281,31 @@ class SnowflakeClient:
     # Stored Procedure 호출
     # ------------------------------------------------------------------
 
+    def _call_stored_procedure(self, sp_fqn: str, param: str) -> dict:
+        """저장 프로시저를 Snowpark call_builtin 방식으로 안전하게 호출.
+
+        Args:
+            sp_fqn: 프로시저 정규화 이름
+            param: 프로시저 파라미터 값
+
+        Returns:
+            프로시저 결과 딕셔너리. 실패 시 에러 정보 딕셔너리.
+        """
+        result = None
+        try:
+            from snowflake.snowpark.functions import lit
+            result = self._session.call(sp_fqn, lit(param))
+            if result:
+                raw = str(result)
+                return json.loads(raw)
+            return {"status": "empty", "param": param}
+        except json.JSONDecodeError:
+            logger.warning("%s 결과 JSON 파싱 실패: %s", sp_fqn, param)
+            return {"status": "parse_error", "raw": str(result) if result else ""}
+        except Exception:
+            logger.exception("%s 호출 실패: %s", sp_fqn, param)
+            return {"status": "error", "param": param}
+
     def run_funnel_analysis(self, category: str) -> dict:
         """퍼널 분석 저장 프로시저 호출.
 
@@ -226,20 +315,9 @@ class SnowflakeClient:
         Returns:
             프로시저 결과를 딕셔너리로 반환. 실패 시 에러 정보 딕셔너리.
         """
-        safe_cat = _safe_escape(category)
-        sql = f"CALL TELECOM_DB.ANALYTICS.SP_FUNNEL_ANALYSIS('{safe_cat}')"
-        try:
-            result = self._session.sql(sql).collect()
-            if result and len(result) > 0:
-                raw = str(result[0][0])
-                return json.loads(raw)
-            return {"status": "empty", "category": category}
-        except json.JSONDecodeError:
-            logger.warning("SP_FUNNEL_ANALYSIS 결과 JSON 파싱 실패: %s", category)
-            return {"status": "parse_error", "raw": str(result[0][0]) if result else ""}
-        except Exception:
-            logger.exception("SP_FUNNEL_ANALYSIS 호출 실패: %s", category)
-            return {"status": "error", "category": category}
+        return self._call_stored_procedure(
+            "TELECOM_DB.ANALYTICS.SP_FUNNEL_ANALYSIS", category
+        )
 
     def run_channel_analysis(self, category: str) -> dict:
         """채널 분석 저장 프로시저 호출.
@@ -250,20 +328,9 @@ class SnowflakeClient:
         Returns:
             프로시저 결과를 딕셔너리로 반환. 실패 시 에러 정보 딕셔너리.
         """
-        safe_cat = _safe_escape(category)
-        sql = f"CALL TELECOM_DB.ANALYTICS.SP_CHANNEL_ANALYSIS('{safe_cat}')"
-        try:
-            result = self._session.sql(sql).collect()
-            if result and len(result) > 0:
-                raw = str(result[0][0])
-                return json.loads(raw)
-            return {"status": "empty", "category": category}
-        except json.JSONDecodeError:
-            logger.warning("SP_CHANNEL_ANALYSIS 결과 JSON 파싱 실패: %s", category)
-            return {"status": "parse_error", "raw": str(result[0][0]) if result else ""}
-        except Exception:
-            logger.exception("SP_CHANNEL_ANALYSIS 호출 실패: %s", category)
-            return {"status": "error", "category": category}
+        return self._call_stored_procedure(
+            "TELECOM_DB.ANALYTICS.SP_CHANNEL_ANALYSIS", category
+        )
 
     # ------------------------------------------------------------------
     # Cortex Analyst (자연어 → SQL)
@@ -493,7 +560,10 @@ class SnowflakeClient:
         model: str = _DEFAULT_MODEL,
         temperature: float = _DEFAULT_TEMP,
     ) -> str:
-        """Cortex COMPLETE 내부 호출.
+        """Cortex COMPLETE 내부 호출 (Snowpark API로 SQL 인젝션 방지).
+
+        Snowpark의 call_builtin + lit()을 사용하여 사용자 입력을
+        SQL 문자열에 직접 보간하지 않는다.
 
         Args:
             system_prompt: 시스템 프롬프트.
@@ -504,27 +574,70 @@ class SnowflakeClient:
         Returns:
             생성된 텍스트. 실패 시 에러 메시지 문자열.
         """
-        # 개행/백슬래시/싱글쿼트 이스케이프 (SQL 인젝션 방지)
-        safe_system = (
-            system_prompt.replace("\\", "\\\\")
-            .replace("\n", " ").replace("\r", " ")
-            .replace("'", "''")
-        )
-        safe_user = (
-            user_message.replace("\\", "\\\\")
-            .replace("\n", " ").replace("\r", " ")
-            .replace("'", "''")
-        )
+        try:
+            from snowflake.snowpark.functions import call_builtin, lit, parse_json
+
+            messages = json.dumps([
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_message},
+            ], ensure_ascii=False)
+            options = json.dumps({
+                "temperature": temperature,
+                "max_tokens": 2048,
+            })
+
+            result_df = self._session.sql(
+                "SELECT SNOWFLAKE.CORTEX.COMPLETE(?, PARSE_JSON(?), PARSE_JSON(?)) AS RESPONSE",
+                params=[model, messages, options],
+            ).collect()
+
+            if result_df and len(result_df) > 0:
+                raw = str(result_df[0]["RESPONSE"])
+                return self._parse_cortex_response(raw)
+            return "[응답 없음]"
+        except TypeError:
+            # Snowpark 버전에 따라 params 미지원 시 안전한 이스케이프 폴백
+            return self._cortex_complete_escaped(
+                system_prompt, user_message, model, temperature
+            )
+        except Exception:
+            logger.exception("Cortex COMPLETE 호출 실패")
+            return "[AI 인사이트 생성 실패. 잠시 후 다시 시도해주세요.]"
+
+    def _cortex_complete_escaped(
+        self,
+        system_prompt: str,
+        user_message: str,
+        model: str,
+        temperature: float,
+    ) -> str:
+        """Cortex COMPLETE 폴백: 안전한 이스케이프 방식.
+
+        Snowpark params 미지원 환경(SiS 등)을 위한 폴백.
+        모든 사용자 입력에 대해 다중 이스케이프를 적용한다.
+        """
+        def _escape_for_sql(text: str) -> str:
+            return (
+                text.replace("\\", "\\\\")
+                .replace("'", "''")
+                .replace("\n", "\\n")
+                .replace("\r", "")
+                .replace("\x00", "")
+            )
+
+        safe_system = _escape_for_sql(system_prompt)
+        safe_user = _escape_for_sql(user_message)
+        safe_model = _escape_for_sql(model)
 
         sql = f"""
             SELECT SNOWFLAKE.CORTEX.COMPLETE(
-                '{model.replace("'", "''")}',
+                '{safe_model}',
                 [
                     {{'role': 'system', 'content': '{safe_system}'}},
                     {{'role': 'user', 'content': '{safe_user}'}}
                 ],
                 {{
-                    'temperature': {temperature},
+                    'temperature': {float(temperature)},
                     'max_tokens': 2048
                 }}
             ) AS RESPONSE
@@ -533,21 +646,28 @@ class SnowflakeClient:
             result = self._session.sql(sql).collect()
             if result and len(result) > 0:
                 raw = str(result[0]["RESPONSE"])
-                try:
-                    parsed = json.loads(raw)
-                    choice = parsed.get("choices", [{}])[0]
-                    # Cortex 응답 형식 두 가지 모두 처리:
-                    # 1) {"messages": "text"}  — messages가 문자열
-                    # 2) {"message": {"content": "text"}}  — message가 객체
-                    msg = choice.get("messages") or choice.get("message")
-                    if isinstance(msg, str):
-                        return msg
-                    if isinstance(msg, dict):
-                        return msg.get("content", raw)
-                    return raw
-                except (json.JSONDecodeError, IndexError, KeyError):
-                    return raw
+                return self._parse_cortex_response(raw)
             return "[응답 없음]"
         except Exception:
-            logger.exception("Cortex COMPLETE 호출 실패")
+            logger.exception("Cortex COMPLETE 폴백 호출 실패")
             return "[AI 인사이트 생성 실패. 잠시 후 다시 시도해주세요.]"
+
+    @staticmethod
+    def _parse_cortex_response(raw: str) -> str:
+        """Cortex COMPLETE 응답 JSON을 파싱하여 텍스트 추출.
+
+        두 가지 응답 형식을 모두 처리:
+        1) {"messages": "text"}  — messages가 문자열
+        2) {"message": {"content": "text"}}  — message가 객체
+        """
+        try:
+            parsed = json.loads(raw)
+            choice = parsed.get("choices", [{}])[0]
+            msg = choice.get("messages") or choice.get("message")
+            if isinstance(msg, str):
+                return msg
+            if isinstance(msg, dict):
+                return msg.get("content", raw)
+            return raw
+        except (json.JSONDecodeError, IndexError, KeyError):
+            return raw

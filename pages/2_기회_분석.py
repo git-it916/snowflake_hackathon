@@ -47,6 +47,8 @@ st.divider()
 # ---------------------------------------------------------------------------
 # Dependency imports (all guarded)
 # ---------------------------------------------------------------------------
+from components.utils import get_cached_client, safe_data_load, PLOTLY_DARK_LAYOUT
+
 try:
     from data.snowflake_client import SnowflakeClient
     CLIENT_AVAILABLE = True
@@ -83,20 +85,10 @@ _DARK_LAYOUT = dict(
 # ---------------------------------------------------------------------------
 # Singletons
 # ---------------------------------------------------------------------------
-@st.cache_resource
-def _get_client() -> "SnowflakeClient | None":
-    if not CLIENT_AVAILABLE:
-        return None
-    try:
-        return SnowflakeClient()
-    except Exception:
-        return None
-
-
 @st.cache_data(ttl=300)
 def _load_markov_baseline(category: str | None = None):
     """마르코프 체인 기준 데이터를 캐싱하여 로드."""
-    cl = _get_client()
+    cl = get_cached_client()
     if cl is None or not MARKOV_AVAILABLE:
         return None, None
     try:
@@ -402,26 +394,24 @@ _sidebar_result = render_sidebar()
 category_filter = _sidebar_result.get("category")
 start_ym, end_ym = "202301", "202603"
 
-client = _get_client()
+client = get_cached_client()
 if client is None:
     st.error("Snowflake 연결 실패. `.env` 파일을 확인하세요.")
     st.stop()
 
 with st.spinner("지역 데이터 로딩 중..."):
-    try:
-        heatmap_df = client.load_regional_heatmap()
-    except Exception:
-        heatmap_df = pd.DataFrame()
-
-    try:
-        demand_df = client.load_regional_demand(None)
-    except Exception:
-        demand_df = pd.DataFrame()
-
-    try:
-        forecast_df = client.load_forecast()
-    except Exception:
-        forecast_df = pd.DataFrame()
+    heatmap_df = safe_data_load(
+        lambda: client.load_regional_heatmap(),
+        "지역 히트맵 데이터 로드 실패",
+    )
+    demand_df = safe_data_load(
+        lambda: client.load_regional_demand(None),
+        "지역 수요 데이터 로드 실패",
+    )
+    forecast_df = safe_data_load(
+        lambda: client.load_forecast(),
+        "Cortex FORECAST 데이터 로드 실패",
+    )
 
 for df in [heatmap_df, demand_df]:
     if not df.empty and "YEAR_MONTH" in df.columns:
@@ -452,7 +442,7 @@ if INSIGHT_AVAILABLE and not heatmap_df.empty:
 # =========================================================================
 
 # -- Page header --
-st.caption("PAGE 2: OPPORTUNITY")
+st.caption("PAGE 2: 기회 분석")
 st.title("지역 수요 예측 & 시나리오 시뮬레이션")
 
 st.markdown(
@@ -516,7 +506,11 @@ _state_options = (
     if not heatmap_df.empty and "INSTALL_STATE" in heatmap_df.columns
     else ["전체"]
 )
-selected_state = st.selectbox("시도 선택", _state_options, index=0, label_visibility="collapsed")
+selected_state = st.selectbox(
+    "시도 선택 (아래 예측·이상탐지 차트에 적용)",
+    _state_options,
+    index=0,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -571,8 +565,8 @@ st.divider()
 st.subheader("┃Cortex FORECAST 예측")
 st.caption(
     "Snowflake Cortex FORECAST로 시도별 계약 건수를 3개월 예측합니다. "
-    "파란 실선은 과거 실적, 시안 점선은 예측값, 음영은 95% 신뢰구간입니다. "
-    "신뢰구간이 좁을수록 예측의 확실성이 높으며, 넓으면 변동성이 크다는 의미입니다."
+    "파란 실선은 과거 실적, 시안 점선은 예측값, 밝은 파란색 음영 영역은 95% 신뢰구간입니다. "
+    "음영이 좁을수록 예측의 확실성이 높으며, 넓으면 해당 지역의 변동성이 크다는 의미입니다."
 )
 
 if not forecast_df.empty:
@@ -616,8 +610,12 @@ st.divider()
 st.subheader("┃이상 탐지")
 st.caption(
     "Cortex ANOMALY가 시도별 계약 건수에서 95% 신뢰구간을 벗어난 급변 시점을 자동 탐지합니다. "
-    "실측이 기대보다 크면 긍정적 이상(특수 프로모션 효과 등), 작으면 부정적 이상(서비스 장애 등)입니다. "
-    "이상 여부가 True인 행은 원인 분석이 필요합니다."
+    "실측이 기대보다 크면 긍정적 이상(특수 프로모션 효과 등), 작으면 부정적 이상(서비스 장애 등)입니다."
+)
+st.markdown(
+    "**대응 가이드**: 이상 여부가 **True**인 시도는 "
+    "① 해당 월의 프로모션/장애 이력 확인 → ② 원인 분석 후 반복 가능성 평가 → "
+    "③ 긍정적 이상은 성공 패턴 복제, 부정적 이상은 재발 방지 대책 수립"
 )
 
 try:
@@ -826,7 +824,10 @@ if _markov_obj is not None and _baseline_tm is not None:
             )
             st.plotly_chart(fig_compare, use_container_width=True)
         else:
-            st.info("프리셋 시나리오를 선택하거나 슬라이더를 조절 후 시뮬레이션을 실행하세요.")
+            st.info(
+                "위의 프리셋 버튼을 클릭하거나 슬라이더를 조절하면 즉시 시뮬레이션 결과가 여기에 표시됩니다. "
+                "시뮬레이션은 마르코프 체인을 기반으로 전이 확률 변경에 따른 최종 전환율 변화를 수학적으로 계산합니다."
+            )
 
     # --- Monte Carlo (Markov-based) ---
     st.divider()
@@ -838,7 +839,13 @@ if _markov_obj is not None and _baseline_tm is not None:
         "변동성(σ)이 낮으면 퍼널이 안정적이고, 높으면 외부 요인에 취약합니다."
     )
 
+    st.markdown(
+        "**활용법**: 변동성이 **높으면** → 채널 다변화, 리스크 헤지 필요 | "
+        "변동성이 **낮으면** → 집중 투자 가능, 예측 신뢰도 높음"
+    )
+
     _MC_N = 500
+    st.caption(f"약 3~5초 소요됩니다 (500회 시뮬레이션)")
     if st.button(f"Monte Carlo {_MC_N}회 실행", key="mc_run", type="primary"):
         import numpy as np
         rng = np.random.default_rng(42)

@@ -12,13 +12,13 @@ st.set_page_config(
 )
 
 # ---------------------------------------------------------------------------
-# Imports
+# Imports (공통 유틸리티 사용)
 # ---------------------------------------------------------------------------
-try:
-    from data.snowflake_client import SnowflakeClient
-    _CLIENT_OK = True
-except Exception:
-    _CLIENT_OK = False
+from components.utils import (
+    drop_incomplete_month,
+    get_cached_client,
+    safe_data_load,
+)
 
 try:
     from analysis.insight_generator import generate_funnel_insights, generate_channel_insights
@@ -28,30 +28,12 @@ except Exception:
 
 try:
     from config.constants import PRODUCT_CATEGORIES, STATES
-    _CONST_OK = True
 except Exception:
-    _CONST_OK = False
     PRODUCT_CATEGORIES = {"인터넷": "internet", "렌탈": "rental", "모바일": "mobile"}
     STATES = [
         "서울", "부산", "대구", "인천", "광주", "대전", "울산", "세종",
         "경기", "강원", "충북", "충남", "전북", "전남", "경북", "경남", "제주",
     ]
-
-
-@st.cache_resource
-def _get_client():
-    if not _CLIENT_OK:
-        return None
-    try:
-        return SnowflakeClient()
-    except Exception:
-        return None
-
-
-def _drop_incomplete(df: pd.DataFrame, col: str = "YEAR_MONTH") -> pd.DataFrame:
-    if df.empty or col not in df.columns:
-        return df
-    return df[df[col] < df[col].max()]
 
 
 # ---------------------------------------------------------------------------
@@ -74,9 +56,9 @@ cat_filter = _sidebar_result.get("category")
 
 
 # ---------------------------------------------------------------------------
-# DATA LOADING
+# DATA LOADING (safe_data_load로 에러 표시)
 # ---------------------------------------------------------------------------
-client = _get_client()
+client = get_cached_client()
 
 stage_drop_df = pd.DataFrame()
 bottleneck_df = pd.DataFrame()
@@ -85,26 +67,37 @@ kpi_df = pd.DataFrame()
 channel_df = pd.DataFrame()
 
 if client is not None:
-    try:
-        stage_drop_df = _drop_incomplete(client.load_funnel_stage_drop(cat_filter))
-    except Exception:
-        pass
-    try:
-        bottleneck_df = client.load_funnel_bottlenecks()
-    except Exception:
-        pass
-    try:
-        funnel_ts_df = _drop_incomplete(client.load_funnel_timeseries(cat_filter))
-    except Exception:
-        pass
-    try:
-        kpi_df = client.load_kpi()
-    except Exception:
-        pass
-    try:
-        channel_df = _drop_incomplete(client.load_channel_efficiency(cat_filter))
-    except Exception:
-        pass
+    stage_drop_df = drop_incomplete_month(
+        safe_data_load(
+            lambda: client.load_funnel_stage_drop(cat_filter),
+            "퍼널 스테이지 데이터 로드 실패",
+            show_warning=False,
+        )
+    )
+    bottleneck_df = safe_data_load(
+        lambda: client.load_funnel_bottlenecks(),
+        "병목 데이터 로드 실패",
+        show_warning=False,
+    )
+    funnel_ts_df = drop_incomplete_month(
+        safe_data_load(
+            lambda: client.load_funnel_timeseries(cat_filter),
+            "퍼널 시계열 데이터 로드 실패",
+            show_warning=False,
+        )
+    )
+    kpi_df = safe_data_load(
+        lambda: client.load_kpi(),
+        "KPI 데이터 로드 실패",
+        show_warning=False,
+    )
+    channel_df = drop_incomplete_month(
+        safe_data_load(
+            lambda: client.load_channel_efficiency(cat_filter),
+            "채널 효율 데이터 로드 실패",
+            show_warning=False,
+        )
+    )
 
 # Generate insights
 funnel_insight: dict = {
@@ -239,11 +232,14 @@ with c3:
     )
     _safe_pl("pages/2_기회_분석.py", label="기회 시장 분석 →")
 
-st.caption(
-    "**읽는 법**: 퍼널 전환율은 상담요청 대비 최종 납입완료 비율입니다. "
-    "평균 대비 마이너스(-)면 최근 전환율이 하락 중이라는 의미입니다. "
-    "최고 볼륨 채널은 가장 많은 계약을 발생시키는 채널이며, 점유율이 50% 이상이면 특정 채널에 과도하게 의존하고 있어 리스크가 있습니다."
-)
+with st.expander("KPI 읽는 법", expanded=False):
+    st.markdown(
+        "- **퍼널 전환율**: 상담요청 대비 최종 납입완료 비율입니다. "
+        "평균 대비 마이너스(-)면 최근 전환율이 하락 중입니다.\n"
+        "- **최고 볼륨 채널**: 가장 많은 계약을 발생시키는 채널입니다. "
+        "점유율이 50% 이상이면 특정 채널에 과도하게 의존하고 있어 리스크가 있습니다.\n"
+        "- **최대 성장 지역**: 전월 대비 계약 건수가 가장 크게 증가한 지역입니다."
+    )
 
 # ---------------------------------------------------------------------------
 # AI CTA Section
@@ -251,7 +247,11 @@ st.caption(
 st.divider()
 
 st.subheader("┃AI 기반 전략 최적화")
-st.caption("다중 에이전트 시스템이 현재의 데이터를 분석하여 최적의 채널 및 예산 분배 전략을 제안합니다.")
+st.markdown(
+    "3단계 Multi-Agent 시스템(분석가 → 전략가 → 종합)이 현재 데이터를 분석하여 "
+    "**채널 예산 배분**, **지역 집중 투자**, **시즌별 마케팅** 등 즉시 실행 가능한 전략을 제안합니다."
+)
+st.caption("Snowflake Cortex COMPLETE (llama3.1-405b) 기반 | 분석 소요 시간: 약 30초")
 _safe_pl("pages/3_AI_전략.py", label="AI 전략 생성 실행 →")
 
 # ---------------------------------------------------------------------------

@@ -17,6 +17,7 @@ from typing import Optional
 import numpy as np
 import pandas as pd
 
+from agents.schemas import TransitionMatrixValidation
 from config.constants import FUNNEL_STAGES
 
 logger = logging.getLogger(__name__)
@@ -92,7 +93,28 @@ class FunnelMarkovChain:
             return self._empty_matrix()
 
         transition_probs = self._extract_transition_probs(filtered)
-        return self._build_matrix(transition_probs)
+        matrix = self._build_matrix(transition_probs)
+
+        # 전이 행렬 유효성 검증
+        validation = TransitionMatrixValidation.validate(matrix)
+        if not validation.is_valid:
+            logger.warning(
+                "전이 행렬 검증 실패: %s",
+                "; ".join(validation.warnings),
+            )
+            # 행 합 정규화로 복구 시도
+            matrix = self._normalize_rows(matrix)
+
+        return matrix
+
+    @staticmethod
+    def _normalize_rows(matrix: pd.DataFrame) -> pd.DataFrame:
+        """전이 행렬의 각 행을 합이 1.0이 되도록 정규화."""
+        values = matrix.values.astype(float)
+        row_sums = values.sum(axis=1, keepdims=True)
+        row_sums = np.where(row_sums == 0, 1.0, row_sums)
+        normalized = values / row_sums
+        return pd.DataFrame(normalized, index=matrix.index, columns=matrix.columns)
 
     # -----------------------------------------------------------------
     # 정상 상태 분포 (흡수 확률)
@@ -212,6 +234,12 @@ class FunnelMarkovChain:
             # 변경된 전이 행렬 생성 (불변성: 복사본 사용)
             modified = transition_matrix.copy()
             modified.loc[from_stage, to_stage] = improved_prob
+            # DROP 확률 보정 (행 합 = 1.0 유지)
+            drop_prob = 1.0 - sum(
+                float(modified.loc[from_stage, c])
+                for c in modified.columns if c != "DROP"
+            )
+            modified.loc[from_stage, "DROP"] = max(0.0, drop_prob)
             modified.loc[from_stage, "DROP"] = max(
                 float(modified.loc[from_stage, "DROP"]) - actual_improvement, 0.0,
             )

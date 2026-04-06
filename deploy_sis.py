@@ -168,9 +168,16 @@ def main() -> None:
 
 
 def _upload_file(session, local_path: Path, stage_path: str) -> None:
-    """PUT으로 파일을 스테이지에 업로드."""
-    # Windows 경로의 백슬래시를 슬래시로 변환
-    local_str = str(local_path).replace("\\", "/")
+    """PUT으로 파일을 스테이지에 업로드.
+
+    경로 검증: 프로젝트 루트 밖의 파일은 업로드하지 않는다 (path traversal 방지).
+    """
+    resolved = local_path.resolve()
+    if not str(resolved).startswith(str(_PROJECT_ROOT.resolve())):
+        logger.error("보안 위반: 프로젝트 루트 외부 경로 업로드 거부 — %s", resolved)
+        return
+
+    local_str = str(resolved).replace("\\", "/")
     put_sql = f"PUT 'file://{local_str}' '{stage_path}' AUTO_COMPRESS=FALSE OVERWRITE=TRUE"
     try:
         session.sql(put_sql).collect()

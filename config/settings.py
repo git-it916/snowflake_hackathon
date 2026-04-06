@@ -1,7 +1,11 @@
 # config/settings.py
 """Snowflake 연결 설정 및 Snowpark Session 빌더."""
+import logging
 import os
+
 from snowflake.snowpark import Session
+
+logger = logging.getLogger(__name__)
 
 try:
     from dotenv import load_dotenv
@@ -9,21 +13,42 @@ try:
 except ImportError:
     pass  # SiS 환경에서는 dotenv 불필요
 
-# Snowflake 연결 파라미터
-CONNECTION_PARAMS = {
-    "account": os.getenv("SF_ACCOUNT"),
-    "user": os.getenv("SF_USER"),
-    "password": os.getenv("SF_PASSWORD"),
-    "role": os.getenv("SF_ROLE", "ACCOUNTADMIN"),
-    "warehouse": os.getenv("SF_WAREHOUSE", "COMPUTE_WH"),
-    "database": "TELECOM_DB",
-    "schema": "ANALYTICS",
-}
+# ---------------------------------------------------------------------------
+# 연결 파라미터 (환경 변수에서 로드)
+# ---------------------------------------------------------------------------
+_REQUIRED_ENV_VARS = ("SF_ACCOUNT", "SF_USER", "SF_PASSWORD")
+
+
+def _get_connection_params() -> dict:
+    """환경 변수에서 Snowflake 연결 파라미터를 로드.
+
+    Raises:
+        EnvironmentError: 필수 환경 변수가 누락된 경우.
+    """
+    missing = [v for v in _REQUIRED_ENV_VARS if not os.getenv(v)]
+    if missing:
+        raise EnvironmentError(
+            f"Snowflake 연결에 필요한 환경 변수가 설정되지 않았습니다: {', '.join(missing)}. "
+            ".env 파일을 확인하세요."
+        )
+    return {
+        "account": os.environ["SF_ACCOUNT"],
+        "user": os.environ["SF_USER"],
+        "password": os.environ["SF_PASSWORD"],
+        "role": os.getenv("SF_ROLE", "ACCOUNTADMIN"),
+        "warehouse": os.getenv("SF_WAREHOUSE", "COMPUTE_WH"),
+        "database": "TELECOM_DB",
+        "schema": "ANALYTICS",
+    }
 
 
 def get_session() -> Session:
-    """Snowpark Session 생성. 캐시된 세션이 없으면 새로 생성."""
-    return Session.builder.configs(CONNECTION_PARAMS).create()
+    """Snowpark Session 생성.
+
+    Raises:
+        EnvironmentError: 필수 환경 변수 누락 시.
+    """
+    return Session.builder.configs(_get_connection_params()).create()
 
 
 def get_streamlit_session() -> Session:

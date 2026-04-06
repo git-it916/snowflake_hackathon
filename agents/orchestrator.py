@@ -15,13 +15,10 @@ import logging
 from typing import TYPE_CHECKING, Optional
 
 from agents.analyst_agent import AnalystAgent
+from agents.cortex_caller import call_cortex_complete
+from agents.schemas import AnalystResult, OrchestratorResult, StrategyResult
 from agents.strategy_agent import StrategyAgent
-from config.agent_config import (
-    CORTEX_MAX_TOKENS,
-    CORTEX_MODEL,
-    CORTEX_TEMPERATURE,
-    SYNTHESIZER_SYSTEM_PROMPT,
-)
+from config.agent_config import SYNTHESIZER_SYSTEM_PROMPT
 
 if TYPE_CHECKING:
     from snowflake.snowpark import Session
@@ -390,49 +387,5 @@ class AgentOrchestrator:
     # ------------------------------------------------------------------
 
     def _call_cortex(self, system_prompt: str, user_message: str) -> str:
-        """Snowflake Cortex COMPLETE를 호출.
-
-        Args:
-            system_prompt: 시스템 프롬프트
-            user_message: 사용자 메시지
-
-        Returns:
-            LLM 응답 텍스트. 실패 시 에러 메시지.
-        """
-        sys_escaped = system_prompt.replace("'", "''")
-        user_escaped = user_message.replace("'", "''")
-
-        query = f"""
-        SELECT SNOWFLAKE.CORTEX.COMPLETE(
-            '{CORTEX_MODEL}',
-            [{{'role': 'system', 'content': '{sys_escaped}'}},
-             {{'role': 'user', 'content': '{user_escaped}'}}],
-            {{'temperature': {CORTEX_TEMPERATURE}, 'max_tokens': {CORTEX_MAX_TOKENS}}}
-        ) AS RESPONSE
-        """
-
-        try:
-            result = self._session.sql(query).collect()
-
-            if not result:
-                return "Cortex COMPLETE 응답이 비어 있습니다."
-
-            raw = str(result[0]["RESPONSE"])
-
-            try:
-                parsed = json.loads(raw)
-                choices = parsed.get("choices", [])
-                if choices:
-                    message = choices[0].get("messages", "")
-                    if not message:
-                        message = choices[0].get("message", "")
-                    if isinstance(message, dict):
-                        return message.get("content", raw)
-                    return message if message else raw
-                return raw
-            except (json.JSONDecodeError, IndexError, KeyError):
-                return raw
-
-        except Exception as exc:
-            logger.exception("Cortex COMPLETE 호출 실패 (Synthesizer)")
-            return f"경영진 요약 생성 실패: {exc}"
+        """Snowflake Cortex COMPLETE를 안전하게 호출 (공용 유틸리티 사용)."""
+        return call_cortex_complete(self._session, system_prompt, user_message)
