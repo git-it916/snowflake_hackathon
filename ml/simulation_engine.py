@@ -1,8 +1,8 @@
 """What-if 채널 예산 시뮬레이션 엔진.
 
-채널별 계약 건수(CONTRACT_COUNT) 변동에 따른
-전환율(PAYEND_CVR) 변화를 시뮬레이션한다.
-Monte Carlo 분석을 통해 불확실성 범위도 제공한다.
+채널 가중치 변동에 따른 전환율(PAYEND_CVR) 변화를 시뮬레이션한다.
+Feature Store가 카테고리×월 단위이므로, 카테고리 레벨에서
+채널 가중치를 반영한 피처 변동을 시뮬레이션한다.
 """
 
 from __future__ import annotations
@@ -28,7 +28,9 @@ class SimulationEngine:
     """What-if 시뮬레이션을 통한 채널 예산 배분 분석 엔진.
 
     ConversionModel의 예측 결과를 기반으로
-    채널별 계약 건수 변동 시나리오를 평가한다.
+    채널 가중치 변동 시나리오를 평가한다.
+    Feature Store가 카테고리×월 단위이므로 채널별 반복 대신
+    카테고리 레벨에서 가중치를 반영한다.
     """
 
     def __init__(
@@ -36,15 +38,9 @@ class SimulationEngine:
         session: Any,
         model: Any | None = None,
     ) -> None:
-        """SimulationEngine 초기화.
-
-        Args:
-            session: Snowpark 세션
-            model: ConversionModel 인스턴스.
-                None이면 첫 호출 시 lazy 초기화.
-        """
         self._session = session
         self._model = model
+        self._cached_baseline: pd.DataFrame | None = None
         logger.info("SimulationEngine 초기화 완료")
 
     # ------------------------------------------------------------------
@@ -57,22 +53,22 @@ class SimulationEngine:
         channel_changes: dict[str, float],
         n_months: int = _DEFAULT_N_MONTHS,
     ) -> pd.DataFrame:
-        """채널별 계약 건수 변동 시나리오를 시뮬레이션.
+        """채널 가중치 변동 시나리오를 시뮬레이션.
 
-        각 채널의 CONTRACT_COUNT를 지정된 비율(%)만큼 변경한 후
-        ConversionModel로 n_months개월간 전환율을 재예측한다.
+        Feature Store가 카테고리×월 단위이므로, channel_changes의
+        가중치를 종합하여 카테고리 레벨 피처를 변동시킨다.
 
         Args:
             category: 대상 카테고리
-            channel_changes: 채널별 변동 비율 딕셔너리
-                예: {"인바운드": 30, "플랫폼": -10}
-                양수면 증가, 음수면 감소 (퍼센트)
+            channel_changes: 채널별 가중치 딕셔너리
+                예: {"인바운드": 0.30, "네이버": 0.15}
+                또는 변동 비율: {"인바운드": 30, "플랫폼": -10}
             n_months: 시뮬레이션할 미래 월 수
 
         Returns:
             시뮬레이션 결과 DataFrame:
-                MONTH, CHANNEL, ORIGINAL_CVR, MODIFIED_CVR,
-                ORIGINAL_CONTRACTS, MODIFIED_CONTRACTS
+                MONTH, SCENARIO, ORIGINAL_CVR, MODIFIED_CVR,
+                ORIGINAL_CONTRACTS, MODIFIED_CONTRACTS, CVR_CHANGE
         """
         model = self._ensure_model()
         baseline = self._load_baseline(category)
@@ -81,37 +77,51 @@ class SimulationEngine:
             logger.warning("카테고리 '%s' 기준 데이터 없음", category)
             return pd.DataFrame()
 
+        # 채널 가중치를 종합 변동률로 변환
+        total_weight = sum(abs(v) for v in channel_changes.values())
+        if total_weight == 0:
+            total_weight = 1.0
+
+        # 가중치가 비율(0~1)인지 퍼센트(>1)인지 판단
+        max_val = max(abs(v) for v in channel_changes.values()) if channel_changes else 0
+        is_percentage = max_val > 1.0
+
+        # 종합 변동률 계산: 각 채널 가중치의 가중평균
+        if is_percentage:
+            aggregate_change_pct = sum(channel_changes.values()) / max(len(channel_changes), 1)
+        else:
+            aggregate_change_pct = (total_weight - 1.0) * 100 if total_weight > 0 else 0
+
         results: list[dict[str, Any]] = []
+        row = baseline.iloc[0]
+
+        original_contracts = float(row.get("CONTRACT_COUNT_LAG1", row.get("CONTRACT_MA3", 0)))
+        original_pred = model.predict(category)
+        original_cvr = original_pred.get("prob_high", 0.0)
 
         for month_offset in range(1, n_months + 1):
-            for _, row in baseline.iterrows():
-                channel = str(row["CHANNEL"])
-                original_contracts = float(row.get("CONTRACT_COUNT", 0))
-                change_pct = channel_changes.get(channel, 0.0)
-                modified_contracts = original_contracts * (1.0 + change_pct / 100.0)
+            modified_contracts = original_contracts * (1.0 + aggregate_change_pct / 100.0)
 
-                # 원본 예측
-                original_pred = model.predict(category, channel)
-                original_cvr = original_pred.get("prob_high", 0.0)
+            modified_features = self._build_modified_features(
+                row, modified_contracts, month_offset, aggregate_change_pct
+            )
+            modified_pred = model.predict(category, features=modified_features)
+            modified_cvr = modified_pred.get("prob_high", 0.0)
 
-                # 변동된 피처로 예측
-                modified_features = self._build_modified_features(
-                    row, modified_contracts, month_offset
-                )
-                modified_pred = model.predict(
-                    category, channel, features=modified_features
-                )
-                modified_cvr = modified_pred.get("prob_high", 0.0)
+            scenario_label = ", ".join(
+                f"{ch}:{v:.0f}%" if is_percentage else f"{ch}:{v:.0%}"
+                for ch, v in list(channel_changes.items())[:3]
+            )
 
-                results.append({
-                    "MONTH": month_offset,
-                    "CHANNEL": channel,
-                    "ORIGINAL_CVR": round(original_cvr, 4),
-                    "MODIFIED_CVR": round(modified_cvr, 4),
-                    "ORIGINAL_CONTRACTS": round(original_contracts, 0),
-                    "MODIFIED_CONTRACTS": round(modified_contracts, 0),
-                    "CVR_CHANGE": round(modified_cvr - original_cvr, 4),
-                })
+            results.append({
+                "MONTH": month_offset,
+                "SCENARIO": scenario_label,
+                "ORIGINAL_CVR": round(original_cvr, 4),
+                "MODIFIED_CVR": round(modified_cvr, 4),
+                "ORIGINAL_CONTRACTS": round(original_contracts, 0),
+                "MODIFIED_CONTRACTS": round(modified_contracts, 0),
+                "CVR_CHANGE": round(modified_cvr - original_cvr, 4),
+            })
 
         return pd.DataFrame(results)
 
@@ -124,59 +134,20 @@ class SimulationEngine:
         category: str,
         scenarios: dict[str, dict[str, float]],
     ) -> pd.DataFrame:
-        """여러 시나리오를 비교 분석.
-
-        Args:
-            category: 대상 카테고리
-            scenarios: 시나리오별 채널 변동 딕셔너리
-                예: {
-                    "인바운드집중": {"인바운드": 30, "온라인": -10},
-                    "온라인전환": {"인바운드": -20, "온라인": 40},
-                }
-
-        Returns:
-            시나리오 비교 DataFrame:
-                SCENARIO, CHANNEL, MONTH, ORIGINAL_CVR, MODIFIED_CVR, ...
-        """
+        """여러 시나리오를 비교 분석."""
         all_results: list[pd.DataFrame] = []
 
         for scenario_name, channel_changes in scenarios.items():
             scenario_df = self.run_scenario(category, channel_changes)
             if not scenario_df.empty:
                 scenario_df = scenario_df.copy()
-                scenario_df.insert(0, "SCENARIO", scenario_name)
+                scenario_df.insert(0, "SCENARIO_NAME", scenario_name)
                 all_results.append(scenario_df)
 
         if not all_results:
             return pd.DataFrame()
 
-        comparison = pd.concat(all_results, ignore_index=True)
-
-        # 시나리오별 요약 통계 추가
-        summary_rows: list[dict[str, Any]] = []
-        for scenario_name in scenarios:
-            scenario_data = comparison[comparison["SCENARIO"] == scenario_name]
-            if scenario_data.empty:
-                continue
-
-            summary_rows.append({
-                "SCENARIO": scenario_name,
-                "AVG_CVR_CHANGE": round(
-                    float(scenario_data["CVR_CHANGE"].mean()), 4
-                ),
-                "MAX_CVR_CHANGE": round(
-                    float(scenario_data["CVR_CHANGE"].max()), 4
-                ),
-                "TOTAL_MODIFIED_CONTRACTS": round(
-                    float(scenario_data["MODIFIED_CONTRACTS"].sum()), 0
-                ),
-            })
-
-        logger.info(
-            "시나리오 비교 완료: %d개 시나리오",
-            len(summary_rows),
-        )
-        return comparison
+        return pd.concat(all_results, ignore_index=True)
 
     # ------------------------------------------------------------------
     # Monte Carlo 시뮬레이션
@@ -188,79 +159,36 @@ class SimulationEngine:
         n_simulations: int = _DEFAULT_N_SIMULATIONS,
         n_months: int = _DEFAULT_N_MONTHS,
     ) -> dict[str, Any]:
-        """Monte Carlo 시뮬레이션으로 불확실성 범위를 추정.
-
-        과거 데이터의 채널별 변동 분포에서 랜덤 샘플링하여
-        다수의 시나리오를 생성하고 전환율 분포를 추정한다.
-
-        Args:
-            category: 대상 카테고리
-            n_simulations: 시뮬레이션 반복 횟수
-            n_months: 시뮬레이션 기간 (월)
-
-        Returns:
-            시뮬레이션 결과:
-                mean_cvr: 평균 전환율
-                ci_95_upper: 95% 상한
-                ci_95_lower: 95% 하한
-                best_case: 최고 시나리오
-                worst_case: 최악 시나리오
-                simulations: 개별 시뮬레이션 결과 리스트
-        """
+        """Monte Carlo 시뮬레이션으로 불확실성 범위를 추정."""
         model = self._ensure_model()
         baseline = self._load_baseline(category)
 
         if baseline.empty:
             logger.warning("Monte Carlo: 카테고리 '%s' 데이터 없음", category)
-            return {
-                "mean_cvr": 0.0,
-                "ci_95_upper": 0.0,
-                "ci_95_lower": 0.0,
-                "best_case": 0.0,
-                "worst_case": 0.0,
-                "simulations": [],
-            }
-
-        channels = baseline["CHANNEL"].unique().tolist()
-        historical_std = self._compute_historical_volatility(category, channels)
+            return self._empty_monte_carlo()
 
         rng = np.random.default_rng(_MONTE_CARLO_SEED)
         simulation_cvrs: list[float] = []
 
-        # baseline을 미리 캐싱하여 루프 내 Snowflake 쿼리 방지
-        self._cached_baseline = baseline
+        historical_std = self._compute_historical_volatility(category)
 
         for sim_idx in range(n_simulations):
-            # 채널별 랜덤 변동 생성 (정규분포, 과거 변동성 기반)
-            channel_changes = {}
-            for ch in channels:
-                std = historical_std.get(ch, 10.0)
-                change = float(rng.normal(0, std))
-                channel_changes[ch] = change
-
-            # 시나리오 실행 (캐시된 baseline 사용)
-            scenario_df = self.run_scenario(category, channel_changes, n_months)
+            change_pct = float(rng.normal(0, historical_std))
+            scenario_df = self.run_scenario(
+                category, {"aggregate": change_pct}, n_months
+            )
             if not scenario_df.empty:
                 avg_cvr = float(scenario_df["MODIFIED_CVR"].mean())
                 simulation_cvrs.append(avg_cvr)
 
             if (sim_idx + 1) % 100 == 0:
-                logger.info(
-                    "Monte Carlo 진행: %d/%d", sim_idx + 1, n_simulations
-                )
+                logger.info("Monte Carlo 진행: %d/%d", sim_idx + 1, n_simulations)
 
         if not simulation_cvrs:
-            return {
-                "mean_cvr": 0.0,
-                "ci_95_upper": 0.0,
-                "ci_95_lower": 0.0,
-                "best_case": 0.0,
-                "worst_case": 0.0,
-                "simulations": [],
-            }
+            return self._empty_monte_carlo()
 
         arr = np.array(simulation_cvrs)
-        result = {
+        return {
             "mean_cvr": round(float(np.mean(arr)), 4),
             "ci_95_upper": round(float(np.percentile(arr, 97.5)), 4),
             "ci_95_lower": round(float(np.percentile(arr, 2.5)), 4),
@@ -268,14 +196,6 @@ class SimulationEngine:
             "worst_case": round(float(np.min(arr)), 4),
             "simulations": [round(float(v), 4) for v in arr],
         }
-
-        logger.info(
-            "Monte Carlo 완료: mean=%.4f, CI=[%.4f, %.4f]",
-            result["mean_cvr"],
-            result["ci_95_lower"],
-            result["ci_95_upper"],
-        )
-        return result
 
     # ------------------------------------------------------------------
     # 내부 헬퍼
@@ -291,30 +211,30 @@ class SimulationEngine:
         return self._model
 
     def _load_baseline(self, category: str) -> pd.DataFrame:
-        """카테고리의 최신 월 기준 채널별 베이스라인 데이터를 로드.
-
-        Monte Carlo에서 반복 호출 방지를 위해 _cached_baseline을 우선 사용.
-        """
-        if hasattr(self, "_cached_baseline") and self._cached_baseline is not None:
-            cached = self._cached_baseline
-            if not cached.empty:
-                return cached
+        """카테고리의 최신 월 기준 베이스라인 데이터를 로드."""
+        if self._cached_baseline is not None and not self._cached_baseline.empty:
+            return self._cached_baseline
 
         try:
             df = self._session.table(_FEATURE_STORE_TABLE).to_pandas()
             if df.empty:
                 return pd.DataFrame()
 
-            # "전체" 또는 None이면 가장 큰 카테고리(인터넷) 사용
-            if category and category != "전체":
+            if category and category != "전체" and "CATEGORY" in df.columns:
                 cat_df = df[df["CATEGORY"] == category]
             else:
-                cat_df = df[df["CATEGORY"] == "인터넷"] if "인터넷" in df["CATEGORY"].values else df
+                if "CATEGORY" in df.columns and "인터넷" in df["CATEGORY"].values:
+                    cat_df = df[df["CATEGORY"] == "인터넷"]
+                else:
+                    cat_df = df
+
             if cat_df.empty:
                 return pd.DataFrame()
 
             latest_ym = cat_df["YEAR_MONTH"].max()
-            return cat_df[cat_df["YEAR_MONTH"] == latest_ym].reset_index(drop=True)
+            result = cat_df[cat_df["YEAR_MONTH"] == latest_ym].reset_index(drop=True)
+            self._cached_baseline = result
+            return result
 
         except Exception as exc:
             logger.warning("베이스라인 데이터 로드 실패: %s", exc)
@@ -325,6 +245,7 @@ class SimulationEngine:
         baseline_row: pd.Series,
         modified_contracts: float,
         month_offset: int,
+        change_pct: float = 0.0,
     ) -> dict[str, float]:
         """베이스라인 행에 변동된 계약 건수를 반영한 피처 딕셔너리 생성."""
         features: dict[str, float] = {}
@@ -335,13 +256,15 @@ class SimulationEngine:
             except (ValueError, TypeError):
                 continue
 
-        # 계약 건수 변경 반영
         original_contracts = features.get("CONTRACT_COUNT_LAG1", 0.0)
         original_lag1 = features.get("CONTRACT_COUNT_LAG1", 0.0)
         features["CONTRACT_COUNT_LAG1"] = modified_contracts
-
-        # 이전 LAG1 값을 LAG2로 전파
         features["CONTRACT_COUNT_LAG2"] = original_lag1
+
+        # 채널 집중도 변동 반영
+        if "CHANNEL_HHI" in features and abs(change_pct) > 10:
+            hhi_delta = change_pct / 1000
+            features["CHANNEL_HHI"] = max(0.01, features["CHANNEL_HHI"] + hhi_delta)
 
         # 포화 효과: 계약 건수 증가 시 CVR 소폭 감소
         contract_ratio = modified_contracts / max(original_contracts, 1)
@@ -359,27 +282,35 @@ class SimulationEngine:
 
         return features
 
-    def _compute_historical_volatility(
-        self, category: str, channels: list[str]
-    ) -> dict[str, float]:
-        """채널별 계약 건수의 과거 변동성(표준편차 %)을 계산."""
+    def _compute_historical_volatility(self, category: str) -> float:
+        """카테고리의 계약 건수 과거 변동성(표준편차 %)을 계산."""
         try:
             df = self._session.table(_FEATURE_STORE_TABLE).to_pandas()
-            cat_df = df[df["CATEGORY"] == category]
+            if "CATEGORY" in df.columns:
+                cat_df = df[df["CATEGORY"] == category]
+            else:
+                cat_df = df
 
-            volatility: dict[str, float] = {}
-            for ch in channels:
-                ch_data = cat_df[cat_df["CHANNEL"] == ch]["CONTRACT_COUNT"]
-                if len(ch_data) > 1:
-                    mean_val = ch_data.mean()
-                    if mean_val > 0:
-                        volatility[ch] = float(ch_data.std() / mean_val * 100)
-                    else:
-                        volatility[ch] = 10.0
-                else:
-                    volatility[ch] = 10.0
+            col = "CONTRACT_COUNT_LAG1" if "CONTRACT_COUNT_LAG1" in cat_df.columns else "CONTRACT_MA3"
+            if col not in cat_df.columns or len(cat_df) < 2:
+                return 10.0
 
-            return volatility
+            values = cat_df[col].dropna()
+            if len(values) < 2 or values.mean() == 0:
+                return 10.0
+
+            return float(values.std() / values.mean() * 100)
 
         except Exception:
-            return {ch: 10.0 for ch in channels}
+            return 10.0
+
+    @staticmethod
+    def _empty_monte_carlo() -> dict[str, Any]:
+        return {
+            "mean_cvr": 0.0,
+            "ci_95_upper": 0.0,
+            "ci_95_lower": 0.0,
+            "best_case": 0.0,
+            "worst_case": 0.0,
+            "simulations": [],
+        }

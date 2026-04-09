@@ -347,16 +347,18 @@ def _build_forecast_chart(
             annotation_font=dict(color="rgba(0,229,255,0.5)", size=10),
         )
 
-    layout_no_yaxis = {k: v for k, v in _DARK_LAYOUT.items() if k != "yaxis"}
+    layout_base = {k: v for k, v in _DARK_LAYOUT.items() if k not in ("yaxis", "margin")}
     fig.update_layout(
-        **layout_no_yaxis,
+        **layout_base,
         title=f"{state} 계약 예측 (Cortex FORECAST)",
         xaxis_title="년월",
         yaxis_title="계약 건수",
         yaxis=dict(rangemode="tozero", gridcolor="rgba(255,255,255,0.05)"),
         height=420,
         hovermode="x unified",
-        legend=dict(orientation="h", yanchor="bottom", y=1.02),
+        legend=dict(orientation="h", yanchor="bottom", y=1.08,
+                    xanchor="right", x=1, font=dict(size=11)),
+        margin=dict(l=50, r=20, t=80, b=40),
     )
     return fig
 
@@ -765,24 +767,24 @@ if _markov_obj is not None and _baseline_tm is not None:
 <div style="display:flex;gap:10px;margin-bottom:16px;">
     <div style="flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);
                 border-radius:12px;padding:14px;text-align:center;">
-        <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">현재 전환율</div>
+        <div style="font-size:0.8rem;color:rgba(255,255,255,0.5);text-transform:uppercase;">현재 전환율</div>
         <div style="font-size:1.4rem;font-weight:700;color:#e0e0e0;margin-top:4px;">{_baseline_payend*100:.1f}%</div>
     </div>
     <div style="flex:1;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2);
                 border-radius:12px;padding:14px;text-align:center;">
-        <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">시뮬레이션</div>
+        <div style="font-size:0.8rem;color:rgba(255,255,255,0.5);text-transform:uppercase;">시뮬레이션</div>
         <div style="font-size:1.4rem;font-weight:700;color:#00E5FF;margin-top:4px;">{modified_payend*100:.1f}%</div>
     </div>
     <div style="flex:1;background:rgba({'77,255,145' if delta_payend >= 0 else '255,77,77'},0.08);
                 border:1px solid rgba({'77,255,145' if delta_payend >= 0 else '255,77,77'},0.2);
                 border-radius:12px;padding:14px;text-align:center;">
-        <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">변화량</div>
+        <div style="font-size:0.8rem;color:rgba(255,255,255,0.5);text-transform:uppercase;">변화량</div>
         <div style="font-size:1.4rem;font-weight:700;color:{'#4DFF91' if delta_payend >= 0 else '#FF4D4D'};margin-top:4px;">{delta_payend*100:+.2f}%p</div>
     </div>
     <div style="flex:1;background:rgba({'77,255,145' if additional >= 0 else '255,77,77'},0.08);
                 border:1px solid rgba({'77,255,145' if additional >= 0 else '255,77,77'},0.2);
                 border-radius:12px;padding:14px;text-align:center;">
-        <div style="font-size:0.65rem;color:rgba(255,255,255,0.4);text-transform:uppercase;">추가 전환/월</div>
+        <div style="font-size:0.8rem;color:rgba(255,255,255,0.5);text-transform:uppercase;">추가 전환/월</div>
         <div style="font-size:1.4rem;font-weight:700;color:{'#4DFF91' if additional >= 0 else '#FF4D4D'};margin-top:4px;">{additional:+,}건</div>
     </div>
 </div>
@@ -816,11 +818,14 @@ if _markov_obj is not None and _baseline_tm is not None:
                 text=[f"{v:.1f}%" for v in modified_probs],
                 textposition="outside", textfont=dict(color="#00E5FF", size=10),
             ))
+            _compare_layout = {k: v for k, v in _DARK_LAYOUT.items() if k not in ("margin",)}
             fig_compare.update_layout(
-                **_DARK_LAYOUT, height=300, barmode="group",
+                **_compare_layout, height=320, barmode="group",
                 title=f"단계별 도달 확률 비교 ({scenario_label})",
                 yaxis_title="도달 확률 (%)",
-                legend=dict(orientation="h", yanchor="bottom", y=1.02),
+                margin=dict(l=40, r=20, t=80, b=40),
+                legend=dict(orientation="h", yanchor="bottom", y=1.08,
+                            xanchor="right", x=1, font=dict(size=11)),
             )
             st.plotly_chart(fig_compare, use_container_width=True)
         else:
@@ -889,8 +894,8 @@ if _markov_obj is not None and _baseline_tm is not None:
                 st.markdown(f'''
 <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);
             border-radius:12px;padding:12px;text-align:center;">
-    <div style="font-size:0.6rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;">{mc_l}</div>
-    <div style="font-size:1.2rem;font-weight:700;color:{mc_c};margin-top:4px;">{mc_v}</div>
+    <div style="font-size:0.8rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;">{mc_l}</div>
+    <div style="font-size:1.5rem;font-weight:700;color:{mc_c};margin-top:4px;">{mc_v}</div>
 </div>
 ''', unsafe_allow_html=True)
 

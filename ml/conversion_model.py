@@ -41,48 +41,51 @@ _LABEL_MAP: dict[str, int] = {"LOW": 0, "MEDIUM": 1, "HIGH": 2}
 _LABEL_MAP_INV: dict[int, str] = {v: k for k, v in _LABEL_MAP.items()}
 
 _FEATURE_COLUMNS: list[str] = [
-    # Lag 피처
+    # === 15개 독립 피처 (v2: 중복/누수/다중공선성 제거) ===
+    # CVR Lag (3개) — 핵심 예측력, 자기상관 활용
     "PAYEND_CVR_LAG1",
     "PAYEND_CVR_LAG2",
     "PAYEND_CVR_LAG3",
+    # 건수 Lag (1개) — LAG2, MA3은 LAG1과 상관 0.98+라 제거
     "CONTRACT_COUNT_LAG1",
-    "CONTRACT_COUNT_LAG2",
+    # 매출 Lag (1개)
     "AVG_NET_SALES_LAG1",
-    "OPEN_CVR_LAG1",
-    # 이동평균 / 변동성
-    "PAYEND_CVR_MA3",
-    "PAYEND_CVR_MA6",
-    "CONTRACT_MA3",
+    # CVR 변동성 (1개) — MA3/MA6과 독립적인 정보
     "PAYEND_CVR_STD3",
+    # 카테고리 역사적 평균 (1개) — expanding window
     "CATEGORY_HISTORICAL_CVR",
-    # 채널 다양성 지표 (NEW)
+    # 채널 다양성 (2개) — 독립적 정보
     "N_CHANNELS",
     "CHANNEL_HHI",
-    "TOP_CHANNEL_SHARE",
+    # 채널 다양성 변화 (1개)
     "N_CHANNELS_LAG1",
-    "HHI_LAG1",
-    # 퍼널 교차 피처 (NEW)
-    "FUNNEL_OVERALL_CVR",
-    "FUNNEL_TOTAL_COUNT",
-    # 시간 피처
+    # 시간 (1개) — QUARTER 제거 (MONTH와 상관 0.97)
     "MONTH_OF_YEAR",
-    "QUARTER",
-    # 인코딩
+    # 카테고리 인코딩 (1개)
     "CATEGORY_ENCODED",
+    # --- 제거된 피처 (사유) ---
+    # OPEN_CVR_LAG1: PAYEND_CVR_LAG1과 상관 0.99 (동일 정보)
+    # PAYEND_CVR_MA3/MA6: PAYEND_CVR_LAG1과 상관 0.95+ (중복)
+    # CONTRACT_COUNT_LAG2, CONTRACT_MA3: LAG1과 상관 0.98+ (중복)
+    # TOP_CHANNEL_SHARE: CHANNEL_HHI와 상관 0.98 (중복)
+    # HHI_LAG1: CHANNEL_HHI와 상관 높음 (중복)
+    # FUNNEL_OVERALL_CVR: PAYEND_CVR과 상관 1.00 (데이터 누수)
+    # FUNNEL_TOTAL_COUNT: CONTRACT_COUNT와 상관 1.00 (데이터 누수)
+    # QUARTER: MONTH_OF_YEAR와 상관 0.97 (중복)
 ]
 
 _TARGET_COLUMN = "TARGET_CLASS"
 
-# XGBoost 하이퍼파라미터 (Snowpark ML과 sklearn 공용)
+# XGBoost 하이퍼파라미터 (v2: 과적합 방지 — 151행 소규모 데이터에 맞게 보수적 설정)
 _XGB_PARAMS: dict[str, Any] = {
-    "max_depth": 4,
-    "n_estimators": 200,
-    "learning_rate": 0.03,
-    "subsample": 0.8,
-    "colsample_bytree": 0.8,
-    "reg_alpha": 1.0,
-    "reg_lambda": 2.0,
-    "min_child_weight": 5,
+    "max_depth": 2,            # 4→2: 트리 깊이 제한으로 복잡도 대폭 감소
+    "n_estimators": 50,        # 200→50: 트리 수 감소
+    "learning_rate": 0.1,      # 0.03→0.1: 적은 트리로 빨리 수렴
+    "subsample": 0.7,          # 0.8→0.7: 더 강한 랜덤 샘플링
+    "colsample_bytree": 0.7,   # 0.8→0.7: 피처 서브샘플링 강화
+    "reg_alpha": 2.0,          # 1.0→2.0: L1 정규화 강화
+    "reg_lambda": 5.0,         # 2.0→5.0: L2 정규화 강화
+    "min_child_weight": 10,    # 5→10: 리프 노드 최소 샘플 증가
     "random_state": 42,
 }
 

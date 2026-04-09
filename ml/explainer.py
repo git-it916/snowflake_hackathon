@@ -114,15 +114,16 @@ class ModelExplainer:
         feature_shap: dict[str, list[float]] = {}
         for idx, col in enumerate(self._model._feature_columns):
             label = _FEATURE_LABELS.get(col, col)
-            if isinstance(shap_values, list):
-                # multi-class: shap_values[class][sample, feature]
-                feature_shap[label] = [
-                    round(float(shap_values[c][0, idx]), 6)
-                    for c in range(len(shap_values))
-                ]
-            else:
-                # single output
-                feature_shap[label] = [round(float(shap_values[0, idx]), 6)]
+            try:
+                if isinstance(shap_values, list):
+                    feature_shap[label] = [
+                        round(float(np.asarray(shap_values[c][0, idx]).item()), 6)
+                        for c in range(len(shap_values))
+                    ]
+                else:
+                    feature_shap[label] = [round(float(np.asarray(shap_values[0, idx]).item()), 6)]
+            except (IndexError, ValueError):
+                feature_shap[label] = [0.0]
 
         # 기저값
         base_values = self._extract_base_values(explainer)
@@ -173,12 +174,16 @@ class ModelExplainer:
         else:
             abs_mean = np.abs(shap_values).mean(axis=0)
 
+        # numpy array를 1-d로 평탄화 (shap 버전에 따라 shape이 다를 수 있음)
+        abs_mean = np.asarray(abs_mean).flatten()
+
         records: list[dict[str, Any]] = []
         for idx, col in enumerate(self._model._feature_columns):
+            val = float(abs_mean[idx]) if idx < len(abs_mean) else 0.0
             records.append({
                 "FEATURE": col,
                 "FEATURE_KR": _FEATURE_LABELS.get(col, col),
-                "IMPORTANCE": round(float(abs_mean[idx]), 6),
+                "IMPORTANCE": round(val, 6),
             })
 
         df = pd.DataFrame(records)
@@ -334,13 +339,19 @@ class ModelExplainer:
 
         try:
             import shap
+            # background data와 함께 시도, 실패하면 없이 재시도
             background = self._get_background_data()
-            if background.empty:
+            try:
+                if not background.empty:
+                    self._shap_explainer = shap.TreeExplainer(
+                        underlying_model, data=background
+                    )
+                else:
+                    self._shap_explainer = shap.TreeExplainer(underlying_model)
+            except Exception:
+                logger.info("SHAP: background data 포함 실패, background 없이 재시도")
                 self._shap_explainer = shap.TreeExplainer(underlying_model)
-            else:
-                self._shap_explainer = shap.TreeExplainer(
-                    underlying_model, data=background
-                )
+
             logger.info("SHAP TreeExplainer 초기화 완료")
             return self._shap_explainer
 
@@ -425,9 +436,10 @@ class ModelExplainer:
             y = train_df[target_col].map(label_map).fillna(1).astype(int)
 
             model = XGBClassifier(
-                max_depth=3, n_estimators=50, random_state=42
+                max_depth=2, n_estimators=50, random_state=42,
+                verbosity=0,
             )
-            model.fit(X, y, verbose=False)
+            model.fit(X, y)
             logger.info("SHAP 폴백: sklearn XGBClassifier 학습 완료")
             return model
         except ImportError:

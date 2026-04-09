@@ -113,69 +113,57 @@ def _build_sankey(stage_drop_df, cat_filter, title_suffix):
         return None
 
     n = len(labels)
-    sources = list(range(n - 1))
-    targets = list(range(1, n))
-    values = counts[:-1]
 
-    drop_labels, drop_sources, drop_targets, drop_values = [], [], [], []
+    # --- Plotly Funnel (진짜 깔때기) ---
+    funnel_colors = ["#06b6d4", "#0ea5e9", "#3b82f6", "#8b5cf6"]
+
+    # 전환율 + 이탈 텍스트 생성
+    text_info = []
+    for i in range(n):
+        pct = counts[i] / counts[0] * 100 if counts[0] > 0 else 0
+        text_info.append(f"{counts[i]:,}건 ({pct:.1f}%)")
+
+    fig = go.Figure(go.Funnel(
+        y=labels,
+        x=counts,
+        textinfo="text",
+        text=text_info,
+        textposition="inside",
+        textfont=dict(size=14, color="#ffffff", family="Pretendard, sans-serif"),
+        marker=dict(
+            color=funnel_colors[:n],
+            line=dict(width=1, color="rgba(255,255,255,0.1)"),
+        ),
+        connector=dict(
+            line=dict(color="rgba(255,255,255,0.08)", width=1),
+            fillcolor="rgba(255,255,255,0.02)",
+        ),
+        hovertemplate="<b>%{y}</b><br>건수: %{x:,}<extra></extra>",
+    ))
+
+    # 이탈 annotation (오른쪽에 빨간 텍스트)
     for i in range(n - 1):
         drop = max(0, counts[i] - counts[i + 1])
         if drop > 0:
-            drop_labels.append(f"이탈 ({labels[i]}→{labels[i+1]})")
-            drop_sources.append(i)
-            drop_targets.append(n + len(drop_labels) - 1)
-            drop_values.append(drop)
+            drop_pct = drop / counts[i] * 100 if counts[i] > 0 else 0
+            fig.add_annotation(
+                x=1.0,
+                y=i + 0.5,
+                xref="paper", yref="y",
+                text=f"<b>-{drop:,}건</b> ({drop_pct:.1f}% 이탈)",
+                font=dict(size=13, color="#FF6B6B"),
+                showarrow=False,
+                xanchor="left",
+            )
 
-    # 노드 라벨: 단계명 + 건수 (한 줄, 겹침 방지)
-    node_labels = [f"{lbl}  {counts[i]:,}건" for i, lbl in enumerate(labels)]
-    node_labels += drop_labels
-
-    # 노드 색상: 진행은 시안 계열, 이탈은 어두운 회색
-    all_colors = _STAGE_COLORS[:n] + ["rgba(75,85,99,0.6)"] * len(drop_labels)
-
-    # 링크 색상: 진행은 시안→파랑 그라데이션, 이탈은 붉은 톤
-    progress_colors = [
-        "rgba(6,182,212,0.4)", "rgba(14,165,233,0.35)",
-        "rgba(59,130,246,0.3)", "rgba(37,99,235,0.25)",
-    ]
-    link_colors = (
-        [progress_colors[i % len(progress_colors)] for i in range(len(sources))]
-        + ["rgba(239,68,68,0.15)"] * len(drop_sources)
-    )
-
-    # 노드 위치: 진행 노드를 상단에, 이탈 노드를 하단에 명확히 분리
-    node_x = [0.01 + i * (0.98 / max(n - 1, 1)) for i in range(n)]
-    node_y = [0.3] * n  # 진행 노드는 상단 30%
-    for i in range(len(drop_labels)):
-        src_idx = drop_sources[i]
-        node_x.append(node_x[src_idx] + 0.05)
-        node_y.append(0.9)  # 이탈 노드는 하단 90%
-
-    fig = go.Figure(go.Sankey(
-        arrangement="snap",
-        node=dict(
-            pad=40,
-            thickness=28,
-            label=node_labels,
-            color=all_colors,
-            line=dict(color="rgba(255,255,255,0.15)", width=0.5),
-            x=node_x,
-            y=node_y,
-        ),
-        link=dict(
-            source=sources + drop_sources,
-            target=targets + drop_targets,
-            value=values + drop_values,
-            color=link_colors,
-        ),
-        textfont=dict(size=12, color="#ffffff", family="Pretendard, sans-serif"),
-    ))
     month_str = str(latest_month)[:7] if latest_month else ""
+    layout_base = {k: v for k, v in _DARK_LAYOUT.items() if k not in ("xaxis", "yaxis")}
     fig.update_layout(
-        **_DARK_LAYOUT,
+        **layout_base,
         title=dict(text=f"퍼널 흐름 ({month_str})", font=dict(size=14)),
-        height=520,
-        margin=dict(l=20, r=20, t=50, b=20),
+        height=450,
+        margin=dict(l=10, r=140, t=50, b=10),
+        showlegend=False,
     )
     return fig
 
@@ -205,36 +193,17 @@ def _build_channel_bubble(channel_df, ch_col):
     agg["AVG_NET_SALES"] = agg["AVG_NET_SALES"].clip(lower=0)
     max_sales = agg["AVG_NET_SALES"].max()
     agg["_size"] = np.clip(agg["AVG_NET_SALES"] / max(max_sales, 1) * 55, 12, 65)
-    top_channels = agg.nlargest(5, "CONTRACT_COUNT")[ch_col].tolist()
-
-    # 텍스트 위치: 상위 채널별로 겹침 방지를 위해 번갈아 배치
-    _TEXT_POSITIONS = ["top center", "bottom center", "top right", "bottom left", "top left"]
 
     fig = go.Figure()
     for trend, color in _TREND_COLOR_MAP.items():
         subset = agg[agg["TREND_FLAG"] == trend]
         if subset.empty:
             continue
-        text_labels = [
-            name if name in top_channels else ""
-            for name in subset[ch_col]
-        ]
-        text_positions = []
-        label_idx = 0
-        for name in subset[ch_col]:
-            if name in top_channels:
-                text_positions.append(_TEXT_POSITIONS[label_idx % len(_TEXT_POSITIONS)])
-                label_idx += 1
-            else:
-                text_positions.append("top center")
 
         fig.add_trace(go.Scatter(
             x=subset["CONTRACT_COUNT"],
             y=subset["PAYEND_CVR"],
-            mode="markers+text",
-            text=text_labels,
-            textposition=text_positions,
-            textfont=dict(size=11, color="#ffffff", family="Pretendard, sans-serif"),
+            mode="markers",
             name=_TREND_LABEL_MAP.get(trend, trend),
             marker=dict(
                 size=subset["_size"],
@@ -251,13 +220,14 @@ def _build_channel_bubble(channel_df, ch_col):
             ),
         ))
 
+    _bubble_layout = {k: v for k, v in _DARK_LAYOUT.items() if k not in ("margin",)}
     fig.update_layout(
-        **_DARK_LAYOUT,
+        **_bubble_layout,
         title=dict(text="채널 효율 (계약 × 전환율)", font=dict(size=14)),
         xaxis_title="계약 건수",
         yaxis_title="전환율 (%)",
         height=520,
-        margin=dict(l=50, r=20, t=70, b=50),
+        margin=dict(l=50, r=30, t=70, b=50),
         legend=dict(
             orientation="h",
             yanchor="bottom",
@@ -268,6 +238,26 @@ def _build_channel_bubble(channel_df, ch_col):
             bgcolor="rgba(0,0,0,0)",
         ),
     )
+
+    # 모든 채널에 annotation 라벨 (우측 상단 통일)
+    sorted_agg = agg.sort_values("CONTRACT_COUNT", ascending=False).reset_index(drop=True)
+    for idx, row in sorted_agg.iterrows():
+        fig.add_annotation(
+            x=row["CONTRACT_COUNT"],
+            y=row["PAYEND_CVR"],
+            text=row[ch_col],
+            font=dict(size=11, color="rgba(255,255,255,0.9)"),
+            showarrow=True,
+            arrowhead=0,
+            arrowwidth=0.8,
+            arrowcolor="rgba(255,255,255,0.15)",
+            ax=25,
+            ay=-18,
+            bgcolor="rgba(0,0,0,0.6)",
+            borderpad=2,
+            xanchor="left",
+        )
+
     return fig
 
 
@@ -315,10 +305,13 @@ def _build_cvr_trend(funnel_ts_df, anomaly_df, cat_filter):
             if not anom_pts.empty and "OBSERVED" in anom_pts.columns:
                 fig.add_trace(go.Scatter(x=anom_pts["TS"], y=anom_pts["OBSERVED"], mode="markers",
                                          name="이상치", marker=dict(size=12, color="#d73027", symbol="x")))
-    fig.update_layout(**_DARK_LAYOUT, title=f"전환율 추이 -- {trend_title}",
+    _trend_layout = {k: v for k, v in _DARK_LAYOUT.items() if k not in ("margin",)}
+    fig.update_layout(**_trend_layout, title=f"전환율 추이 -- {trend_title}",
                       xaxis_title="년월", yaxis_title="전환율 (%)", height=400,
-                      margin=dict(l=40, r=20, t=50, b=40),
-                      hovermode="x unified", legend=dict(orientation="h", yanchor="bottom", y=1.02))
+                      margin=dict(l=50, r=20, t=80, b=40),
+                      hovermode="x unified",
+                      legend=dict(orientation="h", yanchor="bottom", y=1.08,
+                                  xanchor="right", x=1, font=dict(size=11)))
     return fig
 
 
@@ -529,6 +522,10 @@ try:
             pattern_text = decomposer.find_seasonal_pattern(stl_result)
             trend_dir = stl_result.get("trend_direction", "?")
             strength = stl_result.get("seasonality_strength", 0)
+            # 인사이트 카드에서 사용할 수 있도록 저장
+            st.session_state["_stl_trend"] = {"declining": "하락", "ascending": "상승", "stable": "안정"}.get(trend_dir, trend_dir)
+            st.session_state["_stl_strength"] = strength
+            st.session_state["_stl_pattern"] = pattern_text
 
             trend_label = {"declining": "하락", "ascending": "상승", "stable": "안정"}.get(trend_dir, trend_dir)
 
@@ -597,9 +594,12 @@ with ic2:
                f"**{best_ch}** 채널의 효율이 가장 높습니다.\n"
                f"예산 투자 증가 시 전환율 **개선 가능**")
 with ic3:
-    st.info("**시즌 패턴**\n\n"
-            "이사 시즌에 가입 신청이\n"
-            "평균 **25% 증가** 패턴 예측")
+    _stl_trend = st.session_state.get("_stl_trend", "분석 필요")
+    _stl_strength = st.session_state.get("_stl_strength", 0)
+    _stl_pct = f"{_stl_strength:.0%}" if _stl_strength else "?"
+    st.info(f"**시즌 패턴 (STL 분석)**\n\n"
+            f"추세: **{_stl_trend}**\n"
+            f"계절성 강도: **{_stl_pct}**")
 
 # ---------------------------------------------------------------------------
 # Cross-page link

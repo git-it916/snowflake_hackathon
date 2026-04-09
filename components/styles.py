@@ -150,7 +150,7 @@ a[data-testid="stPageLink-NavLink"]:hover {
 
 /* === Block container === */
 .block-container {
-    padding-top: 3rem !important;
+    padding-top: 4.5rem !important;
     max-width: 1200px !important;
 }
 
@@ -232,13 +232,17 @@ h3 {
     word-wrap: break-word !important;
 }
 
-/* === Alert/Info boxes: prevent text cropping === */
+/* === Alert/Info boxes: transparent bg + colored border === */
 div[data-testid="stAlert"] {
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
+    background: rgba(255,255,255,0.02) !important;
+    border: 1px solid rgba(0,229,255,0.3) !important;
+    border-radius: 12px !important;
 }
 div[data-testid="stAlert"] p {
     line-height: 1.5 !important;
+    color: rgba(255,255,255,0.8) !important;
 }
 
 /* === Expander text overflow fix === */
@@ -265,6 +269,52 @@ div[data-testid="stDataFrame"] {
 """
 
 
+def _is_sis() -> bool:
+    """Streamlit in Snowflake 환경인지 감지."""
+    try:
+        import _snowflake  # noqa: F401 — SiS 전용 모듈
+        return True
+    except ImportError:
+        return False
+
+
+_SIS_OVERRIDE_CSS = """
+<style>
+/* SiS 전용: 흰 배경 + 검은 글씨 */
+.stApp, .main, section[data-testid="stMain"] {
+    background: #FFFFFF !important;
+}
+header[data-testid="stHeader"] {
+    background: rgba(255,255,255,0.95) !important;
+}
+section[data-testid="stSidebar"] {
+    background-color: #F8F9FA !important;
+}
+p, div, label, h1, h2, h3, span {
+    color: #1a1a1a !important;
+}
+.stCaption, small { color: #666666 !important; }
+div[data-testid="stMetric"] {
+    background: rgba(0,0,0,0.03) !important;
+    border: 1px solid rgba(0,0,0,0.1) !important;
+}
+div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+    color: #1a1a1a !important;
+}
+div[data-testid="stMetric"] label {
+    color: rgba(0,0,0,0.5) !important;
+}
+</style>
+"""
+
+
 def inject_global_css() -> None:
-    """Inject global CSS into the current page."""
-    st.markdown(_GLOBAL_CSS, unsafe_allow_html=True)
+    """Inject global CSS into the current page.
+
+    SiS 환경이면 흰 배경 + 검은 글씨,
+    로컬이면 다크 테마를 적용한다.
+    """
+    if _is_sis():
+        st.markdown(_SIS_OVERRIDE_CSS, unsafe_allow_html=True)
+    else:
+        st.markdown(_GLOBAL_CSS, unsafe_allow_html=True)

@@ -62,6 +62,7 @@ CREATE OR REPLACE PROCEDURE ANALYTICS.SP_DAILY_QUALITY_CHECK()
     LANGUAGE SQL
     EXECUTE AS CALLER
 AS
+$$
 BEGIN
     -- 기존 결과 삭제
     DELETE FROM MART.DATA_QUALITY_RESULTS;
@@ -156,6 +157,7 @@ BEGIN
 
     RETURN 'Quality check completed at ' || CURRENT_TIMESTAMP()::VARCHAR;
 END;
+$$;
 
 -- =========================================================================
 -- 3. Scheduled Task: 매일 오전 6시(KST) 품질 검증 실행

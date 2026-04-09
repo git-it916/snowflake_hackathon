@@ -151,15 +151,12 @@ class ModelRegistryManager:
                 pass
 
         # 메트릭 로깅
-        mv.set_metric(metric_name="metrics", metric_value=metrics)
+        mv.set_metric("metrics", metrics)
 
         # 태그 설정
         if tags is not None:
             for tag_key, tag_value in tags.items():
-                mv.set_metric(
-                    metric_name=f"tag_{tag_key}",
-                    metric_value=tag_value,
-                )
+                mv.set_metric(f"tag_{tag_key}", tag_value)
 
         logger.info(
             "모델 등록 완료: %s/%s (metrics=%s)",
@@ -330,7 +327,7 @@ class ModelRegistryManager:
 
         model_ref = self._registry.get_model(model_name)
         mv = model_ref.version(version)
-        mv.set_metric(metric_name="metrics", metric_value=metrics)
+        mv.set_metric("metrics", metrics)
 
         logger.info("메트릭 로깅 완료")
 

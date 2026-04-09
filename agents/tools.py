@@ -243,7 +243,7 @@ def query_funnel_bottlenecks(
         # 1. 이탈률/전환율 컬럼에서 최대 병목 구간 추출
         drop_cols = [c for c in df.columns if "DROP" in c.upper() or "이탈" in c]
         stage_col = next(
-            (c for c in ["STAGE", "STAGE_NAME", "구간"] if c in df.columns),
+            (c for c in ["STAGE", "STAGE_NAME", "WORST_BOTTLENECK_STAGE", "구간"] if c in df.columns),
             None,
         )
 

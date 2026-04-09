@@ -166,6 +166,7 @@ def _split_sql_statements(sql_content: str) -> list[str]:
     """SQL 파일 내용을 개별 문으로 분리.
 
     주석, 빈 라인, USE 문 등을 유지하면서 세미콜론 기준으로 분리한다.
+    $$ dollar-quoting 블록 내부의 세미콜론은 분리하지 않는다.
 
     Args:
         sql_content: SQL 파일 전체 내용
@@ -174,18 +175,39 @@ def _split_sql_statements(sql_content: str) -> list[str]:
         실행할 SQL 문 리스트
     """
     statements: list[str] = []
+    current: list[str] = []
+    in_dollar_quote = False
 
-    for raw_stmt in sql_content.split(";"):
-        cleaned = raw_stmt.strip()
-        if not cleaned:
+    for char_idx, char in enumerate(sql_content):
+        # $$ 토글 감지
+        if char == "$" and char_idx + 1 < len(sql_content) and sql_content[char_idx + 1] == "$":
+            in_dollar_quote = not in_dollar_quote
+            current.append(char)
             continue
-        # 주석만 있는 문 건너뛰기
+
+        if char == ";" and not in_dollar_quote:
+            stmt = "".join(current).strip()
+            if stmt:
+                # 주석만 있는 문 건너뛰기
+                lines = [
+                    line for line in stmt.split("\n")
+                    if line.strip() and not line.strip().startswith("--")
+                ]
+                if lines:
+                    statements.append(stmt)
+            current = []
+        else:
+            current.append(char)
+
+    # 마지막 문 (세미콜론 없이 끝나는 경우)
+    remaining = "".join(current).strip()
+    if remaining:
         lines = [
-            line for line in cleaned.split("\n")
+            line for line in remaining.split("\n")
             if line.strip() and not line.strip().startswith("--")
         ]
         if lines:
-            statements.append(cleaned)
+            statements.append(remaining)
 
     return statements
 
@@ -214,24 +236,23 @@ def run_ml_pipeline(session: Session) -> bool:
     logger.info("ML 파이프라인 시작")
     logger.info("=" * 60)
 
-    # Step 1: 피처 엔지니어링 (Snowpark API 시도, 실패 시 SQL Feature Store 사용)
-    feature_eng = _run_feature_engineering(session)
-    if feature_eng is None:
-        # SQL 06_feature_store.sql이 이미 테이블을 만들었을 수 있음
-        try:
-            count = session.sql(
-                "SELECT COUNT(*) AS CNT FROM TELECOM_DB.ANALYTICS.ML_FEATURE_STORE"
-            ).collect()[0]["CNT"]
-            if count > 0:
-                logger.info(
-                    "Snowpark 피처 엔지니어링 실패 → SQL Feature Store 사용 (%d행)", count
-                )
-            else:
-                logger.error("피처 엔지니어링 실패 + SQL Feature Store 비어있음 — ML 중단")
-                return False
-        except Exception:
-            logger.error("피처 엔지니어링 실패 + SQL Feature Store 없음 — ML 중단")
+    # Step 1: SQL Feature Store 사용 (06_feature_store.sql이 생성한 카테고리×월 테이블)
+    # 주의: feature_engineering.py는 채널 레벨로 덮어쓰기 때문에 건너뜀.
+    # SQL Feature Store가 9개 추가 피처(HHI, N_CHANNELS, FUNNEL_CVR 등)를 포함하므로
+    # 모델 성능이 더 높음.
+    logger.info("[Step 1/4] SQL Feature Store 확인 중 (Snowpark 피처 엔지니어링 건너뜀)")
+    try:
+        count = session.sql(
+            "SELECT COUNT(*) AS CNT FROM TELECOM_DB.ANALYTICS.ML_FEATURE_STORE"
+        ).collect()[0]["CNT"]
+        if count > 0:
+            logger.info("[Step 1/4] SQL Feature Store 사용: %d행", count)
+        else:
+            logger.error("[Step 1/4] SQL Feature Store 비어있음 — 06_feature_store.sql 실행 필요")
             return False
+    except Exception:
+        logger.error("[Step 1/4] SQL Feature Store 없음 — 06_feature_store.sql 실행 필요")
+        return False
 
     # Step 2: 모델 학습
     model = _run_model_training(session)
@@ -390,10 +411,13 @@ def _register_model(session: Session, model) -> None:
         )
 
         metrics = {}
-        if hasattr(model, "get_metrics"):
+        if hasattr(model, "_metrics") and model._metrics is not None:
+            metrics = model._metrics.to_dict()
+        elif hasattr(model, "get_metrics"):
             metrics = model.get_metrics()
         elif hasattr(model, "metrics_"):
             metrics = model.metrics_
+        logger.info("[Step 4/4] 메트릭: %s", metrics)
 
         # 내부 모델 객체 접근 (private 속성)
         inner_model = getattr(model, "_model", None)
