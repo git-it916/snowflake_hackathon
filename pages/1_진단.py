@@ -26,6 +26,7 @@ from components.utils import (
     get_cached_client,
     safe_data_load,
     safe_render,
+    validate_columns,
 )
 
 # ---------------------------------------------------------------------------
@@ -85,6 +86,12 @@ def _ensure_datetime(df: pd.DataFrame, col: str) -> pd.DataFrame:
 # ---------------------------------------------------------------------------
 def _build_sankey(stage_drop_df, cat_filter, title_suffix):
     if stage_drop_df.empty or not _PLOTLY_OK:
+        return None
+    if not validate_columns(
+        stage_drop_df,
+        ["MAIN_CATEGORY_NAME", "STAGE_NAME", "STAGE_ORDER", "CURR_STAGE_COUNT", "YEAR_MONTH"],
+        context="Sankey 퍼널",
+    ):
         return None
     df = stage_drop_df.copy()
     if cat_filter:
@@ -174,9 +181,13 @@ def _build_sankey(stage_drop_df, cat_filter, title_suffix):
 def _build_channel_bubble(channel_df, ch_col):
     if channel_df.empty or not _PLOTLY_OK:
         return None
-    df = _ensure_datetime(channel_df, "YEAR_MONTH")
-    if "YEAR_MONTH" not in df.columns:
+    if not validate_columns(
+        channel_df,
+        ["YEAR_MONTH", "CONTRACT_COUNT", "PAYEND_CVR", "AVG_NET_SALES", "TREND_FLAG", ch_col],
+        context="채널 버블 차트",
+    ):
         return None
+    df = _ensure_datetime(channel_df, "YEAR_MONTH")
     cutoff = df["YEAR_MONTH"].nlargest(6).min()
     recent = df[df["YEAR_MONTH"] >= cutoff].copy()
     if recent.empty:
@@ -239,22 +250,25 @@ def _build_channel_bubble(channel_df, ch_col):
         ),
     )
 
-    # 모든 채널에 annotation 라벨 (우측 상단 통일)
+    # 상위 채널만 라벨 표시 (겹침 방지)
     sorted_agg = agg.sort_values("CONTRACT_COUNT", ascending=False).reset_index(drop=True)
-    for idx, row in sorted_agg.iterrows():
+    max_labels = min(8, len(sorted_agg))
+    for idx, row in sorted_agg.head(max_labels).iterrows():
+        # 위치를 교대로 배치하여 겹침 방지
+        ay_offset = -20 if idx % 2 == 0 else 20
         fig.add_annotation(
             x=row["CONTRACT_COUNT"],
             y=row["PAYEND_CVR"],
             text=row[ch_col],
-            font=dict(size=11, color="rgba(255,255,255,0.9)"),
+            font=dict(size=12, color="rgba(255,255,255,0.9)"),
             showarrow=True,
             arrowhead=0,
             arrowwidth=0.8,
             arrowcolor="rgba(255,255,255,0.15)",
-            ax=25,
-            ay=-18,
+            ax=30,
+            ay=ay_offset,
             bgcolor="rgba(0,0,0,0.6)",
-            borderpad=2,
+            borderpad=3,
             xanchor="left",
         )
 
@@ -266,6 +280,12 @@ def _build_channel_bubble(channel_df, ch_col):
 # ---------------------------------------------------------------------------
 def _build_cvr_trend(funnel_ts_df, anomaly_df, cat_filter):
     if funnel_ts_df.empty or not _PLOTLY_OK:
+        return None
+    if not validate_columns(
+        funnel_ts_df,
+        ["YEAR_MONTH", "MAIN_CATEGORY_NAME"],
+        context="CVR 추이 차트",
+    ):
         return None
     df = _ensure_datetime(funnel_ts_df, "YEAR_MONTH")
     if cat_filter:
@@ -411,25 +431,27 @@ col_sankey, col_bubble = st.columns(2)
 with col_sankey:
     st.subheader("┃퍼널 병목 분석")
     st.caption(
-        "상담요청부터 납입완료까지 각 단계의 진행·이탈 건수를 보여줍니다. "
-        "띠가 얇아지는 구간이 고객이 가장 많이 이탈하는 병목입니다. "
-        "이 병목 단계의 프로세스를 개선하면 전체 전환율이 올라갑니다."
+        "각 단계에서 얼마나 많은 고객이 이탈하는지 보여줍니다. "
+        "띠가 좁아지는 구간이 가장 많은 고객이 나가는 병목입니다. "
+        "이 단계를 개선하면 전체 전환율이 올라갑니다."
     )
     title_suffix = cat_filter or "주요 카테고리 합산"
-    fig_sankey = _build_sankey(stage_drop_df, cat_filter, title_suffix)
+    with st.spinner("퍼널 차트 생성 중..."):
+        fig_sankey = _build_sankey(stage_drop_df, cat_filter, title_suffix)
     if fig_sankey is not None:
         st.plotly_chart(fig_sankey, use_container_width=True)
     else:
-        st.info("Sankey 데이터가 부족합니다. 카테고리/기간을 확인하세요.")
+        st.info("퍼널 데이터가 부족합니다. 사이드바에서 다른 카테고리를 선택하거나 파이프라인을 실행하세요.")
 
 with col_bubble:
     st.subheader("┃채널별 효율 매트릭스")
     st.caption(
-        "X축: 계약 건수(볼륨), Y축: 납입 전환율(효율), 버블 크기: 매출. "
-        "오른쪽 위에 있을수록 '볼륨도 크고 전환율도 높은' 우수 채널입니다. "
-        "초록=성장 중, 빨강=쇠퇴 중, 파랑=안정. 쇠퇴 채널은 원인 분석이 필요합니다."
+        "X축: 계약 건수, Y축: 전환율, 버블 크기: 매출. "
+        "오른쪽 위일수록 우수 채널. "
+        "초록=성장, 빨강=쇠퇴, 파랑=안정."
     )
-    fig_bubble = _build_channel_bubble(channel_df, ch_col)
+    with st.spinner("채널 차트 생성 중..."):
+        fig_bubble = _build_channel_bubble(channel_df, ch_col)
     if fig_bubble is not None:
         st.plotly_chart(fig_bubble, use_container_width=True)
     else:
@@ -446,7 +468,8 @@ st.caption(
     "이동평균선이 하락 추세면 구조적 문제가 있으며, 이상치 시점의 원인 분석이 필요합니다."
 )
 
-fig_trend = _build_cvr_trend(funnel_ts_df, anomaly_df, cat_filter)
+with st.spinner("추이 차트 생성 중..."):
+    fig_trend = _build_cvr_trend(funnel_ts_df, anomaly_df, cat_filter)
 if fig_trend is not None:
     st.plotly_chart(fig_trend, use_container_width=True)
 else:
@@ -460,16 +483,15 @@ st.divider()
 try:
     from analysis.advanced_analytics import FunnelMarkovChain, TimeSeriesDecomposer
 
-    mc_col, stl_col = st.columns(2)
+    mc_col, stl_col = st.columns(2, gap="large")
 
     # --- Markov Chain ---
     with mc_col:
         st.subheader("┃마르코프 체인 전이 분석")
         st.caption(
-            "흡수 마르코프 체인으로 퍼널을 수학적으로 모델링합니다. "
-            "Steady State(장기 최종 전환율)는 현재 퍼널 구조가 유지될 때 도달하는 이론적 전환율입니다. "
-            "민감도 분석은 '어떤 단계를 5%p 개선하면 최종 전환율이 얼마나 오르고, 월 몇 건이 추가 전환되는가'를 정량 계산합니다. "
-            "가장 DELTA가 큰 전이가 ROI 1순위 개선 대상입니다."
+            "현재 퍼널 구조가 유지될 때 장기적으로 도달하는 이론적 전환율을 계산합니다. "
+            "민감도 분석은 각 단계를 5%p 개선했을 때 효과를 정량 비교합니다. "
+            "DELTA가 클수록 ROI 1순위 개선 대상입니다."
         )
 
         markov = FunnelMarkovChain()
@@ -545,9 +567,12 @@ try:
                     x_labels = [month_names[int(m)-1] if 1 <= int(m) <= 12 else str(m) for m in seasonal["x"]]
                     colors = ["#4DFF91" if v > 0 else "#FF4D4D" for v in seasonal["y"]]
 
+                    text_vals = [f"{v:+.2f}" for v in seasonal["y"]]
                     fig_season = go.Figure(go.Bar(
                         x=x_labels, y=seasonal["y"],
                         marker_color=colors, opacity=0.8,
+                        text=text_vals, textposition="outside",
+                        textfont=dict(size=11, color="rgba(255,255,255,0.7)"),
                     ))
                     fig_season.update_layout(
                         template="plotly_dark",

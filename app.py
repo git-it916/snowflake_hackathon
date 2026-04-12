@@ -173,17 +173,18 @@ st.title("가입 전환율을 높이는 AI 퍼널 인텔리전스")
 st.caption("◆ Snowflake Cortex 기반 통신사 마케팅 전략 대시보드")
 
 st.markdown(
-    """
-> **"어디서 고객이 빠지고, 어떤 채널이 효과적이고, 어디에 집중해야 하는가?"**
->
-> Snowflake Marketplace 텔레콤 데이터(V01~V07, 23,000+행)를 기반으로
-> 가입 퍼널 5단계의 병목을 진단하고, 38개 채널의 효율을 비교하며,
-> 200개 시군구의 수요를 예측합니다.
-> 흡수 마르코프 체인으로 퍼널 구조를 수학적으로 모델링하고,
-> Cortex FORECAST·ANOMALY·COMPLETE와 Multi-Agent 시스템을 통해
-> 데이터 기반 마케팅 전략을 자동 생성합니다.
-"""
+    '> **"어디서 고객이 빠지고, 어떤 채널이 효과적이고, 어디에 집중해야 하는가?"**'
 )
+
+with st.expander("분석 방법론 상세", expanded=False):
+    st.markdown(
+        "Snowflake Marketplace 텔레콤 데이터(V01~V07, 23,000+행)를 기반으로 "
+        "가입 퍼널 5단계의 병목을 진단하고, 38개 채널의 효율을 비교하며, "
+        "200개 시군구의 수요를 예측합니다.\n\n"
+        "흡수 마르코프 체인으로 퍼널 구조를 수학적으로 모델링하고, "
+        "Cortex FORECAST·ANOMALY·COMPLETE와 Multi-Agent 시스템을 통해 "
+        "데이터 기반 마케팅 전략을 자동 생성합니다."
+    )
 
 # ---------------------------------------------------------------------------
 # Alert Banner
@@ -213,6 +214,7 @@ with c1:
         label="퍼널 전환율",
         value=f"{current_cvr:.1f}%",
         delta=f"{cvr_delta:+.1f}%p vs 평균",
+        help="상담요청 대비 최종 납입완료 비율. 음수(-)면 최근 성과가 평균보다 낮음",
     )
     _safe_pl("pages/1_진단.py", label="병목 구간 분석 →")
 with c2:
@@ -221,6 +223,7 @@ with c2:
         value=top_channel,
         delta=f"점유율 {top_share:.0f}%",
         delta_color="off",
+        help="계약 건수 기준 최대 채널. 50% 이상이면 채널 다변화 필요",
     )
     _safe_pl("pages/1_진단.py", label="채널 효율 진단 →")
 with c3:
@@ -229,17 +232,9 @@ with c3:
         value=growth_region,
         delta=f"총 {contracts_display}건",
         delta_color="off",
+        help="전월 대비 계약 건수가 가장 크게 증가한 지역",
     )
     _safe_pl("pages/2_기회_분석.py", label="기회 시장 분석 →")
-
-with st.expander("KPI 읽는 법", expanded=False):
-    st.markdown(
-        "- **퍼널 전환율**: 상담요청 대비 최종 납입완료 비율입니다. "
-        "평균 대비 마이너스(-)면 최근 전환율이 하락 중입니다.\n"
-        "- **최고 볼륨 채널**: 가장 많은 계약을 발생시키는 채널입니다. "
-        "점유율이 50% 이상이면 특정 채널에 과도하게 의존하고 있어 리스크가 있습니다.\n"
-        "- **최대 성장 지역**: 전월 대비 계약 건수가 가장 크게 증가한 지역입니다."
-    )
 
 # ---------------------------------------------------------------------------
 # AI CTA Section

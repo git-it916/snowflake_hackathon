@@ -9,7 +9,7 @@ from typing import Optional
 
 import pandas as pd
 
-from config.settings import get_streamlit_session
+from config.settings import get_database, get_streamlit_session
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +48,10 @@ class DataLoadError(Exception):
     """데이터 로드 실패 시 발생하는 기본 예외."""
 
 
+class ConnectionError(DataLoadError):
+    """Snowflake 연결 실패."""
+
+
 class QueryExecutionError(DataLoadError):
     """SQL 쿼리 실행 실패."""
 
@@ -75,14 +79,17 @@ def _validate_identifier(name: str) -> str:
 
 
 def _qualified(schema: str, table: str) -> str:
-    """TELECOM_DB.<schema>.<table> 형태의 정규화 이름 반환.
+    """<DATABASE>.<schema>.<table> 형태의 정규화 이름 반환.
+
+    데이터베이스 이름은 환경변수 SF_DATABASE에서 로드 (기본값: TELECOM_DB).
 
     Raises:
         SchemaValidationError: schema/table 이름이 유효하지 않을 때.
     """
     _validate_identifier(schema)
     _validate_identifier(table)
-    return f"TELECOM_DB.{schema}.{table}"
+    db = get_database()
+    return f"{db}.{schema}.{table}"
 
 
 class SnowflakeClient:
@@ -104,11 +111,44 @@ class SnowflakeClient:
     # ------------------------------------------------------------------
 
     def _query(self, sql: str) -> pd.DataFrame:
-        """SQL 실행 후 Pandas DataFrame 반환. 에러 시 빈 DataFrame 반환."""
+        """SQL 실행 후 Pandas DataFrame 반환.
+
+        연결 에러와 쿼리 에러를 구분하여 로깅하며,
+        UI에서 원인을 파악할 수 있도록 에러 유형을 명시합니다.
+
+        Raises:
+            ConnectionError: Snowflake 세션이 끊어졌거나 인증 실패 시.
+
+        Returns:
+            쿼리 결과 DataFrame. 쿼리 실행 에러 시 빈 DataFrame 반환.
+        """
         try:
             return self._session.sql(sql).to_pandas()
-        except Exception:
-            logger.exception("SQL 실행 실패: %s", sql[:200])
+        except Exception as exc:
+            exc_name = type(exc).__name__
+            exc_msg = str(exc).lower()
+            # 연결/인증 관련 에러는 상위로 전파 (재시도 불가)
+            is_connection_error = any(
+                keyword in exc_msg
+                for keyword in (
+                    "authentication", "connection", "could not connect",
+                    "session", "timeout", "network", "refused",
+                    "ssl", "socket", "expired",
+                )
+            )
+            if is_connection_error:
+                logger.error(
+                    "Snowflake 연결 에러 [%s]: %s — SQL: %s",
+                    exc_name, exc, sql[:100],
+                )
+                raise ConnectionError(
+                    f"Snowflake 연결 실패 ({exc_name}): {exc}"
+                ) from exc
+            # 쿼리 에러 (테이블 없음, 권한 부족 등)는 빈 DataFrame 반환
+            logger.warning(
+                "SQL 실행 실패 [%s]: %s — SQL: %s",
+                exc_name, exc, sql[:200],
+            )
             return pd.DataFrame()
 
     def _query_with_filter(
@@ -211,17 +251,20 @@ class SnowflakeClient:
 
     def load_data_quality(self) -> pd.DataFrame:
         """MART.DATA_QUALITY_RESULTS — 데이터 품질 검증 결과."""
+        db = get_database()
         return self._query(
-            "SELECT * FROM TELECOM_DB.MART.DATA_QUALITY_RESULTS ORDER BY CHECK_TIME DESC"
+            f"SELECT * FROM {db}.MART.DATA_QUALITY_RESULTS ORDER BY CHECK_TIME DESC"
         )
 
     def load_lineage(self) -> pd.DataFrame:
         """MART.V_TABLE_LINEAGE — 테이블 의존성 계보."""
-        return self._query("SELECT * FROM TELECOM_DB.MART.V_TABLE_LINEAGE")
+        db = get_database()
+        return self._query(f"SELECT * FROM {db}.MART.V_TABLE_LINEAGE")
 
     def load_lineage_summary(self) -> pd.DataFrame:
         """MART.V_LINEAGE_SUMMARY — 파이프라인 계보 요약."""
-        return self._query("SELECT * FROM TELECOM_DB.MART.V_LINEAGE_SUMMARY")
+        db = get_database()
+        return self._query(f"SELECT * FROM {db}.MART.V_LINEAGE_SUMMARY")
 
     def load_channel_ai_insight(self) -> pd.DataFrame:
         """MART.CHANNEL_AI_INSIGHT — Cortex AI 채널 분석."""
@@ -230,6 +273,42 @@ class SnowflakeClient:
     def load_regional_ai_insight(self) -> pd.DataFrame:
         """MART.REGIONAL_AI_INSIGHT — Cortex AI 지역 분석."""
         return self._load_table(_MART, "REGIONAL_AI_INSIGHT")
+
+    # ------------------------------------------------------------------
+    # Dynamic Tables (실시간 갱신 테이블)
+    # ------------------------------------------------------------------
+
+    def load_funnel_live(
+        self, category: Optional[str] = None
+    ) -> pd.DataFrame:
+        """ANALYTICS.DT_FUNNEL_LIVE — 실시간 퍼널 데이터 (1시간 새로고침).
+
+        Dynamic Table로 소스 데이터 변경 시 자동 갱신됩니다.
+        MoM 변화량과 3개월 이동평균이 포함됩니다.
+
+        Args:
+            category: 상품 카테고리 필터. None이면 전체 반환.
+        """
+        return self._load_table(
+            _ANALYTICS, "DT_FUNNEL_LIVE",
+            category=category, category_col="CATEGORY",
+        )
+
+    def load_channel_live(
+        self, category: Optional[str] = None
+    ) -> pd.DataFrame:
+        """ANALYTICS.DT_CHANNEL_LIVE — 실시간 채널 성과 (1시간 새로고침).
+
+        Dynamic Table로 소스 데이터 변경 시 자동 갱신됩니다.
+        채널별 계약건수, 전환율, 매출 집계가 포함됩니다.
+
+        Args:
+            category: 상품 카테고리 필터. None이면 전체 반환.
+        """
+        return self._load_table(
+            _ANALYTICS, "DT_CHANNEL_LIVE",
+            category=category, category_col="CATEGORY",
+        )
 
     # ------------------------------------------------------------------
     # ANALYTICS 테이블 로드
@@ -315,8 +394,9 @@ class SnowflakeClient:
         Returns:
             프로시저 결과를 딕셔너리로 반환. 실패 시 에러 정보 딕셔너리.
         """
+        db = get_database()
         return self._call_stored_procedure(
-            "TELECOM_DB.ANALYTICS.SP_FUNNEL_ANALYSIS", category
+            f"{db}.ANALYTICS.SP_FUNNEL_ANALYSIS", category
         )
 
     def run_channel_analysis(self, category: str) -> dict:
@@ -328,8 +408,9 @@ class SnowflakeClient:
         Returns:
             프로시저 결과를 딕셔너리로 반환. 실패 시 에러 정보 딕셔너리.
         """
+        db = get_database()
         return self._call_stored_procedure(
-            "TELECOM_DB.ANALYTICS.SP_CHANNEL_ANALYSIS", category
+            f"{db}.ANALYTICS.SP_CHANNEL_ANALYSIS", category
         )
 
     # ------------------------------------------------------------------
@@ -364,7 +445,7 @@ class SnowflakeClient:
                     }
                 ],
                 "semantic_model_file": (
-                    "@TELECOM_DB.PUBLIC.CORTEX_STAGE/telecom_semantic.yaml"
+                    f"@{get_database()}.PUBLIC.CORTEX_STAGE/telecom_semantic.yaml"
                 ),
             })
 
@@ -451,9 +532,10 @@ class SnowflakeClient:
         Returns:
             sql, text, source, error 키를 포함한 딕셔너리.
         """
+        db = get_database()
         schema_context = (
-            "아래는 TELECOM_DB의 주요 테이블 스키마입니다.\n\n"
-            "1. TELECOM_DB.STAGING.STG_FUNNEL (가입 퍼널 전환 데이터, 250행):\n"
+            f"아래는 {db}의 주요 테이블 스키마입니다.\n\n"
+            f"1. {db}.STAGING.STG_FUNNEL (가입 퍼널 전환 데이터, 250행):\n"
             "   - YEAR_MONTH (VARCHAR): 년월\n"
             "   - MAIN_CATEGORY_NAME (VARCHAR): 상품 대분류\n"
             "   - CATEGORY (VARCHAR): 상품 세부분류\n"
@@ -465,7 +547,7 @@ class SnowflakeClient:
             "   - PAYEND_COUNT (NUMBER): 납입완료 건수\n"
             "   - CVR_CONSULT_REQUEST ~ CVR_PAYEND (NUMBER): 각 단계 전환율\n"
             "   - OVERALL_CVR (NUMBER): 전체 전환율\n\n"
-            "2. TELECOM_DB.STAGING.STG_CHANNEL (채널별 성과 데이터, 7911행):\n"
+            f"2. {db}.STAGING.STG_CHANNEL (채널별 성과 데이터, 7911행):\n"
             "   - YEAR_MONTH, MAIN_CATEGORY_NAME, CATEGORY\n"
             "   - RECEIVE_PATH_NAME (VARCHAR): 접수경로\n"
             "   - CHANNEL (VARCHAR): 유입채널\n"
@@ -475,7 +557,7 @@ class SnowflakeClient:
             "   - OPEN_CVR, PAYEND_CVR (NUMBER): 전환율\n"
             "   - AVG_NET_SALES (NUMBER): 건당 평균매출\n"
             "   - TOTAL_NET_SALES (NUMBER): 총매출\n\n"
-            "3. TELECOM_DB.STAGING.STG_REGIONAL (지역별 수요 데이터, 23555행):\n"
+            f"3. {db}.STAGING.STG_REGIONAL (지역별 수요 데이터, 23555행):\n"
             "   - YEAR_MONTH, INSTALL_STATE (VARCHAR): 시/도\n"
             "   - INSTALL_CITY (VARCHAR): 시/군/구\n"
             "   - MAIN_CATEGORY_NAME (VARCHAR): 상품 대분류\n"
@@ -492,7 +574,7 @@ class SnowflakeClient:
             f"{schema_context}\n"
             "규칙:\n"
             "1. 반드시 유효한 Snowflake SQL만 생성하세요.\n"
-            "2. 테이블은 TELECOM_DB.STAGING.테이블명 형식으로 참조하세요.\n"
+            f"2. 테이블은 {db}.STAGING.테이블명 형식으로 참조하세요.\n"
             "3. 응답은 JSON 형식으로: "
             '{"sql": "SELECT ...", "explanation": "설명..."}\n'
             "4. SQL이 불필요한 질문이면 sql을 null로 하고 "

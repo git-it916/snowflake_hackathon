@@ -117,20 +117,13 @@ def _show_data_quality() -> None:
             warn_n = len(dq_df[dq_df[status_col] == "WARNING"])
             crit_n = len(dq_df[dq_df[status_col] == "CRITICAL"])
 
-            c1, c2, c3 = st.columns(3)
-            with c1:
-                st.metric("PASS", pass_n)
-            with c2:
-                st.metric("WARN", warn_n)
-            with c3:
-                st.metric("CRIT", crit_n)
-
             if crit_n > 0:
-                st.error(f"{crit_n}건 품질 위반")
+                st.error(f"CRITICAL {crit_n}건 감지")
             elif warn_n > 0:
-                st.warning(f"{warn_n}건 주의")
+                st.warning(f"WARNING {warn_n}건 감지")
             else:
-                st.caption("모든 검사 통과")
+                st.success("모든 검사 통과")
+            st.caption(f"PASS {pass_n}  |  WARN {warn_n}  |  CRIT {crit_n}")
         else:
             st.caption("DMF 미실행")
     except Exception:
@@ -147,7 +140,7 @@ def _show_lineage() -> None:
                 up = row.get("UPSTREAM_LAYER", "?")
                 down = row.get("DOWNSTREAM_LAYER", "?")
                 cnt = row.get("DEPENDENCY_COUNT", 0)
-                st.caption(f"{up} → {down}  ({cnt})")
+                st.markdown(f"**{up}** → **{down}** `{cnt}`")
         else:
             st.caption("리니지 미생성")
     except Exception:

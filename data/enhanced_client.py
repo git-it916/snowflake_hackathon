@@ -7,6 +7,7 @@ from typing import Optional
 
 import pandas as pd
 
+from config.settings import get_database
 from data.snowflake_client import SnowflakeClient, _ANALYTICS, _MART
 
 logger = logging.getLogger(__name__)
@@ -60,7 +61,7 @@ class EnhancedSnowflakeClient(SnowflakeClient):
         try:
             snowpark_df = self._session.create_dataframe(df)
             snowpark_df.write.mode("append").save_as_table(
-                f"TELECOM_DB.{_MART}.FORECAST_OUTPUT"
+                f"{get_database()}.{_MART}.FORECAST_OUTPUT"
             )
             logger.info("예측 결과 %d건 저장 완료.", len(df))
         except Exception:

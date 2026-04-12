@@ -36,6 +36,124 @@ Python ML 학습 (Snowpark 연결)        Cortex AI 함수 (서버 내부)
 
 ---
 
+## 아키텍처 다이어그램
+
+```mermaid
+graph TD
+    subgraph Source["📦 Snowflake Marketplace"]
+        V01["V01 Regional Contract"]
+        V03["V03 Contract Funnel"]
+        V04["V04 Channel Performance"]
+        V05["V05 Regional Install"]
+        V07["V07 GA4 Attribution"]
+    end
+
+    subgraph Staging["1단계: Staging (01_staging.sql)"]
+        STG_F["STG_FUNNEL"]
+        STG_C["STG_CHANNEL"]
+        STG_R["STG_REGIONAL"]
+        STG_M["STG_MARKETING"]
+    end
+
+    subgraph Analytics["2단계: Analytics (02_analytics.sql)"]
+        FSD["FUNNEL_STAGE_DROP"]
+        CE["CHANNEL_EFFICIENCY"]
+        RDS["REGIONAL_DEMAND_SCORE"]
+    end
+
+    subgraph Mart["3단계: Mart (03_mart.sql)"]
+        KPI["DT_KPI"]
+        VFT["V_FUNNEL_TIMESERIES"]
+        VCP["V_CHANNEL_PERFORMANCE"]
+        VRH["V_REGIONAL_HEATMAP"]
+    end
+
+    subgraph ML["ML 파이프라인"]
+        FS["ML_FEATURE_STORE<br/>(06_feature_store.sql)"]
+        XGB["XGBoost 3-class<br/>(conversion_model.py)"]
+        MR["Model Registry"]
+    end
+
+    subgraph CortexML["Cortex ML (04_cortex_ml.sql)"]
+        FORE["FORECAST_OUTPUT<br/>시도별 3개월 예측"]
+        ANOM["ANOMALY_OUTPUT<br/>계약수 급변 탐지"]
+    end
+
+    subgraph CortexAI["Cortex AI (11_cortex_ai_functions.sql)"]
+        CAI["CHANNEL_AI_INSIGHT<br/>SENTIMENT + CLASSIFY + SUMMARIZE"]
+        RAI["REGIONAL_AI_INSIGHT<br/>SENTIMENT + TRANSLATE"]
+    end
+
+    subgraph Governance["거버넌스"]
+        DQ["DATA_QUALITY_RESULTS<br/>(07_data_quality.sql)<br/>매일 06:00 KST Task"]
+        LIN["V_TABLE_LINEAGE<br/>(08_lineage.sql)"]
+    end
+
+    subgraph Agent["AI Agent (agents/orchestrator.py)"]
+        ORC["Analyst → Strategist → Synthesizer<br/>Cortex COMPLETE"]
+    end
+
+    subgraph Dashboard["Streamlit 대시보드 (4 pages)"]
+        P0["app.py<br/>KPI + 품질 + 리니지"]
+        P1["1_진단.py<br/>Sankey + 버블 + 마르코프"]
+        P2["2_기회_분석.py<br/>수요 + FORECAST + Monte Carlo"]
+        P3["3_AI_전략.py<br/>Multi-Agent + Q&A"]
+    end
+
+    %% 메인 데이터 흐름
+    V01 & V03 & V04 & V05 & V07 --> STG_F & STG_C & STG_R & STG_M
+    STG_F & STG_C & STG_R --> FSD & CE & RDS
+    FSD & CE & RDS --> KPI & VFT & VCP & VRH
+    KPI & VFT & VCP & VRH --> Dashboard
+
+    %% Cortex ML
+    STG_R --> FORE & ANOM
+    FORE & ANOM --> P2
+
+    %% Feature Store → XGBoost
+    STG_C --> FS
+    FS --> XGB
+    XGB --> MR
+    MR --> P1
+
+    %% Cortex AI
+    CE --> CAI
+    RDS --> RAI
+    CAI & RAI --> P1 & P2
+
+    %% Governance
+    STG_F & STG_C & STG_R --> DQ
+    DQ --> P0
+    LIN --> P0
+
+    %% Agent
+    ORC --> P3
+
+    %% 스타일
+    classDef source fill:#4a90d9,stroke:#2c5f8a,color:#fff
+    classDef staging fill:#f5a623,stroke:#c7841a,color:#fff
+    classDef analytics fill:#7ed321,stroke:#5a9a18,color:#fff
+    classDef mart fill:#bd10e0,stroke:#8a0ba5,color:#fff
+    classDef ml fill:#e74c3c,stroke:#a93226,color:#fff
+    classDef cortex fill:#00b894,stroke:#008d6c,color:#fff
+    classDef gov fill:#636e72,stroke:#4a5357,color:#fff
+    classDef dash fill:#0984e3,stroke:#0662a8,color:#fff
+    classDef agent fill:#e17055,stroke:#a8523f,color:#fff
+
+    class V01,V03,V04,V05,V07 source
+    class STG_F,STG_C,STG_R,STG_M staging
+    class FSD,CE,RDS analytics
+    class KPI,VFT,VCP,VRH mart
+    class FS,XGB,MR ml
+    class FORE,ANOM cortex
+    class CAI,RAI cortex
+    class DQ,LIN gov
+    class P0,P1,P2,P3 dash
+    class ORC agent
+```
+
+---
+
 ## Snowflake 기능 활용 현황 (19개)
 
 | # | Snowflake Feature | 구현 위치 | 실행 환경 | 심사 카테고리 |

@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 try:
     from dotenv import load_dotenv
-    load_dotenv()
+    load_dotenv(override=True)
 except ImportError:
     pass  # SiS 환경에서는 dotenv 불필요
 
@@ -37,9 +37,14 @@ def _get_connection_params() -> dict:
         "password": os.environ["SF_PASSWORD"],
         "role": os.getenv("SF_ROLE", "ACCOUNTADMIN"),
         "warehouse": os.getenv("SF_WAREHOUSE", "COMPUTE_WH"),
-        "database": "TELECOM_DB",
-        "schema": "ANALYTICS",
+        "database": os.getenv("SF_DATABASE", "TELECOM_DB"),
+        "schema": os.getenv("SF_SCHEMA", "ANALYTICS"),
     }
+
+
+def get_database() -> str:
+    """현재 설정된 데이터베이스 이름 반환."""
+    return os.getenv("SF_DATABASE", "TELECOM_DB")
 
 
 def get_session() -> Session:

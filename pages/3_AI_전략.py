@@ -11,6 +11,7 @@ import logging
 from typing import Any
 
 import pandas as pd
+import plotly.graph_objects as go
 import streamlit as st
 
 logger = logging.getLogger(__name__)
@@ -66,6 +67,13 @@ try:
 except Exception:
     _MARKOV_OK = False
 
+try:
+    from ml.conversion_model import ConversionModel
+    from ml.explainer import ModelExplainer
+    _ML_OK = True
+except Exception:
+    _ML_OK = False
+
 
 @st.cache_resource
 def _get_orchestrator() -> "AgentOrchestrator | None":
@@ -77,6 +85,20 @@ def _get_orchestrator() -> "AgentOrchestrator | None":
             return None
         return AgentOrchestrator(client._session)
     except Exception:
+        return None
+
+
+@st.cache_resource
+def _get_trained_model() -> "ConversionModel | None":
+    """XGBoost 모델을 학습하고 캐싱."""
+    if not _ML_OK:
+        return None
+    try:
+        model = ConversionModel()
+        model.train()
+        return model
+    except Exception:
+        logger.debug("XGBoost model training failed", exc_info=True)
         return None
 
 
@@ -237,10 +259,14 @@ st.markdown(
 """
 )
 
-st.markdown(
-    "**분석 순서**: ① 왼쪽 사이드바에서 카테고리 선택 → ② 리스크 허용도 설정 → "
-    "③ '전체 분석 실행' 클릭 → ④ 3개 탭에서 결과 확인 → ⑤ 오른쪽 Q&A로 후속 질문"
-)
+with st.expander("분석 가이드", expanded=False):
+    st.markdown(
+        "1. 왼쪽 사이드바에서 **카테고리** 선택\n"
+        "2. 아래에서 **리스크 허용도** 설정\n"
+        "3. **전체 분석 실행** 버튼 클릭\n"
+        "4. 3개 탭에서 결과 확인\n"
+        "5. 오른쪽 Q&A로 후속 질문"
+    )
 
 # --- Cross-page context bar ---
 p1 = st.session_state.get("page1_insights", {})
@@ -440,6 +466,87 @@ with col_analysis:
                     icon = _FINDING_ICONS_DEFAULT[idx]
                     with st.expander(f"{icon} {title}"):
                         st.markdown(desc)
+
+        # ---------------------------------------------------------------
+        # XGBoost Prediction + SHAP Feature Importance
+        # ---------------------------------------------------------------
+        st.divider()
+        st.markdown("**ML 전환율 예측 (XGBoost)**")
+        try:
+            _xgb_model = _get_trained_model()
+            if _xgb_model is not None:
+                _pred_category = (
+                    category_filter if category_filter != "전체" else "인터넷"
+                )
+                _pred_result = _xgb_model.predict(_pred_category)
+                _pred_class = _pred_result.get("predicted_class", "UNKNOWN")
+                _pred_conf = _pred_result.get("confidence", 0.0)
+                _prob_high = _pred_result.get("prob_high", 0.0)
+                _prob_med = _pred_result.get("prob_medium", 0.0)
+                _prob_low = _pred_result.get("prob_low", 0.0)
+
+                _CLASS_KR = {"HIGH": "높음", "MEDIUM": "보통", "LOW": "낮음"}
+                _xgb_m1, _xgb_m2, _xgb_m3, _xgb_m4 = st.columns(4)
+                with _xgb_m1:
+                    st.metric(
+                        label="예측 클래스",
+                        value=_CLASS_KR.get(_pred_class, _pred_class),
+                    )
+                with _xgb_m2:
+                    st.metric(label="신뢰도", value=f"{_pred_conf * 100:.1f}%")
+                with _xgb_m3:
+                    st.metric(label="HIGH 확률", value=f"{_prob_high * 100:.1f}%")
+                with _xgb_m4:
+                    st.metric(label="LOW 확률", value=f"{_prob_low * 100:.1f}%")
+
+                # SHAP Feature Importance
+                st.markdown("**피처 중요도 (SHAP 해석)**")
+                try:
+                    _explainer = ModelExplainer(_xgb_model)
+                    _fi_df = _explainer.feature_importance()
+                    if not _fi_df.empty:
+                        _fi_sorted = _fi_df.sort_values(
+                            "IMPORTANCE", ascending=True
+                        )
+                        _shap_fig = go.Figure(
+                            go.Bar(
+                                x=_fi_sorted["IMPORTANCE"],
+                                y=_fi_sorted["FEATURE_KR"],
+                                orientation="h",
+                                marker_color="#00E5FF",
+                            )
+                        )
+                        _shap_fig.update_layout(
+                            title="SHAP 피처 중요도",
+                            xaxis_title="평균 |SHAP 값|",
+                            yaxis_title="",
+                            template="plotly_dark",
+                            plot_bgcolor="rgba(0,0,0,0)",
+                            paper_bgcolor="rgba(0,0,0,0)",
+                            font=dict(color="#E0E0E0"),
+                            margin=dict(l=20, r=20, t=40, b=20),
+                            height=max(300, len(_fi_sorted) * 30),
+                        )
+                        st.plotly_chart(_shap_fig, use_container_width=True)
+                        st.caption(
+                            "SHAP(SHapley Additive exPlanations)은 각 피처가 "
+                            "모델 예측에 얼마나 기여하는지를 게임 이론 기반으로 "
+                            "공정하게 분배한 값입니다. 막대가 길수록 해당 피처가 "
+                            "전환율 예측에 더 큰 영향을 미칩니다."
+                        )
+                    else:
+                        st.caption("SHAP 피처 중요도 데이터가 없습니다.")
+                except Exception:
+                    st.caption("SHAP 분석을 수행할 수 없습니다.")
+                    logger.debug("SHAP analysis failed", exc_info=True)
+            else:
+                st.caption(
+                    "XGBoost 모델을 로드할 수 없습니다. "
+                    "ML 모듈 또는 Snowflake 연결을 확인하세요."
+                )
+        except Exception:
+            st.caption("ML 예측을 수행할 수 없습니다.")
+            logger.debug("XGBoost prediction section failed", exc_info=True)
 
         if analysis_text:
             st.divider()
@@ -648,6 +755,17 @@ with col_chat:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
+    # ----- Cortex Analyst toggle -----
+    analyst_mode = st.toggle(
+        "Cortex Analyst 모드",
+        value=False,
+        help="자연어 → SQL 자동 변환",
+    )
+    st.caption(
+        "Cortex Analyst는 자연어 질문을 SQL로 변환합니다. "
+        "예: '이번 달 인터넷 카테고리 채널별 매출'"
+    )
+
     # Quick action pills
     st.caption("아래 버튼을 클릭하면 AI가 즉시 답변합니다")
 
@@ -683,9 +801,51 @@ with col_chat:
             st.markdown(question)
 
         with st.chat_message("assistant"):
-            with st.spinner("AI 분석 중..."):
-                answer = _get_chat_answer(
-                    orchestrator, client, question, category_filter,
-                )
-            st.markdown(answer)
+            if analyst_mode and client is not None:
+                # --- Cortex Analyst mode ---
+                try:
+                    with st.spinner("Cortex Analyst SQL 변환 중..."):
+                        analyst_result = client.ask_analyst(question)
+
+                    if analyst_result.get("error"):
+                        st.warning(f"Analyst 오류: {analyst_result['error']}")
+
+                    generated_sql = analyst_result.get("sql")
+                    explanation = analyst_result.get("text", "")
+
+                    # Show explanation
+                    if explanation:
+                        st.markdown(explanation)
+
+                    # Show generated SQL
+                    if generated_sql:
+                        st.code(generated_sql, language="sql")
+
+                        # Try executing the SQL and display results
+                        try:
+                            with st.spinner("SQL 실행 중..."):
+                                result_df = client._query(generated_sql)
+                            if not result_df.empty:
+                                st.dataframe(result_df, use_container_width=True)
+                            else:
+                                st.info("쿼리 결과가 비어 있습니다.")
+                        except Exception as exec_err:
+                            st.error(f"SQL 실행 실패: {exec_err}")
+
+                    answer = (
+                        f"**[Cortex Analyst]** {explanation}"
+                        + (f"\n```sql\n{generated_sql}\n```" if generated_sql else "")
+                    )
+                except Exception as analyst_err:
+                    logger.exception("Cortex Analyst 처리 중 오류")
+                    answer = f"Cortex Analyst 처리 중 오류가 발생했습니다: {analyst_err}"
+                    st.error(answer)
+            else:
+                # --- Normal chat mode ---
+                with st.spinner("AI 분석 중..."):
+                    answer = _get_chat_answer(
+                        orchestrator, client, question, category_filter,
+                    )
+                st.markdown(answer)
+
         st.session_state["ai_chat_messages"].append({"role": "assistant", "content": answer})

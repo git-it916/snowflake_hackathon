@@ -81,14 +81,18 @@ header[data-testid="stHeader"] {
 /* === Metric cards glass style === */
 div[data-testid="stMetric"] {
     background: rgba(255,255,255,0.03) !important;
-    border: 1px solid rgba(0,229,255,0.2) !important;
+    border: 1px solid rgba(0,229,255,0.15) !important;
     border-radius: 12px !important;
     padding: 16px 20px !important;
     overflow: hidden !important;
+    transition: border-color 0.2s ease !important;
+}
+div[data-testid="stMetric"]:hover {
+    border-color: rgba(0,229,255,0.35) !important;
 }
 div[data-testid="stMetric"] label {
-    color: rgba(255,255,255,0.5) !important;
-    font-size: 0.78rem !important;
+    color: rgba(255,255,255,0.6) !important;
+    font-size: 0.85rem !important;
     font-weight: 500 !important;
     line-height: 1.3 !important;
     white-space: nowrap !important;
@@ -159,6 +163,10 @@ a[data-testid="stPageLink-NavLink"]:hover {
     border-radius: 100px !important;
     transition: all 0.3s ease !important;
 }
+.stButton > button:focus-visible {
+    outline: 2px solid #00E5FF !important;
+    outline-offset: 2px !important;
+}
 .stButton > button[kind="primary"] {
     background: linear-gradient(135deg, #00E5FF 0%, #3B82F6 100%) !important;
     border: none !important;
@@ -198,12 +206,12 @@ a[data-testid="stPageLink-NavLink"]:hover {
 
 /* === Divider === */
 hr {
-    border-color: rgba(255,255,255,0.15) !important;
+    border-color: rgba(255,255,255,0.2) !important;
     margin: 1.5rem 0 !important;
 }
 
 /* === Caption === */
-.stCaption, small { color: #636363 !important; }
+.stCaption, small { color: #9a9a9a !important; }
 
 /* === Spinner === */
 .stSpinner > div { border-top-color: #00E5FF !important; }
@@ -228,8 +236,19 @@ h3 {
 
 /* === Caption readability === */
 .stCaption, small {
-    line-height: 1.6 !important;
+    line-height: 1.7 !important;
     word-wrap: break-word !important;
+}
+
+/* === Sticky nav === */
+div[data-testid="stHorizontalBlock"]:first-of-type {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(12px);
+    padding: 8px 0;
+    margin: -8px 0 0 0;
 }
 
 /* === Alert/Info boxes: transparent bg + colored border === */
@@ -237,12 +256,13 @@ div[data-testid="stAlert"] {
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
     background: rgba(255,255,255,0.02) !important;
-    border: 1px solid rgba(0,229,255,0.3) !important;
+    border: 1px solid rgba(0,229,255,0.15) !important;
     border-radius: 12px !important;
+    padding: 12px 16px !important;
 }
 div[data-testid="stAlert"] p {
-    line-height: 1.5 !important;
-    color: rgba(255,255,255,0.8) !important;
+    line-height: 1.6 !important;
+    color: rgba(255,255,255,0.85) !important;
 }
 
 /* === Expander text overflow fix === */

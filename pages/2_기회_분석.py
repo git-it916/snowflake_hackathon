@@ -47,7 +47,7 @@ st.divider()
 # ---------------------------------------------------------------------------
 # Dependency imports (all guarded)
 # ---------------------------------------------------------------------------
-from components.utils import get_cached_client, safe_data_load, PLOTLY_DARK_LAYOUT
+from components.utils import get_cached_client, safe_data_load, validate_columns, PLOTLY_DARK_LAYOUT
 
 try:
     from data.snowflake_client import SnowflakeClient
@@ -106,6 +106,12 @@ def _load_markov_baseline(category: str | None = None):
 # Chart builders
 # ---------------------------------------------------------------------------
 def _build_state_demand_bar(state_agg: pd.DataFrame) -> go.Figure:
+    if not validate_columns(
+        state_agg,
+        ["DEMAND_SCORE", "INSTALL_STATE"],
+        context="지역 수요 바 차트",
+    ):
+        return go.Figure()
     sorted_df = state_agg.sort_values("DEMAND_SCORE", ascending=True)
 
     q1 = sorted_df["DEMAND_SCORE"].quantile(0.25)
@@ -145,7 +151,11 @@ def _build_state_demand_bar(state_agg: pd.DataFrame) -> go.Figure:
 
 
 def _build_growth_cities_bar(heatmap_df: pd.DataFrame, top_n: int = 10) -> go.Figure:
-    if "GROWTH_3M" not in heatmap_df.columns or "INSTALL_CITY" not in heatmap_df.columns:
+    if not validate_columns(
+        heatmap_df,
+        ["GROWTH_3M", "INSTALL_CITY", "INSTALL_STATE", "CONTRACT_COUNT"],
+        context="성장 도시 바 차트",
+    ):
         return go.Figure()
 
     # 최소 200건 이상 도시만 (소규모 기저효과 제거)
@@ -484,17 +494,19 @@ if not heatmap_df.empty and "INSTALL_STATE" in heatmap_df.columns:
     ]
 
     kpi_cols = st.columns(4)
+    _kpi_help = {
+        "분석 지역 수": "데이터에 포함된 시/도 수",
+        "최고 수요 지역": "Z-score 합산 기준 가장 수요가 높은 시/도",
+        "평균 수요 점수": "전체 시/도 수요 점수의 평균. 0 이상이면 양호",
+        "최고 성장 도시": "최근 3개월 계약 증가율이 가장 높은 도시",
+    }
     for kpi_col, (kpi_label, kpi_value, kpi_color) in zip(kpi_cols, _kpi_cards):
         with kpi_col:
-            st.markdown(f'''
-<div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);
-            border-radius:12px;padding:20px;text-align:center;">
-    <div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;">{kpi_label}</div>
-    <div style="font-size:1.8rem;font-weight:700;color:{kpi_color};margin-top:4px;">{kpi_value}</div>
-</div>
-''', unsafe_allow_html=True)
-
-    st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+            st.metric(
+                label=kpi_label,
+                value=kpi_value,
+                help=_kpi_help.get(kpi_label, ""),
+            )
 
     st.caption(
         "**읽는 법**: 수요 점수는 계약 건수·전환율·매출의 Z-score 합산입니다. "
@@ -540,7 +552,8 @@ if not heatmap_df.empty and "INSTALL_STATE" in heatmap_df.columns:
             "0 기준선 우측이 전국 평균 이상이며, 시안(파랑) 바가 길수록 수요가 강합니다. "
             "상위 지역에 마케팅 예산을 집중하면 ROI가 높습니다."
         )
-        fig_demand = _build_state_demand_bar(state_agg)
+        with st.spinner("수요 차트 생성 중..."):
+            fig_demand = _build_state_demand_bar(state_agg)
         st.plotly_chart(fig_demand, use_container_width=True)
 
     with col_right:
@@ -550,7 +563,8 @@ if not heatmap_df.empty and "INSTALL_STATE" in heatmap_df.columns:
             "소규모 기저효과를 제거하기 위해 최소 200건 이상인 도시만 포함합니다. "
             "이 도시들은 아직 경쟁이 낮은 '선점 기회' 시장입니다."
         )
-        fig_growth = _build_growth_cities_bar(heatmap_df)
+        with st.spinner("성장 도시 차트 생성 중..."):
+            fig_growth = _build_growth_cities_bar(heatmap_df)
         if fig_growth.data:
             st.plotly_chart(fig_growth, use_container_width=True)
         else:
